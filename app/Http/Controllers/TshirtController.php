@@ -117,14 +117,13 @@ class TshirtController extends Controller
             $f->move(public_path("img"), $img);
             $f2->move(public_path("img"), $img2);
 
-            Tshirt::update([
-                "tshirt_name" => $request->tshirt_name,
-                "tshirt_composition" => $request->tshirt_composition,
-                "tshirt_fit" => $request->tshirt_fit,
-                "tshirt_price" => $request->tshirt_price,
-                "tshirt_img1" => $img,
-                "tshirt_img2" => $img2
-            ]);
+            $tshirt->tshirt_name = $request->tshirt_name;
+            $tshirt->tshirt_composition = $request->tshirt_composition;
+            $tshirt->tshirt_fit = $request->tshirt_fit;
+            $tshirt->tshirt_price = $request->tshirt_price;
+            $tshirt->tshirt_img1 = $img;
+            $tshirt->tshirt_img2 = $img2;
+            $tshirt->update();
 
             return ApiResponse::success("T-shirt update succesfully", 202);
         } catch (EloquentModelNotFoundException $e) {
@@ -146,7 +145,7 @@ class TshirtController extends Controller
             $tshirt = Tshirt::where(["id" => $id])->firstOrFail();
             $tshirt->delete();
 
-            return ApiResponse::error("Tshirt eliminated", 200);
+            return ApiResponse::success("Tshirt eliminated", 200);
         } catch (EloquentModelNotFoundException $e) {
             return ApiResponse::error("T-shirt not found", 404);
         } catch (Exception $e) {
