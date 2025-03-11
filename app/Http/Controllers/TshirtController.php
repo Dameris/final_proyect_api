@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TshirtRequest;
 use App\Models\Tshirt;
 use App\Http\Responses\ApiResponse;
-
+use Inertia\Response;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException as EloquentModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -19,53 +20,53 @@ class TshirtController extends Controller
     public function index()
     {
         try {
-            $tshirts = Tshirt::all();
-            return ApiResponse::success("List of T-shirts", 200, $tshirts);
+            $tshirts = Tshirt::paginate(20);
+            return inertia("Tshirts/Index", ["tshirts" => $tshirts]);
         } catch (Exception $e) {
-            return ApiResponse::error("Error in data base", 500);
+            return ApiResponse::error("Error in database", 500);
         }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return inertia("Tshirts/Create");
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TshirtRequest $request)
     {
-        try {
-            $request->validate([
-                "tshirt_name" => "required|unique:tshirt",
-                "tshirt_composition" => "required",
-                "tshirt_fit" => "required",
-                "tshirt_price" => "required|numeric",
-                "tshirt_img1" => "required|file|mimes:jpg,jpeg,png,gif",
-                "tshirt_img2" => "required|file|mimes:jpg,jpeg,png,gif",
-            ]);
+        // try {
+        // $f = $request->file("tshirt_img1");
+        // $f2 = $request->file("tshirt_img2");
 
-            $f = $request->file("tshirt_img1");
-            $f2 = $request->file("tshirt_img2");
+        // $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
+        // $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
 
-            $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
-            $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
+        // $f->storeAs("img", $img, "public");
+        // $f2->storeAs("img", $img2, "public");
 
-            $f->move(public_path("img"), $img);
-            $f2->move(public_path("img"), $img2);
+        Tshirt::create([
+            "tshirt_name" => $request->tshirt_name,
+            "tshirt_composition" => $request->tshirt_composition,
+            "tshirt_fit" => $request->tshirt_fit,
+            "tshirt_price" => $request->tshirt_price,
+            // "tshirt_img1" => $img,
+            // "tshirt_img2" => $img2
+        ]);
 
-            Tshirt::create([
-                "tshirt_name" => $request->tshirt_name,
-                "tshirt_composition" => $request->tshirt_composition,
-                "tshirt_fit" => $request->tshirt_fit,
-                "tshirt_price" => $request->tshirt_price,
-                "tshirt_img1" => $img,
-                "tshirt_img2" => $img2
-            ]);
-
-            return ApiResponse::success("T-shirt created succesfully", 201);
-        } catch (ValidationException $e) {
-            $errors = $e->validator->errors()->toArray();
-            return ApiResponse::error("Validation error", 422, $errors);
-        } catch (Exception $e) {
-            return ApiResponse::error("Error in data base", 500);
-        }
+        return redirect()->route('tshirts.index');
+        // ApiResponse::success("T-shirt created succesfully", 201);
+        // } catch (ValidationException $e) {
+        //     $errors = $e->validator->errors()->toArray();
+        //     return ApiResponse::error("Validation error", 422, $errors);
+        // } catch (Exception $e) {
+        //     return ApiResponse::error("Error in database", 500);
+        // }
     }
 
     /**
@@ -79,8 +80,16 @@ class TshirtController extends Controller
         } catch (EloquentModelNotFoundException $e) {
             return ApiResponse::error("T-shirt not found", 404);
         } catch (Exception $e) {
-            return ApiResponse::error("Error in data base", 500);
+            return ApiResponse::error("Error in database", 500);
         }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Tshirt $tshirt)
+    {
+        return inertia("Tshirts/Edit", ["tshirt" => $tshirt]);
     }
 
     /**
@@ -90,39 +99,39 @@ class TshirtController extends Controller
     {
         try {
             $tshirt = Tshirt::where(["id" => $id])->firstOrFail();
-            $img = $tshirt->tshirt_img1;
-            $img2 = $tshirt->tshirt_img2;
+            // $img = $tshirt->tshirt_img1;
+            // $img2 = $tshirt->tshirt_img2;
 
             $request->validate([
-                "tshirt_name" => ["required", Rule::unique("tshirt")->ignore($tshirt)],
-                "tshirt_composition" => "required",
-                "tshirt_fit" => "required",
-                "tshirt_price" => "required|numeric",
-                "tshirt_img1" => "required|file|mimes:jpg,jpeg,png,gif",
-                "tshirt_img2" => "required|file|mimes:jpg,jpeg,png,gif",
+                "tshirt_name" => ["required", "string", "max:50", Rule::unique(table: "tshirts", column: "tshirt_name")->ignore(id: request("tshirt"), idColumn: "id")],
+                "tshirt_composition" => ["required", "string", "max:50", Rule::in("Cotton", "Polyester", "Rayon", "Linen")],
+                "tshirt_fit" => ["required", "string", "max:50", Rule::in("Oversize", "Regular", "Slim", "Superslim", "Boxy")],
+                "tshirt_price" => ["required", "numeric", "min:0"],
+                // "tshirt_img1" => ["required", "file", "mimes:jpg,jpeg,png,gif"],
+                // "tshirt_img2" => ["required", "file", "mimes:jpg,jpeg,png,gif"]
             ]);
 
-            if ($img)
-                @unlink(public_path("img") . "/" . $img);
+            // if ($img)
+            //     @unlink(public_path("img") . "/" . $img);
 
-            if ($img2)
-                @unlink(public_path("img") . "/" . $img2);
+            // if ($img2)
+            //     @unlink(public_path("img") . "/" . $img2);
 
-            $f = $request->file("tshirt_img1");
-            $f2 = $request->file("tshirt_img2");
+            // $f = $request->file("tshirt_img1");
+            // $f2 = $request->file("tshirt_img2");
 
-            $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
-            $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
+            // $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
+            // $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
 
-            $f->move(public_path("img"), $img);
-            $f2->move(public_path("img"), $img2);
+            // $f->move(public_path("img"), $img);
+            // $f2->move(public_path("img"), $img2);
 
             $tshirt->tshirt_name = $request->tshirt_name;
             $tshirt->tshirt_composition = $request->tshirt_composition;
             $tshirt->tshirt_fit = $request->tshirt_fit;
             $tshirt->tshirt_price = $request->tshirt_price;
-            $tshirt->tshirt_img1 = $img;
-            $tshirt->tshirt_img2 = $img2;
+            // $tshirt->tshirt_img1 = $img;
+            // $tshirt->tshirt_img2 = $img2;
             $tshirt->update();
 
             return ApiResponse::success("T-shirt update succesfully", 202);
@@ -132,7 +141,7 @@ class TshirtController extends Controller
             $errors = $e->validator->errors()->toArray();
             return ApiResponse::error("Validation error", 422, $errors);
         } catch (Exception $e) {
-            return ApiResponse::error("Error in data base", 500);
+            return ApiResponse::error("Error in database", 500);
         }
     }
 
@@ -149,7 +158,7 @@ class TshirtController extends Controller
         } catch (EloquentModelNotFoundException $e) {
             return ApiResponse::error("T-shirt not found", 404);
         } catch (Exception $e) {
-            return ApiResponse::error("Error in data base", 500);
+            return ApiResponse::error("Error in database", 500);
         }
     }
 }
