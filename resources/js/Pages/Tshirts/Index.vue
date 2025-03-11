@@ -9,6 +9,7 @@ export default {
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Link } from "@inertiajs/vue3";
+import { Inertia } from "@inertiajs/inertia";
 
 defineProps({
 	tshirts: {
@@ -43,8 +44,18 @@ const deleteTshirt = (id) => {
 					<li v-for="tshirt in tshirts.data">
 						<p>{{ tshirt.tshirt_name }}</p>
 						<p>
-							<Link :href="route('tshirts.edit', tshirt.id)"> Edit </Link>
-							<Link @click="deleteTshirt(tshirt.id)"> Delete </Link>
+							<Link
+								:href="route('tshirts.edit', tshirt.id)"
+								v-if="$page.props.user.permissions.includes('updatetshirts')"
+							>
+								Edit
+							</Link>
+							<Link
+								@click="deleteTshirt(tshirt.id)"
+								v-if="$page.props.user.permissions.includes('deletetshirts')"
+							>
+								Delete
+							</Link>
 						</p>
 					</li>
 				</ul>

@@ -95,70 +95,18 @@ class TshirtController extends Controller
     /**
      * Update a T-shirt.
      */
-    public function update(Request $request, $id)
+    public function update(TshirtRequest $request, Tshirt $tshirt)
     {
-        try {
-            $tshirt = Tshirt::where(["id" => $id])->firstOrFail();
-            // $img = $tshirt->tshirt_img1;
-            // $img2 = $tshirt->tshirt_img2;
-
-            $request->validate([
-                "tshirt_name" => ["required", "string", "max:50", Rule::unique(table: "tshirts", column: "tshirt_name")->ignore(id: request("tshirt"), idColumn: "id")],
-                "tshirt_composition" => ["required", "string", "max:50", Rule::in("Cotton", "Polyester", "Rayon", "Linen")],
-                "tshirt_fit" => ["required", "string", "max:50", Rule::in("Oversize", "Regular", "Slim", "Superslim", "Boxy")],
-                "tshirt_price" => ["required", "numeric", "min:0"],
-                // "tshirt_img1" => ["required", "file", "mimes:jpg,jpeg,png,gif"],
-                // "tshirt_img2" => ["required", "file", "mimes:jpg,jpeg,png,gif"]
-            ]);
-
-            // if ($img)
-            //     @unlink(public_path("img") . "/" . $img);
-
-            // if ($img2)
-            //     @unlink(public_path("img") . "/" . $img2);
-
-            // $f = $request->file("tshirt_img1");
-            // $f2 = $request->file("tshirt_img2");
-
-            // $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
-            // $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
-
-            // $f->move(public_path("img"), $img);
-            // $f2->move(public_path("img"), $img2);
-
-            $tshirt->tshirt_name = $request->tshirt_name;
-            $tshirt->tshirt_composition = $request->tshirt_composition;
-            $tshirt->tshirt_fit = $request->tshirt_fit;
-            $tshirt->tshirt_price = $request->tshirt_price;
-            // $tshirt->tshirt_img1 = $img;
-            // $tshirt->tshirt_img2 = $img2;
-            $tshirt->update();
-
-            return ApiResponse::success("T-shirt update succesfully", 202);
-        } catch (EloquentModelNotFoundException $e) {
-            return ApiResponse::error("T-shirt not found", 404);
-        } catch (ValidationException $e) {
-            $errors = $e->validator->errors()->toArray();
-            return ApiResponse::error("Validation error", 422, $errors);
-        } catch (Exception $e) {
-            return ApiResponse::error("Error in database", 500);
-        }
+        $tshirt->update($request->validated());
+        return redirect()->route('tshirts.index');
     }
 
     /**
      * Delete a T-shirt.
      */
-    public function destroy($id)
+    public function destroy(Tshirt $tshirt)
     {
-        try {
-            $tshirt = Tshirt::where(["id" => $id])->firstOrFail();
-            $tshirt->delete();
-
-            return ApiResponse::success("Tshirt eliminated", 200);
-        } catch (EloquentModelNotFoundException $e) {
-            return ApiResponse::error("T-shirt not found", 404);
-        } catch (Exception $e) {
-            return ApiResponse::error("Error in database", 500);
-        }
+        $tshirt->delete();
+        return redirect()->route('tshirts.index');
     }
 }

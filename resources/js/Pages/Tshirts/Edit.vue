@@ -2,7 +2,7 @@
 
 <script>
 export default {
-	name: "TshirtsCreate",
+	name: "TshirtsEdit",
 };
 </script>
 
@@ -11,20 +11,25 @@ import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import TshirtsForm from "@/Components/Tshirts/Form.vue";
 
+const props = defineProps({
+	tshirt: {
+		type: Object,
+		required: true,
+	},
+});
+
 const form = useForm({
-	tshirt_name: "",
-	tshirt_composition: "",
-	tshirt_fit: "",
-	tshirt_price: "",
-	// tshirt_img1: null,
-	// tshirt_img2: null,
+	tshirt_name: props.tshirt.tshirt_name,
+	tshirt_composition: props.tshirt.tshirt_composition,
+	tshirt_fit: props.tshirt.tshirt_fit,
+	tshirt_price: props.tshirt.tshirt_price,
 });
 </script>
 
 <template>
-	<AppLayout title="Create Tshirt">
+	<AppLayout title="Edit Tshirt">
 		<template #header>
-			<h1>Create Tshirt</h1>
+			<h1>Edit Tshirt</h1>
 		</template>
 
 		<div>
@@ -33,8 +38,9 @@ const form = useForm({
 					<div>
 						<div>
 							<TshirtsForm
+								:updating="true"
 								:form="form"
-								@submit="form.post(route('tshirts.store'))"
+								@submit="form.put(route('tshirts.update', tshirt.id))"
 							/>
 						</div>
 					</div>
