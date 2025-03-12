@@ -14,14 +14,14 @@ use Illuminate\Http\Request;
 
 class TshirtController extends Controller
 {
+    public const items_per_page = 20;
     /**
      * List of T-shirts.
      */
     public function index()
     {
         try {
-            define("items_per_page", 20);
-            $tshirts = Tshirt::paginate(items_per_page);
+            $tshirts = Tshirt::paginate(self::items_per_page);
             return inertia("Tshirts/Index", ["tshirts" => $tshirts]);
         } catch (Exception $e) {
             return ApiResponse::error("Error in database", 500);
