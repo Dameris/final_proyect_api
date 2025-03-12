@@ -34,7 +34,7 @@ const deleteTshirt = (id) => {
 		<div>
 			<div>
 				<div>
-					<div v-if="$page.props.user.permissions.includes('readtshirts')">
+					<div v-if="$page.props.user.permissions.includes('createtshirts')">
 						<Link :href="route('tshirts.create')"> CREATE TSHIRT </Link>
 					</div>
 				</div>
@@ -59,6 +59,20 @@ const deleteTshirt = (id) => {
 						</p>
 					</li>
 				</ul>
+			</div>
+			<div>
+				<Link
+					v-if="tshirts.current_page > 1"
+					:href="tshirts.prev_page_url"
+				>
+					PREV
+				</Link>
+				<Link
+					v-if="tshirts.current_page < tshirts.last_page"
+					:href="tshirts.next_page_url"
+				>
+					NEXT
+				</Link>
 			</div>
 		</div>
 	</AppLayout>

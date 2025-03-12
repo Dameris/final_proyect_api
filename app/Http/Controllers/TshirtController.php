@@ -20,7 +20,8 @@ class TshirtController extends Controller
     public function index()
     {
         try {
-            $tshirts = Tshirt::paginate(20);
+            define("items_per_page", 20);
+            $tshirts = Tshirt::paginate(items_per_page);
             return inertia("Tshirts/Index", ["tshirts" => $tshirts]);
         } catch (Exception $e) {
             return ApiResponse::error("Error in database", 500);
