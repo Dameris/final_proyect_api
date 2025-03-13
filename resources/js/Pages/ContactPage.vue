@@ -5,16 +5,23 @@ export default {
 	data() {
 		return {
 			pageTitle: "Contact SkyUrban",
+
 			formData: {
 				email: "",
 				first_name: "",
 				last_name: "",
 				message: "",
 			},
+
 			emailError: false,
 			first_nameError: false,
 			last_nameError: false,
 			messageError: false,
+
+			showSuccessAlert: false,
+			showErrorAlert: false,
+			successMessage: "",
+			errorMessage: "",
 		};
 	},
 
@@ -22,7 +29,14 @@ export default {
 		// Método para validar el formulario antes de enviarlo
 		checkForm() {
 			if (this.emailError || this.first_nameError || this.last_nameError || this.messageError) {
-				alert("All input fields must contain valid information.");
+				this.showErrorAlert = true;
+				this.errorMessage = "All input fields must contain valid information.";
+
+				// Limpiar el mensaje de error después de 1 segundo
+				setTimeout(() => {
+					this.showErrorAlert = false;
+					this.errorMessage = "";
+				}, 2000);
 			} else {
 				this.sendData();
 			}
@@ -32,7 +46,14 @@ export default {
 		sendData() {
 			this.$inertia.post(route("contact"), this.formData, {
 				onSuccess: () => {
-					alert("Form has been sent successfully.");
+					this.showSuccessAlert = true;
+					this.successMessage = "FORM SENT SUCCESSFULLY!";
+
+					setTimeout(() => {
+						this.showSuccessAlert = false;
+						this.successMessage = "";
+					}, 2000);
+
 					this.formData.email = "";
 					this.formData.first_name = "";
 					this.formData.last_name = "";
@@ -70,6 +91,8 @@ export default {
 
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
+import SuccessAlert from "@/Components/Shared/SuccessAlert.vue";
+import ErrorAlert from "@/Components/Shared/ErrorAlert.vue";
 </script>
 
 <template>
@@ -161,6 +184,15 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 					SEND
 				</button>
 			</form>
+
+			<SuccessAlert
+				v-if="showSuccessAlert"
+				:message="successMessage"
+			/>
+			<ErrorAlert
+				v-if="showErrorAlert"
+				:message="errorMessage"
+			/>
 		</div>
 	</AppLayout>
 </template>
