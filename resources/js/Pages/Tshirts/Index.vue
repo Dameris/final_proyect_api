@@ -1,5 +1,3 @@
-<!-- @format -->
-
 <script>
 export default {
 	name: "TshirtIndex",
