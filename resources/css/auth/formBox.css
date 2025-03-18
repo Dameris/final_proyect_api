@@ -1,0 +1,92 @@
+/*& Form style */
+.formBox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	/* margin-top: 5vh; */
+	min-height: 100%;
+}
+
+.formBox__title {
+	color: #8aceef;
+	font-size: x-large;
+	font-weight: bolder;
+}
+
+.formBox__label {
+	padding-top: 1vh;
+	padding-bottom: 1vh;
+	text-align: center;
+	color: #8aceef;
+}
+
+.formBox-form {
+	display: flex;
+	flex-direction: column;
+}
+
+.formBox-form__input,
+.form__textarea {
+	margin-bottom: 1vh;
+	width: 50em;
+	padding: 0.8rem;
+	color: rgba(0, 0, 0, 0.4);
+	font-family:
+		Inter,
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Roboto,
+		Oxygen,
+		Ubuntu,
+		Cantarell,
+		"Fira Sans",
+		"Droid Sans",
+		"Helvetica Neue",
+		sans-serif;
+	border: 0.1rem solid #8aceef;
+	border-radius: 0.2rem;
+}
+
+.formBox-form__input:focus,
+.form__textarea:focus {
+	border: 0.2rem solid #8aceef;
+	outline: none;
+}
+
+.form__textarea {
+	min-height: 20vh;
+	resize: none;
+}
+
+.formBox-form__btn {
+	padding: 0.8rem;
+	color: #fff;
+	background-color: #8aceef;
+	border: 0.1rem solid #8aceef;
+	border-radius: 0.2rem;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.formBox-form__btn:hover {
+	background-color: #56b5e4;
+}
+
+.formBox-form__btn:focus {
+	outline: none;
+}
+
+.formBox-form__btn:active {
+	transform: translateY(1px);
+}
+
+.formBox-form--errorMessage {
+	padding-top: 0;
+	color: red;
+	font-size: 0.8rem;
+	padding-bottom: 1vh;
+}
+
+/*& Form style */

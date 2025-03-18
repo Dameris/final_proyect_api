@@ -1,0 +1,107 @@
+@import url("../auth/formBox.css");
+
+.signUp__genderSelection {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	width: 100%;
+}
+
+.signUp__genderSelection-btn {
+	margin-bottom: 1vh;
+	width: 24.8em;
+	padding: 0.8rem;
+	color: rgba(0, 0, 0, 0.4);
+	font-family:
+		Inter,
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Roboto,
+		Oxygen,
+		Ubuntu,
+		Cantarell,
+		"Fira Sans",
+		"Droid Sans",
+		"Helvetica Neue",
+		sans-serif;
+	border: 0.1rem solid #8aceef;
+	border-radius: 0.2rem;
+}
+
+#male {
+	margin-left: 0;
+}
+
+.signUp__genderSelection-btn:hover {
+	background-color: #56b5e4;
+}
+
+.signUp__genderSelection_selected {
+	background-color: #8aceef;
+	color: #fff;
+}
+
+.signUp__privacy-terms {
+	display: flex;
+	justify-content: center;
+	font-size: x-small;
+	padding-bottom: 0.7em;
+	color: rgb(0, 0, 0, 0.7);
+}
+
+.signUp__privacy-terms label {
+	margin-left: 0.5em;
+	cursor: pointer;
+}
+
+.signUp__link-logIn {
+	margin-top: 1em;
+	font-size: small;
+	color: rgb(0, 0, 0, 0.7);
+}
+
+.signUp__link-logIn #link {
+	color: #8aceef;
+}
+
+/** Media query */
+@media (max-width: 500px) {
+	.formBox {
+		padding: 0 2em;
+	}
+
+	.formBox__title {
+		font-size: 1.5em;
+	}
+
+	.formBox-form__input,
+	.form__textarea,
+	.formBox-form__btn,
+	.signUp__genderSelection {
+		width: 100%;
+		margin-bottom: 1em;
+	}
+}
+
+@media (max-width: 700px) {
+	.formBox {
+		padding: 0 2em;
+	}
+
+	.formBox__title {
+		font-size: 1.5em;
+	}
+
+	.formBox-form__input,
+	.form__textarea,
+	.formBox-form__btn {
+		width: 30em;
+		margin-bottom: 1em;
+	}
+
+	.signUp__genderSelection {
+		width: 25em;
+	}
+}
+/** Media query */
