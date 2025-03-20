@@ -1,0 +1,72 @@
+.home__carousel {
+	text-align: center;
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
+	color: #fff;
+	background-color: #8aceef;
+	transition: color 0.3s ease-in-out;
+}
+
+.home__featured {
+	margin: 1em;
+	text-align: center;
+	color: #8aceef;
+}
+
+.home__featuredImages {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+	transition: transform 0.3s ease;
+}
+
+.home__featuredImages:hover {
+	transform: scale(1.05);
+}
+
+.home__featured--img {
+	width: 40vw;
+	transition: transform 0.3s ease;
+}
+
+.home__featured--more {
+	padding: 0.5em 1em;
+	color: #fff;
+	text-decoration: none;
+	border-radius: 0.5em;
+	cursor: pointer;
+	font-weight: bold;
+	background-color: #8aceef;
+	transition: background-color 0.3s ease;
+}
+
+.home__featured--more:hover {
+	background-color: #56b5e4;
+	color: #fff;
+}
+
+.home__promoBanner {
+	margin-top: 3em;
+	padding: 2em;
+	text-align: center;
+	background-color: #8aceef;
+	color: white;
+}
+
+.home__testimonials {
+	margin-top: 3em;
+	padding: 20px;
+	border-radius: 8px;
+	color: #fff;
+	background-color: #8aceef;
+}
+
+.home__testimonials--list {
+	display: flex;
+	justify-content: space-around;
+	margin-top: 1em;
+}
+
+.home__testimonials--opinion {
+	max-width: 15vw;
+}
