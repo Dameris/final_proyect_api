@@ -1,0 +1,33 @@
+.aboutContainer {
+	max-width: 120vh;
+	margin: 0 auto;
+	padding: 20px;
+	text-align: center;
+}
+
+.aboutContainer__title {
+	padding: 3em 1em;
+	color: #8aceef;
+	border-radius: 1em;
+}
+
+h2 {
+	margin-bottom: 0.5em;
+	color: #19a6ec;
+}
+
+.aboutContainer__history,
+.aboutContainer__mission,
+.aboutContainer__engagement {
+	margin: 2em 0;
+	padding: 2em;
+	border-radius: 1em;
+	background: #f9f9f9;
+}
+
+.aboutContainer__inspiration {
+	margin-top: 2em;
+	font-style: italic;
+	font-size: 1.2rem;
+	color: #19a6ec;
+}
