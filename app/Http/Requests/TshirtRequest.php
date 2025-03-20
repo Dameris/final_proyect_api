@@ -27,8 +27,8 @@ class TshirtRequest extends FormRequest
             "tshirt_composition" => ["required", "string", "max:50", Rule::in("Cotton", "Polyester", "Rayon", "Linen")],
             "tshirt_fit" => ["required", "string", "max:50", Rule::in("Oversize", "Regular", "Slim", "Superslim", "Boxy")],
             "tshirt_price" => ["required", "numeric", "min:0"],
-            // "tshirt_img1" => ["required", "file", "mimes:jpg, jpeg, png, gif"],
-            // "tshirt_img2" => ["required", "file", "mimes:jpg, jpeg, png, gif"]
+            "tshirt_img1" => ["nullable", "image", "mimes:jpg,jpeg,png,gif", "max:2048"],
+            "tshirt_img2" => ["nullable", "image", "mimes:jpg,jpeg,png,gif", "max:2048"]
         ];
     }
 
@@ -36,8 +36,8 @@ class TshirtRequest extends FormRequest
     {
         return [
             "tshirt_name.unique" => "The tshirt already exists.",
-            // "tshirt_img1.mimes",
-            // "tshirt_img2.mimes" => "The image/s must be a JPG, JPEG, PNG, or GIF."
+            "tshirt_img1.mimes",
+            "tshirt_img2.mimes" => "The image/s must be a JPG, JPEG, PNG, or GIF."
         ];
     }
 }

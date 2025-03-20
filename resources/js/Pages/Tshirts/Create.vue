@@ -15,31 +15,18 @@ const form = useForm({
 	tshirt_name: "",
 	tshirt_composition: "",
 	tshirt_fit: "",
-	tshirt_price: "",
-	// tshirt_img1: null,
-	// tshirt_img2: null,
+	tshirt_price: 0,
+	tshirt_img1: null,
+	tshirt_img2: null,
 });
 </script>
 
 <template>
 	<AppLayout title="Create Tshirt">
-		<template #header>
-			<h1>Create Tshirt</h1>
-		</template>
-
 		<div>
-			<div>
-				<div>
-					<div>
-						<div>
-							<TshirtsForm
-								:form="form"
-								@submit="form.post(route('tshirts.store'))"
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
+			<h1>Create Tshirt</h1>
+
+			<TshirtsForm :form="form" />
 		</div>
 	</AppLayout>
 </template>

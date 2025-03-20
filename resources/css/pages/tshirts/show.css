@@ -1,0 +1,85 @@
+.tshirtShow {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 5em;
+	padding-top: 8em;
+}
+
+.tshirtShow__imagesBox {
+	display: flex;
+	gap: 2em;
+}
+
+.tshirtShow__imagesBox img {
+	width: 40em;
+	height: auto;
+}
+
+.tshirtShow__info {
+	display: flex;
+	flex-direction: column;
+	gap: 5em;
+	width: 15vw;
+	color: #8aceef;
+}
+
+/* .tshirt__title {} */
+
+.tshirt__price {
+	font-size: 1.5em;
+}
+
+.tshirtShow__details h3 {
+	text-decoration: underline;
+}
+
+.tshirtShow__details #fit {
+	margin-top: 0.5em;
+}
+
+.tshirt__sizes {
+	display: flex;
+	gap: 2em;
+}
+
+.tshirt__sizes span {
+	cursor: pointer;
+	font-size: larger;
+}
+
+.tshirtShow_addToCart {
+	width: 100%;
+	padding: 1em 1em;
+	margin-top: 0.5em;
+	color: #fff;
+	border: none;
+	border-radius: 0.5em;
+	cursor: pointer;
+	font-weight: bold;
+	background-color: #8aceef;
+	transition: background-color 0.3s ease;
+}
+
+.tshirtShow_addToCart:hover,
+.tshirtShow__backToList--link:hover {
+	background-color: #56b5e4;
+	color: #fff;
+}
+
+.tshirtShow__backToList {
+	display: flex;
+	justify-content: center;
+	margin-top: 3em;
+}
+
+.tshirtShow__backToList--link {
+	padding: 0.5em 1em;
+	color: #fff;
+	border: none;
+	border-radius: 0.5em;
+	cursor: pointer;
+	text-decoration: none;
+	background-color: #8aceef;
+	transition: background-color 0.3s ease;
+}

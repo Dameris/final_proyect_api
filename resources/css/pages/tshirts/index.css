@@ -1,0 +1,47 @@
+.tshirtIndex {
+	margin: 0 auto;
+	min-height: 100%;
+}
+
+.tshirtIndex__title {
+	margin: 1em;
+	color: #8aceef;
+}
+
+.tshirtIndex__list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(25em, 1fr));
+	gap: 1vw;
+	padding: 0;
+	margin: 2em;
+	list-style: none;
+}
+
+.tshirtIndex__list--element {
+	padding: 1em;
+	text-align: center;
+	border-radius: 1em;
+	overflow: hidden;
+	background-color: #f9f9f9;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	transition: transform 0.3s ease-in-out;
+}
+
+.tshirtIndex__list--element:hover {
+	transform: scale(1.03);
+}
+
+.tshirtIndex__list--element img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 1em;
+}
+
+.tshirtIndex__list--element p {
+	color: #8aceef;
+	font-weight: bold;
+}
+
+.tshirtIndex__list--elementLink {
+	text-decoration: none;
+}
