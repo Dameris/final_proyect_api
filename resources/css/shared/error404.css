@@ -1,0 +1,141 @@
+.error404 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	min-height: 100%;
+	text-align: center;
+	color: #8aceef;
+}
+
+.error404__btn {
+	align-items: center;
+	min-width: 10vw;
+	padding: 0.6em 1em;
+    margin-top: 6em;
+    margin-bottom: 2em;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bolder;
+	color: #fff;
+	border: none;
+	border-radius: 0.3em;
+	background-color: #6cc2eebb;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.error404__btn:hover {
+	background-color: #56b5e4;
+	color: #fff;
+}
+
+.error404__btn:focus {
+	outline: none;
+}
+
+/** Animation Error 404 */
+.rollLeftError {
+	-webkit-animation: rollLeftError 0.6s ease-out both;
+	animation: rollLeftError 0.6s ease-out both;
+}
+
+@-webkit-keyframes rollLeftError {
+	0% {
+		-webkit-transform: translateX(-800px) rotate(-540deg);
+		transform: translateX(-800px) rotate(-540deg);
+		opacity: 0;
+	}
+	100% {
+		-webkit-transform: translateX(0) rotate(0deg);
+		transform: translateX(0) rotate(0deg);
+		opacity: 1;
+	}
+}
+@keyframes rollLeftError {
+	0% {
+		-webkit-transform: translateX(-800px) rotate(-540deg);
+		transform: translateX(-800px) rotate(-540deg);
+		opacity: 0;
+	}
+	100% {
+		-webkit-transform: translateX(0) rotate(0deg);
+		transform: translateX(0) rotate(0deg);
+		opacity: 1;
+	}
+}
+
+.heartbeat {
+	-webkit-animation: heartbeat 1.5s ease-in-out infinite both;
+	animation: heartbeat 1.5s ease-in-out infinite both;
+}
+
+@-webkit-keyframes heartbeat {
+	from {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+		-webkit-transform-origin: center center;
+		transform-origin: center center;
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	10% {
+		-webkit-transform: scale(0.91);
+		transform: scale(0.91);
+		-webkit-animation-timing-function: ease-in;
+		animation-timing-function: ease-in;
+	}
+	17% {
+		-webkit-transform: scale(0.98);
+		transform: scale(0.98);
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	33% {
+		-webkit-transform: scale(0.87);
+		transform: scale(0.87);
+		-webkit-animation-timing-function: ease-in;
+		animation-timing-function: ease-in;
+	}
+	45% {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+}
+@keyframes heartbeat {
+	from {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+		-webkit-transform-origin: center center;
+		transform-origin: center center;
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	10% {
+		-webkit-transform: scale(0.91);
+		transform: scale(0.91);
+		-webkit-animation-timing-function: ease-in;
+		animation-timing-function: ease-in;
+	}
+	17% {
+		-webkit-transform: scale(0.98);
+		transform: scale(0.98);
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+	33% {
+		-webkit-transform: scale(0.87);
+		transform: scale(0.87);
+		-webkit-animation-timing-function: ease-in;
+		animation-timing-function: ease-in;
+	}
+	45% {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+	}
+}
+/** Animation Error 404 */

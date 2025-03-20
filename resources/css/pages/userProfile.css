@@ -1,0 +1,57 @@
+.userProfile {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	margin-top: 10vh;
+	min-height: 100%;
+}
+
+.userProfile__p {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.userProfile__changePhoto {
+	color: #8aceef;
+	cursor: pointer;
+	font-size: x-small;
+	text-decoration: underline;
+}
+
+.userProfile__strong {
+	align-items: center;
+	min-width: 40vw;
+	padding: 0.5em 2em;
+	margin-bottom: 1em;
+	text-align: center;
+	font-size: large;
+	background-color: #8aceef;
+	color: #fff;
+	border-radius: 0.5em;
+}
+
+.userProfile__btn {
+	align-items: center;
+	min-width: 10vw;
+	padding: 0.6em 1em;
+	text-align: center;
+	text-decoration: none;
+	font-weight: bolder;
+	color: #fff;
+	border: none;
+	border-radius: 0.3em;
+	background-color: #6cc2eebb;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.userProfile__btn:hover {
+	background-color: #56b5e4;
+	color: #fff;
+}
+
+.userProfile__btn:focus {
+	outline: none;
+}

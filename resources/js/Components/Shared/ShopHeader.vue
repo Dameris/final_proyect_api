@@ -1,59 +1,57 @@
-<script>
-export default {
-	components: { Link },
-
-	setup() {
-		const page = usePage();
-		const isAuthenticated = computed(() => !!page.props.auth);
-
-		const isSearchOpen = ref(false);
-		const isShopOpen = ref(false);
-		const searchQuery = ref("");
-		const searchResults = ref([]);
-		const cartItems = ref([]);
-
-		const toggleSearch = () => {
-			isSearchOpen.value = !isSearchOpen.value;
-		};
-
-		const toggleShopSlide = () => {
-			isShopOpen.value = !isShopOpen.value;
-		};
-
-		const search = () => {
-			if (searchQuery.value.trim() === "") {
-				searchResults.value = [];
-				return;
-			}
-			searchResults.value = searchData.filter((item) =>
-				item.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
-			);
-		};
-
-		const logout = () => {
-			Inertia.post(route("logout"));
-		};
-
-		return {
-			isAuthenticated,
-			isSearchOpen,
-			isShopOpen,
-			searchQuery,
-			searchResults,
-			cartItems,
-			toggleSearch,
-			toggleShopSlide,
-			search,
-			logout,
-		};
-	},
-};
-</script>
-
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Link, usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
+
+// Obtener la página y las propiedades
+const page = usePage();
+const isAuthenticated = computed(() => !!page.props.isAuthenticated);
+const user = computed(() => page.props.isAuthenticated || null);
+
+console.log(isAuthenticated.value);
+
+// Estado reactivo
+const isSearchOpen = ref(false);
+const isShopOpen = ref(false);
+const searchQuery = ref("");
+const searchResults = ref([]);
+
+// Métodos
+const toggleSearch = () => {
+	isSearchOpen.value = !isSearchOpen.value;
+};
+
+const toggleShopSlide = () => {
+	isShopOpen.value = !isShopOpen.value;
+};
+
+const search = () => {
+	if (searchQuery.value.trim() === "") {
+		searchResults.value = [];
+		return;
+	}
+	searchResults.value = searchData.filter((item) => item.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
+};
+
+const logout = () => {
+	Inertia.post(
+		route("logout"),
+		{},
+		{
+			onSuccess: () => {
+				Inertia.reload({ only: ["auth"] });
+			},
+		},
+	);
+};
+
+// Observador para verificar cambios en la autenticación
+watch(
+	() => page.props.isAuthenticated,
+	(newUser) => {
+		console.log("Auth changed:", newUser ? "Logged In" : "Logged Out");
+	},
+);
 </script>
 
 <template>
@@ -61,12 +59,30 @@ import { Inertia } from "@inertiajs/inertia";
 		<!-- Sección superior del encabezado -->
 		<div class="headerTop">
 			<!-- Botón (foto perfil) que lleva al perfil o al login -->
-			<li v-if="!isAuthenticated">
-				<p class="header__btn--logIn">PROFILE</p>
-			</li>
-			<li v-if="isAuthenticated">
-				<p class="header__btn--logIn">O</p>
-			</li>
+			<ul class="header__list">
+				<li v-if="!isAuthenticated">
+					<Link
+						class="header__btn--logIn"
+						href="user-profile"
+					>
+						PROFILE
+					</Link>
+				</li>
+				<li v-if="isAuthenticated">
+					<Link
+						class="header__btn--logIn"
+						href="user-profile"
+						id="user-profile_link"
+					>
+						<img
+							:src="user?.profile_photo_path || '/img/pfp_image.png'"
+							alt="Profile Picture"
+							class="header__profile--img"
+						/>
+						{{ user?.first_name }} {{ user?.last_name }}
+					</Link>
+				</li>
+			</ul>
 
 			<!-- Menú dependiendo del estado de autenticación -->
 			<ul class="header__list">
@@ -90,7 +106,7 @@ import { Inertia } from "@inertiajs/inertia";
 					<Link
 						class="header__btn--signUp"
 						href="/"
-						@click="logout"
+						@click.prevent="logout"
 					>
 						LOG OUT
 					</Link>
@@ -138,13 +154,18 @@ import { Inertia } from "@inertiajs/inertia";
 							</Link>
 						</li>
 						<li v-if="isAuthenticated">
-							<Link class="header__btn--logIn">PROFILE</Link>
+							<Link
+								class="header__btn--logIn"
+								href="user-profile"
+							>
+								PROFILE
+							</Link>
 						</li>
 						<li v-if="isAuthenticated">
 							<Link
 								class="header__btn--signUp"
 								href="/"
-								@click="logout"
+								@click.prevent="logout"
 							>
 								LOG OUT
 							</Link>
@@ -190,7 +211,7 @@ import { Inertia } from "@inertiajs/inertia";
 				</ul>
 
 				<!-- Logo y enlace al inicio -->
-				<Link :href="route('home')">
+				<Link href="/">
 					<img
 						src="../../../../resources/img/logo/SkyUrban-logo-blueS.png"
 						alt="SKYURBAN"

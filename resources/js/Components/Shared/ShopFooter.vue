@@ -86,7 +86,13 @@ import { Link } from "@inertiajs/inertia-vue3";
 						CONTACT
 					</Link>
 					<br />
-					SHIPPING AND DELIVERY <br />
+					<Link
+						class="footer__link"
+						:href="route('shipping')"
+					>
+						SHIPPING AND DELIVERY
+					</Link>
+					<br />
 					<Link
 						class="footer__link"
 						:href="route('faqs')"
@@ -105,9 +111,10 @@ import { Link } from "@inertiajs/inertia-vue3";
 				</p>
 				<div class="footer__emailBox">
 					<input
+						id="emailSub"
+						class="footer__emailInput"
 						type="email"
 						placeholder="EMAIL"
-						class="footer__emailInput"
 					/>
 					<button class="footer__joinBtn"><strong>JOIN</strong></button>
 				</div>

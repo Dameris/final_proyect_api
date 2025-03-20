@@ -1,5 +1,3 @@
-/** @format */
-
 import "./bootstrap";
 import "../css/main.css";
 

@@ -34,13 +34,38 @@
 	outline: none;
 }
 
-.header__btn--logIn:active,
-.header__btn--signUp:active,
-.header__link:active {
-	transform: translateY(1em);
+/*^ Botones LogIn y SignUp */
+
+/*^ Link perfil */
+#user-profile_link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	text-decoration: none;
+	color: #fff;
+	font-weight: bold;
+	padding: 5px 10px;
+	border-radius: 8px;
+	transition: background 0.3s ease-in-out;
 }
 
-/*^ Botones LogIn y SignUp */
+#user-profile_link:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.header__profile--img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid #fff;
+	transition: transform 0.3s ease-in-out;
+}
+
+#user-profile_link:hover .header__profile--img {
+	transform: scale(1.1);
+}
+/*^ Imagen perfil */
 
 /** Sección superior encabezado */
 

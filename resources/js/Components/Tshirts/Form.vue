@@ -1,5 +1,3 @@
-<!-- @format -->
-
 <script>
 export default {
 	name: "TshirtsForm",
@@ -7,13 +5,14 @@ export default {
 </script>
 
 <script setup>
+import { router } from "@inertiajs/vue3";
 import FormSection from "../FormSection.vue";
 import InputError from "../InputError.vue";
 import InputLabel from "../InputLabel.vue";
 import PrimaryButton from "../PrimaryButton.vue";
 import TextInput from "../TextInput.vue";
 
-defineProps({
+const props = defineProps({
 	form: {
 		type: Object,
 		required: true,
@@ -25,22 +24,50 @@ defineProps({
 	},
 });
 
-defineEmits(["submit"]);
+const emit = defineEmits(["submit"]);
 
-// const handleFileChange = (field, event) => {
-// 	try {
-// 		const file = event.target.files[0];
-// 		if (file) {
-// 			form[field] = file;
-// 		}
-// 	} catch (error) {
-// 		console.error("Error while handling file change:", error);
-// 	}
-// };
+const handleFileChange = (field, event) => {
+	const file = event.target.files[0];
+	if (file) {
+		props.form[field] = file;
+	}
+};
+
+const handleSubmit = () => {
+	const formData = new FormData();
+	formData.append("tshirt_name", props.form.tshirt_name);
+	formData.append("tshirt_composition", props.form.tshirt_composition);
+	formData.append("tshirt_fit", props.form.tshirt_fit);
+	formData.append("tshirt_price", props.form.tshirt_price);
+
+	if (props.form.tshirt_img1 instanceof File) {
+		formData.append("tshirt_img1", props.form.tshirt_img1);
+	} else if (props.form.tshirt_img1) {
+		formData.append("tshirt_img1", props.form.tshirt_img1);
+	}
+
+	if (props.form.tshirt_img2 instanceof File) {
+		formData.append("tshirt_img2", props.form.tshirt_img2);
+	} else if (props.form.tshirt_img2) {
+		formData.append("tshirt_img2", props.form.tshirt_img2);
+	}
+
+	if (props.updating) {
+		router.put(route("tshirts.update", { tshirt: props.form.id }), formData, {
+			preserveScroll: true,
+			forceFormData: true,
+		});
+	} else {
+		router.post(route("tshirts.store"), formData, {
+			preserveScroll: true,
+			forceFormData: true,
+		});
+	}
+};
 </script>
 
 <template>
-	<FormSection @submitted="$emit('submit')">
+	<FormSection>
 		<template #title>
 			{{ updating ? "Update Tshirt" : "Create Tshirt" }}
 		</template>
@@ -94,15 +121,15 @@ defineEmits(["submit"]);
 					for="tshirt_price"
 					value="Tshirt price"
 				/>
-				<TextInput
+				<input
 					id="tshirt_price"
 					v-model="form.tshirt_price"
-					type="text"
+					type="number"
 					autocomplete="tshirt_price"
 				/>
 				<InputError :message="form.errors.tshirt_price" />
 			</div>
-			<!-- <div>
+			<div>
 				<InputLabel
 					for="tshirt_img1"
 					value="Tshirt img1"
@@ -110,7 +137,8 @@ defineEmits(["submit"]);
 				<input
 					id="tshirt_img1"
 					type="file"
-					@change="handleFileChange('tshirt_img1', $event)"
+					@input="form.tshirt_img1 = $event.target.files[0]"
+					accept="image/*"
 				/>
 				<InputError :message="form.errors.tshirt_img1" />
 			</div>
@@ -122,14 +150,15 @@ defineEmits(["submit"]);
 				<input
 					id="tshirt_img2"
 					type="file"
-					@change="handleFileChange('tshirt_img2', $event)"
+					@input="form.tshirt_img2 = $event.target.files[0]"
+					accept="image/*"
 				/>
 				<InputError :message="form.errors.tshirt_img2" />
-			</div> -->
+			</div>
 		</template>
 
 		<template #actions>
-			<PrimaryButton>
+			<PrimaryButton @click.prevent="handleSubmit">
 				{{ updating ? "Update" : "Create" }}
 			</PrimaryButton>
 		</template>
