@@ -15,10 +15,6 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderHistoryController;
 
 // NO AUTH ROUTES
-Route::get('/{any}', function () {
-    return view('app'); 
-})->where('any', '.*');
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/tshirts', [TshirtController::class, 'index'])->name('tshirts.index');
