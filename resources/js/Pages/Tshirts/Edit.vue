@@ -19,33 +19,31 @@ const props = defineProps({
 });
 
 const form = useForm({
+	id: props.tshirt.id,
 	tshirt_name: props.tshirt.tshirt_name,
 	tshirt_composition: props.tshirt.tshirt_composition,
 	tshirt_fit: props.tshirt.tshirt_fit,
 	tshirt_price: props.tshirt.tshirt_price,
 });
+
+const submit = () => {
+	form.put(route("tshirts.update", props.form.id), {
+		preserveScroll: true,
+		forceFormData: true,
+	});
+};
 </script>
 
 <template>
 	<AppLayout title="Edit Tshirt">
-		<template #header>
-			<h1>Edit Tshirt</h1>
-		</template>
-
 		<div>
-			<div>
-				<div>
-					<div>
-						<div>
-							<TshirtsForm
-								:updating="true"
-								:form="form"
-								@submit="form.put(route('tshirts.update', tshirt.id))"
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
+			<h1>Edit Tshirt</h1>
+
+			<TshirtsForm
+				:updating="true"
+				:form="form"
+				@submit="submit"
+			/>
 		</div>
 	</AppLayout>
 </template>
