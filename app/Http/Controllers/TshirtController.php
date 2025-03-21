@@ -71,7 +71,7 @@ class TshirtController extends Controller
 
             return Inertia::location(route('tshirts.index'));
         } catch (Exception $e) {
-            return back()->withErrors(['error' => 'Error in database: ' . $e->getMessage()]);
+            return back()->withErrors(["error" => "Error in database: " . $e->getMessage()]);
         }
     }
 
@@ -98,18 +98,18 @@ class TshirtController extends Controller
      */
     public function update(TshirtRequest $request, Tshirt $tshirt)
     {
-        if ($request->hasFile('tshirt_img1')) {
-            $f = $request->file('tshirt_img1');
+        if ($request->hasFile("tshirt_img1")) {
+            $f = $request->file("tshirt_img1");
             $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
             $f->storeAs("img/tshirts", $img, "public");
-            $data['tshirt_img1'] = $img;
+            $data["tshirt_img1"] = $img;
         }
 
-        if ($request->hasFile('tshirt_img2')) {
-            $f2 = $request->file('tshirt_img2');
+        if ($request->hasFile("tshirt_img2")) {
+            $f2 = $request->file("tshirt_img2");
             $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
             $f2->storeAs("img/tshirts", $img2, "public");
-            $data['tshirt_img2'] = $img2;
+            $data["tshirt_img2"] = $img2;
         }
 
         $tshirt->update([
@@ -131,5 +131,34 @@ class TshirtController extends Controller
     {
         $tshirt->delete();
         return redirect()->route('tshirts.index');
+    }
+
+    public function getTshirtDetails($id)
+    {
+        $tshirt = Tshirt::find($id);
+
+        if ($tshirt) {
+            return response()->json($tshirt);
+        }
+
+        return response()->json(["error" => "T-shirt not found"], 404);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        if (empty($query)) {
+            return response()->json(['error' => 'Query parameter is required'], 400);
+        }
+
+        try {
+            // Buscar camisetas que coincidan con la consulta
+            $results = Tshirt::where('tshirt_name', 'like', '%' . $query . '%')->get();
+            return response()->json($results);
+        } catch (Exception $e) {
+            // Capturar cualquier error y devolverlo en la respuesta
+            return response()->json(['error' => 'Error making the search', 'message' => $e->getMessage()], 500);
+        }
     }
 }

@@ -10,12 +10,16 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqsController;
 use App\Http\Controllers\ShippingController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderHistoryController;
 
 // NO AUTH ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/tshirts', [TshirtController::class, 'index'])->name('tshirts.index');
 Route::get('/tshirts/{tshirt}', [TshirtController::class, 'show'])->name('tshirts.show');
+Route::get('/search', [TshirtController::class, 'search']);
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -32,6 +36,11 @@ Route::get('/faqs', [FaqsController::class, 'show'])->name('faqs');
 
 Route::get("/shipping", [ShippingController::class, 'show'])->name('shipping');
 
+Route::get('/cart', [CartController::class, 'showShoppingCart'])->name('shoppingCart');
+Route::post('/cart/{id}', [CartController::class, 'addToCart']);
+Route::put('/cart/{id}', [CartController::class, 'updateCart']);
+Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
+
 Route::get('/auth/check', [AuthController::class, 'checkSession']);
 
 Route::middleware(['auth', 'verified',])->group(function () {
@@ -44,6 +53,14 @@ Route::middleware(['auth', 'verified',])->group(function () {
 
     Route::get('/user-profile', [UserProfileController::class, 'showUserProfile'])->name('profile');
     Route::post('/user-profile', [UserProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/api/cart', [CartController::class, 'getCartItems']);
+    Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
+    Route::put('/cart/{id}', [CartController::class, 'updateCart']);
+    Route::post('/checkout', [CheckoutController::class, 'processOrder']);
+    Route::get('/private/orders-history', [OrderHistoryController::class, 'index'])->name('orders.history');
+
+    Route::get('/api/tshirt/{id}', [TshirtController::class, 'getTshirtDetails']);
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

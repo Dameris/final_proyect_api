@@ -1,57 +1,63 @@
 <script setup>
-import { computed, ref, watch } from "vue";
-import { Link, usePage } from "@inertiajs/inertia-vue3";
+import { computed, ref } from "vue";
+import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 
-// Obtener la página y las propiedades
-const page = usePage();
-const isAuthenticated = computed(() => !!page.props.isAuthenticated);
-const user = computed(() => page.props.isAuthenticated || null);
+// Estado de autenticación y usuario
+// const auth = usePage().props;
+// const isAuthenticated = computed(() => auth && auth.user !== null);
+// const user = computed(() => auth && auth.user ? auth.user : null);
 
-console.log(isAuthenticated.value);
+// console.log(isAuthenticated.value)
 
-// Estado reactivo
-const isSearchOpen = ref(false);
+const canLogin = usePage().props.canLogin;
+const canSignup = usePage().props.canSignup;
+const auth = usePage().props.auth;
+
+const user = computed(() => auth && auth.user ? auth.user : null);
+
+// Estado para el menú de la tienda y la búsqueda
 const isShopOpen = ref(false);
+const isSearchOpen = ref(false);
 const searchQuery = ref("");
 const searchResults = ref([]);
 
-// Métodos
-const toggleSearch = () => {
-	isSearchOpen.value = !isSearchOpen.value;
-};
-
+// Función para toggle del menú de la tienda
 const toggleShopSlide = () => {
-	isShopOpen.value = !isShopOpen.value;
+  isShopOpen.value = !isShopOpen.value;
 };
 
-const search = () => {
-	if (searchQuery.value.trim() === "") {
-		searchResults.value = [];
-		return;
-	}
-	searchResults.value = searchData.filter((item) => item.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
+// Función para toggle de la búsqueda
+const toggleSearch = () => {
+  isSearchOpen.value = !isSearchOpen.value;
 };
 
+// Función para realizar búsqueda
+const search = async () => {
+  if (searchQuery.value.length >= 3) { 
+    try {
+      const response = await axios.get('/search', {
+        params: {
+          query: searchQuery.value,
+        }
+      });
+      searchResults.value = response.data;
+    } catch (error) {
+      console.error("Error making the search", error);
+    }
+  } else {
+    searchResults.value = [];
+  }
+};
+
+// Función para logout
 const logout = () => {
-	Inertia.post(
-		route("logout"),
-		{},
-		{
-			onSuccess: () => {
-				Inertia.reload({ only: ["auth"] });
-			},
-		},
-	);
+  Inertia.post(route('logout'), {}, {
+    onSuccess: () => {
+       Inertia.reload();
+    }
+  });
 };
-
-// Observador para verificar cambios en la autenticación
-watch(
-	() => page.props.isAuthenticated,
-	(newUser) => {
-		console.log("Auth changed:", newUser ? "Logged In" : "Logged Out");
-	},
-);
 </script>
 
 <template>
@@ -60,15 +66,16 @@ watch(
 		<div class="headerTop">
 			<!-- Botón (foto perfil) que lleva al perfil o al login -->
 			<ul class="header__list">
-				<li v-if="!isAuthenticated">
+				<li v-if="canLogin">
 					<Link
 						class="header__btn--logIn"
 						href="user-profile"
+						v-if="auth.user"
 					>
 						PROFILE
 					</Link>
 				</li>
-				<li v-if="isAuthenticated">
+				<li v-if="!canLogin">
 					<Link
 						class="header__btn--logIn"
 						href="user-profile"
@@ -86,7 +93,7 @@ watch(
 
 			<!-- Menú dependiendo del estado de autenticación -->
 			<ul class="header__list">
-				<li v-if="!isAuthenticated">
+				<li v-if="canLogin">
 					<Link
 						class="header__btn--logIn"
 						:href="route('login')"
@@ -94,7 +101,7 @@ watch(
 						LOG IN
 					</Link>
 				</li>
-				<li v-if="!isAuthenticated">
+				<li v-if="canLogin">
 					<Link
 						class="header__btn--signUp"
 						:href="route('signup')"
@@ -102,10 +109,10 @@ watch(
 						SIGN UP
 					</Link>
 				</li>
-				<li v-if="isAuthenticated">
+				<li v-if="!canLogin">
 					<Link
 						class="header__btn--signUp"
-						href="/"
+						href="/logout"
 						@click.prevent="logout"
 					>
 						LOG OUT
@@ -137,7 +144,7 @@ watch(
 						CLOSE
 					</button>
 					<ul class="header__list--slide">
-						<li v-if="!isAuthenticated">
+						<li v-if="canLogin">
 							<Link
 								class="header__btn--logIn"
 								:href="route('login')"
@@ -145,7 +152,7 @@ watch(
 								LOG IN
 							</Link>
 						</li>
-						<li v-if="!isAuthenticated">
+						<li v-if="canLogin">
 							<Link
 								class="header__btn--signUp"
 								:href="route('signup')"
@@ -153,7 +160,7 @@ watch(
 								SIGN UP
 							</Link>
 						</li>
-						<li v-if="isAuthenticated">
+						<li v-if="!canLogin">
 							<Link
 								class="header__btn--logIn"
 								href="user-profile"
@@ -161,7 +168,7 @@ watch(
 								PROFILE
 							</Link>
 						</li>
-						<li v-if="isAuthenticated">
+						<li v-if="!canLogin">
 							<Link
 								class="header__btn--signUp"
 								href="/"
@@ -171,7 +178,12 @@ watch(
 							</Link>
 						</li>
 						<li>
-							<button class="header__btn"><strong>SHOP</strong></button>
+							<Link 
+								class="header__btn"
+								href="tshirts"
+							>
+								<strong>SHOP</strong>
+							</Link>
 						</li>
 						<li>
 							<Link
@@ -190,7 +202,12 @@ watch(
 							</button>
 						</li>
 						<li>
-							<button class="header__btn">CART (0)</button>
+							<Link 
+								class="header__btn"
+								href="tshirts"
+							>
+								<strong>SHOP</strong>
+							</Link>
 						</li>
 					</ul>
 				</div>
@@ -198,7 +215,12 @@ watch(
 				<!-- Lista de elementos del menú principal -->
 				<ul class="header__list">
 					<li>
-						<button class="header__btn"><strong>SHOP</strong></button>
+						<Link 
+								class="header__btn"
+								href="tshirts"
+							>
+								<strong>SHOP</strong>
+							</Link>
 					</li>
 					<li>
 						<Link
@@ -255,14 +277,23 @@ watch(
 									v-for="result in searchResults"
 									:key="result.id"
 								>
-									{{ result.name }}
+									<Link 
+										:href="route('tshirts.show', { tshirt: result.id })"
+										class="header__link"
+									>
+        								<img 
+											:src="'/storage/img/tshirts/' + result.tshirt_img1" 
+											alt="Tshirt Image" />
+										<br /> 
+										{{ result.tshirt_name }} - {{ result.tshirt_price }}€
+									</Link>
 								</li>
 							</ul>
 						</div>
 					</div>
 
 					<!-- Carrito de compra -->
-					<button class="header__btn">CART (0)</button>
+					<Link class="header__btn" :href="route('shoppingCart')">CART</Link>
 				</div>
 			</nav>
 		</div>

@@ -46,6 +46,19 @@
 .tshirt__sizes span {
 	cursor: pointer;
 	font-size: larger;
+	transition: background-color 0.3s;
+}
+
+.tshirt__sizes span.active {
+	border-radius: 1em;
+	background-color: #8aceef;
+	color: #fff;
+}
+
+.tshirt__sizes span:hover {
+	border-radius: 1em;
+	background-color: #56b5e4;
+	color: #fff;
 }
 
 .tshirtShow_addToCart {

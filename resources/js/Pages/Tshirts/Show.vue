@@ -5,16 +5,36 @@ export default {
 </script>
 
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
-import { Link } from "@inertiajs/vue3";
-import { defineProps } from "vue";
+import { ref } from 'vue';
+import { Inertia } from "@inertiajs/inertia";
+import { Link } from '@inertiajs/inertia-vue3';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
+const selectedSize = ref('');
 const props = defineProps({
 	tshirt: {
 		type: Object,
 		required: true,
 	},
 });
+
+// Función para agregar al carrito
+const addToCart = () => {
+	if (!selectedSize.value) {
+		alert("Please select a size.");
+		return;
+	}
+
+	// Enviar el producto y la talla seleccionada al servidor
+	Inertia.post(`/cart/${props.tshirt.id}`, {
+		size: selectedSize.value
+	});
+};
+
+// Función para manejar el cambio de talla
+const selectSize = (size) => {
+	selectedSize.value = size;
+};
 </script>
 
 <template>
@@ -54,18 +74,20 @@ const props = defineProps({
 				</div>
 
 				<div>
-					<!-- Tallas -->
+					<!-- Tallas como botones -->
 					<div class="tshirt__sizes">
-						<span>XS</span>
-						<span>S</span>
-						<span>M</span>
-						<span>L</span>
-						<span>XL</span>
-						<span>XXL</span>
+						<span
+							v-for="size in ['XS', 'S', 'M', 'L', 'XL', 'XXL']"
+							:key="size"
+							:class="{'active': selectedSize === size}"
+							@click="selectSize(size)"
+						>
+							{{ size }}
+						</span>
 					</div>
 
 					<!-- Botón de compra -->
-					<button class="tshirtShow_addToCart">ADD TO CART</button>
+					<button class="tshirtShow_addToCart" @click="addToCart">ADD TO CART</button>
 				</div>
 			</div>
 		</div>
@@ -82,5 +104,4 @@ const props = defineProps({
 
 <style scoped>
 @import "../../../css/pages/tshirts/show.css";
-
 </style>

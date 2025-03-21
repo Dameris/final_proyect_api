@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string("tshirt_composition");
             $table->string("tshirt_fit");
             $table->integer("tshirt_price");
-            // $table->string("tshirt_img1");
-            // $table->string("tshirt_img2");
+            $table->string("tshirt_img1");
+            $table->string("tshirt_img2");
         });
     }
 

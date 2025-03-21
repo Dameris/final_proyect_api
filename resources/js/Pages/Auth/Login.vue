@@ -5,6 +5,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import SuccessAlert from "@/Components/Shared/SuccessAlert.vue";
 import ErrorAlert from "@/Components/Shared/ErrorAlert.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { onMounted } from "vue";
 
 // Variables reactivas
 const pageTitle = "Log In SkyUrban";
@@ -28,7 +29,6 @@ const successMessage = ref("");
 const errorMessage = ref("");
 
 // Mostrar contenido después de 2 segundos
-import { onMounted } from "vue";
 onMounted(() => {
 	setTimeout(() => {
 		showContent.value = true;
