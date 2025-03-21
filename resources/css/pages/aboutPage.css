@@ -31,3 +31,57 @@ h2 {
 	font-size: 1.2rem;
 	color: #19a6ec;
 }
+
+/** Media queries */
+@media (max-width: 800px) {
+	.aboutContainer {
+		padding: 0.5em;
+	}
+
+	.aboutContainer__title {
+		padding: 2em 0.5em;
+		font-size: 1.8em;
+	}
+
+	h2 {
+		font-size: 1.5em;
+	}
+
+	.aboutContainer__history,
+	.aboutContainer__mission,
+	.aboutContainer__engagement {
+		margin: 1.5em 0;
+		padding: 1.5em;
+	}
+
+	.aboutContainer__inspiration {
+		font-size: 1rem;
+	}
+}
+
+@media (max-width: 500px) {
+	.aboutContainer {
+		padding: 0.2em;
+	}
+
+	.aboutContainer__title {
+		padding: 1.5em 0.5em;
+		font-size: 1.5em;
+	}
+
+	h2 {
+		font-size: 1.2em;
+	}
+
+	.aboutContainer__history,
+	.aboutContainer__mission,
+	.aboutContainer__engagement {
+		margin: 1em 0;
+		padding: 1em;
+	}
+
+	.aboutContainer__inspiration {
+		font-size: 0.9rem;
+	}
+}
+/** Media queries */

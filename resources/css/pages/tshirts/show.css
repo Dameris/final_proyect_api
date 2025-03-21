@@ -96,3 +96,97 @@
 	background-color: #8aceef;
 	transition: background-color 0.3s ease;
 }
+
+/** Media queries */
+@media (max-width: 1800px) {
+	.tshirtShow__imagesBox img {
+		width: 30em;
+	}
+}
+
+@media (max-width: 1500px) {
+	.tshirtShow__info {
+		width: 20vw;
+	}
+}
+
+@media (max-width: 1200px) {
+	.tshirtShow__imagesBox img {
+		width: 20em;
+	}
+
+	.tshirtShow__info {
+		width: 25vw;
+	}
+}
+
+@media (max-width: 1000px) {
+	.tshirtShow__imagesBox img {
+		width: 15em;
+	}
+
+	.tshirtShow__info {
+		width: 20vw;
+	}
+
+	.tshirt__sizes span {
+		font-size: small;
+	}
+}
+
+@media (max-width: 800px) {
+	.tshirtShow {
+		flex-direction: column;
+		padding-top: 4em;
+		gap: 2em;
+	}
+
+	.tshirtShow__imagesBox {
+		justify-content: center;
+		width: 80%;
+	}
+
+	.tshirtShow__imagesBox img {
+		width: 60%;
+		max-width: none;
+	}
+
+	.tshirtShow__info {
+		width: 80%;
+		gap: 2em;
+	}
+
+	.tshirt__sizes {
+		justify-content: center;
+	}
+
+	.tshirtShow__backToList {
+		width: 100%;
+	}
+}
+
+@media (max-width: 500px) {
+	.tshirtShow {
+		padding-top: 2em;
+		gap: 1.5em;
+	}
+
+	.tshirtShow__imagesBox {
+		flex-direction: column;
+		width: 100%;
+	}
+
+	.tshirtShow__info {
+		width: 100%;
+		gap: 1.5em;
+	}
+
+	.tshirt__sizes {
+		justify-content: space-evenly;
+	}
+
+	.tshirtShow__backToList {
+		width: 100%;
+	}
+}
+/** Media queries */

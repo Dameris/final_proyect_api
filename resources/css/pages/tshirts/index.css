@@ -45,3 +45,21 @@
 .tshirtIndex__list--elementLink {
 	text-decoration: none;
 }
+
+/** Media queries */
+@media (max-width: 800px) {
+	.tshirtIndex__list {
+		grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+		gap: 2vw;
+		margin: 1em;
+	}
+}
+
+@media (max-width: 500px) {
+	.tshirtIndex__list {
+		grid-template-columns: 1fr;
+		gap: 2vw;
+		margin: 1em;
+	}
+}
+/** Media queries */

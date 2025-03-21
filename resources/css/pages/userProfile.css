@@ -55,3 +55,45 @@
 .userProfile__btn:focus {
 	outline: none;
 }
+
+/** Media queries */
+@media (max-width: 800px) {
+	.userProfile {
+		flex-direction: column;
+		align-items: center;
+		margin-top: 5vh;
+	}
+
+	.userProfile__strong {
+		min-width: 70vw;
+		padding: 1em 2em;
+		font-size: 1.2rem;
+	}
+
+	.userProfile__btn {
+		min-width: 60vw;
+		padding: 0.8em 1.5em;
+		font-size: 1.1rem;
+	}
+}
+
+@media (max-width: 500px) {
+	.userProfile {
+		flex-direction: column;
+		align-items: center;
+		margin-top: 3vh;
+	}
+
+	.userProfile__strong {
+		min-width: 80vw;
+		padding: 1em 2em;
+		font-size: 1rem;
+	}
+
+	.userProfile__btn {
+		min-width: 80vw;
+		padding: 1em 2em;
+		font-size: 1.2rem;
+	}
+}
+/** Media queries */

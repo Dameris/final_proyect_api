@@ -78,3 +78,53 @@ h2 {
 .updateForm__profileForm--submit:hover {
 	background-color: #56b5e4;
 }
+
+/** Media queries */
+@media (max-width: 800px) {
+	.updateForm__container {
+		width: 80vw;
+	}
+
+	.updateForm__profileForm {
+		width: 80vw;
+		padding: 1.5em;
+	}
+
+	h2 {
+		font-size: 1.8rem;
+	}
+
+	.updateForm__profileForm--input input,
+	.updateForm__profileForm--input select {
+		font-size: 0.9rem;
+	}
+
+	.updateForm__profileForm--submit {
+		font-size: 1rem;
+	}
+}
+
+@media (max-width: 500px) {
+	.updateForm__container {
+		width: 90vw;
+	}
+
+	.updateForm__profileForm {
+		width: 90vw;
+		padding: 1.2em;
+	}
+
+	h2 {
+		font-size: 1.5rem;
+	}
+
+	.updateForm__profileForm--input input,
+	.updateForm__profileForm--input select {
+		font-size: 0.8rem;
+	}
+
+	.updateForm__profileForm--submit {
+		font-size: 0.9rem;
+	}
+}
+/** Media queries */

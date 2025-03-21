@@ -59,3 +59,59 @@
 	color: #ffc107;
 	font-weight: bold;
 }
+
+/** Media queries */
+@media (max-width: 800px) {
+	.orderHistory__container {
+		padding: 1em;
+	}
+
+	.orderHistory__container h1 {
+		font-size: 2em;
+	}
+
+	.orderHistory__order--item {
+		margin: 0.5em 0;
+		padding: 0.8em;
+	}
+
+	.orderHistory__order--item p {
+		font-size: 0.9em;
+	}
+
+	.orderHistory__order--item li {
+		font-size: 0.9em;
+	}
+
+	.orderHistory__noOrders {
+		font-size: large;
+	}
+}
+
+@media (max-width: 500px) {
+	.orderHistory__container {
+		padding: 1em;
+	}
+
+	.orderHistory__container h1 {
+		font-size: 1.5em;
+	}
+
+	.orderHistory__order--item {
+		margin: 0.5em 0;
+		padding: 0.6em;
+	}
+
+	.orderHistory__order--item p {
+		font-size: 0.8em;
+	}
+
+	.orderHistory__order--item li {
+		font-size: 0.8em;
+	}
+
+	.orderHistory__noOrders {
+		font-size: medium;
+	}
+}
+/** Media queries */

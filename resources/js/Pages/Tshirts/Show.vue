@@ -20,6 +20,11 @@ const props = defineProps({
 
 // Función para agregar al carrito
 const addToCart = () => {
+	if (!props.user_id) {
+		alert("Please Log-In first")
+		return;
+	}
+
 	if (!selectedSize.value) {
 		alert("Please select a size.");
 		return;
