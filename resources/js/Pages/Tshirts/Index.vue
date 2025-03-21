@@ -47,7 +47,40 @@ const deleteTshirt = (id) => {
 				<li
 					class="tshirtIndex__list--element"
 					v-for="tshirt in tshirts.data"
-					:key="tshirt.id"
+					:key="`first-${tshirt.id}`"
+				>
+					<Link
+						class="tshirtIndex__list--elementLink"
+						:href="route('tshirts.show', tshirt.id)"
+					>
+						<img
+							:src="'storage/img/tshirts/' + (hoveredImages[tshirt.id] || tshirt.tshirt_img1)"
+							alt="Tshirt Image"
+							@mouseover="setHoverImage(tshirt.id, tshirt.tshirt_img2)"
+							@mouseleave="resetImage(tshirt.id, tshirt.tshirt_img1)"
+						/>
+						<p>
+							{{ tshirt.tshirt_name.toUpperCase() }} <br />
+							{{ tshirt.tshirt_price }}€
+						</p>
+
+						<p v-if="$page.props.user.permissions.includes('updatetshirts')">
+							<Link :href="route('tshirts.edit', tshirt.id)"> Edit </Link>
+							<Link
+								:href="route('tshirts.index')"
+								@click="deleteTshirt(tshirt.id)"
+							>
+								Delete
+							</Link>
+						</p>
+					</Link>
+				</li>
+
+				<!-- Segunda vez mostrando las camisetas -->
+				<li
+					class="tshirtIndex__list--element"
+					v-for="tshirt in tshirts.data"
+					:key="`second-${tshirt.id}`"
 				>
 					<Link
 						class="tshirtIndex__list--elementLink"
@@ -76,22 +109,6 @@ const deleteTshirt = (id) => {
 					</Link>
 				</li>
 			</ul>
-		</div>
-
-		<!-- PAGINACIÓN -->
-		<div>
-			<Link
-				v-if="tshirts.current_page > 1"
-				:href="tshirts.prev_page_url"
-			>
-				PREV
-			</Link>
-			<Link
-				v-if="tshirts.current_page < tshirts.last_page"
-				:href="tshirts.next_page_url"
-			>
-				NEXT
-			</Link>
 		</div>
 	</AppLayout>
 </template>
