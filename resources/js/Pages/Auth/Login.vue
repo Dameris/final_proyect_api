@@ -145,13 +145,7 @@ const submit = () => {
 				>
 					Please enter a valid password (8+ characters, 1+ uppercase, 1+ special character).
 				</span>
-				<label>
-					<input
-						type="checkbox"
-						v-model="form.remember"
-					/>
-					Remember me
-				</label>
+
 				<button
 					class="formBox-form__btn"
 					type="submit"
