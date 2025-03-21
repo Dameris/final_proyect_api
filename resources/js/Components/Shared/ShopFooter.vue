@@ -58,7 +58,13 @@ import { Link } from "@inertiajs/inertia-vue3";
 			<div class="footer__infoBox">
 				<h5>WEB SITE</h5>
 				<p class="footer__infoContent">
-					SHOP <br />
+					<Link 
+						class="footer__link" 
+						:href="route('tshirts.index')"
+					>
+						SHOP	
+					</Link> 
+					<br />
 					<Link
 						class="footer__link"
 						:href="route('about')"
