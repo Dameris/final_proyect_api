@@ -42,26 +42,18 @@ class UserProfileController extends Controller
     /**
      * Update a User.
      */
-    public function update(UpdateProfileRequest $request, User $user)
+    public function update(Request $request)
     {
-        // Primero, validamos los datos del formulario.
-        $validated = $request->validated();
+        $user = $request->user();
 
-        // Si se ha subido una nueva foto de perfil, la procesamos.
+        $user->update($request->only('first_name', 'last_name', 'email', 'gender'));
+
         if ($request->hasFile('profile_photo_path')) {
-            // Eliminamos la foto anterior si existe.
-            if ($user->profile_photo_path) {
-                Storage::disk('public/img')->delete($user->profile_photo_path);
-            }
-
-            // Almacenamos la nueva foto y guardamos su ruta.
-            $path = $request->file('profile_photo_path')->store('profile-photos', 'public/img');
-            $validated['profile_photo_path'] = $path;
+            $user->updateProfilePhoto($request->file('profile_photo_path'));
         }
 
-        // Actualizamos los datos del usuario con los datos validados, incluyendo la foto si fue cargada.
-        $user->update($validated);
-
-        return redirect()->back()->with('success', 'User data updated successfully');
+        return inertia('UserProfile', [
+            'user' => $user,
+        ]);
     }
 }

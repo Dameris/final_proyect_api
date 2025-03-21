@@ -1,0 +1,80 @@
+.updateForm__container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 80vh;
+	width: 60vw;
+	padding: 1em;
+	background-color: #f9f9f9;
+}
+
+.updateForm__profileForm {
+	width: 60vw;
+	padding: 2em;
+	border-radius: 1em;
+	background: #fff;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+	margin-bottom: 1em;
+	text-align: center;
+	color: #19a6ec;
+}
+
+.updateForm__profileForm--input {
+	margin-bottom: 1em;
+}
+
+.updateForm__profileForm--input label {
+	display: block;
+	margin-bottom: 0.5em;
+	font-size: small;
+	color: #19a6ec;
+}
+
+.updateForm__profileForm--input input,
+.updateForm__profileForm--input select {
+	width: 100%;
+	padding: 0.5em;
+	font-size: medium;
+	box-sizing: border-box;
+	border: 1px solid #ddd;
+	border-radius: 0.5em;
+}
+
+.updateForm__profileForm--input input:focus,
+.updateForm__profileForm--input select:focus {
+	border-color: #8aceef;
+	outline: none;
+}
+
+.updateForm__profileForm--img {
+	text-align: center;
+}
+
+.updateForm__profileForm--imgPreview {
+	width: 120px;
+	height: 120px;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid #ddd;
+}
+
+.updateForm__profileForm--submit {
+	width: 100%;
+	padding: 1em;
+	font-size: medium;
+	color: #fff;
+	border: none;
+	border-radius: 0.5em;
+	cursor: pointer;
+	background-color: #8aceef;
+	transition: background-color 0.3s ease;
+}
+
+.updateForm__profileForm--submit:hover {
+	background-color: #56b5e4;
+}

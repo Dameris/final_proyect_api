@@ -25,7 +25,6 @@ const form = useForm({
 
 const isEditing = ref(false);
 const photoPreview = ref(props.user.profile_photo_path || '/img/pfp_image.png');
-const selectedFile = ref(null);
 
 const editUserInfo = () => {
 	isEditing.value = true;
@@ -36,44 +35,6 @@ const cancelEdit = () => {
 	form.reset();
 	photoPreview.value = props.user.profile_photo_path || '/img/pfp_image.png';
 	selectedFile.value = null;
-};
-
-// Muestra la vista previa de la imagen y almacena el archivo
-const handleFileChange = (event) => {
-	const file = event.target.files[0];
-	if (file) {
-		selectedFile.value = file; // Guardamos el archivo
-
-		// Vista previa
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			photoPreview.value = e.target.result;
-		};
-		reader.readAsDataURL(file);
-	}
-};
-
-// Envía el formulario con datos y la imagen
-const submit = () => {
-	const formData = new FormData();
-	formData.append("first_name", form.first_name);
-	formData.append("last_name", form.last_name);
-	formData.append("email", form.email);
-	formData.append("gender", form.gender);
-
-	// Solo agregar la imagen si el usuario seleccionó una nueva
-	if (selectedFile.value) {
-		formData.append("profile_photo_path", selectedFile.value);
-	}
-
-	form.post(route("profile.update"), {
-		preserveScroll: true,
-		data: formData,
-		onSuccess: () => {
-			isEditing.value = false;
-			selectedFile.value = null;
-		},
-	});
 };
 
 const logout = () => {
@@ -94,32 +55,19 @@ const logout = () => {
 				<strong class="userProfile__strong"> {{ user.gender }} </strong>
 				<label class="userProfile__changePhoto" @click="editUserInfo">EDIT USER INFO</label>
 				<br />
-				<p class="userProfile__btn" to="/private/wishlist">WISHLIST</p>
+				<!-- Cambiar WISHLIST por ORDER HISTORY -->
+				<Link class="userProfile__btn" href="/private/orders-history">ORDER HISTORY</Link>
 				<br />
 				<Link class="userProfile__btn" href="/" @click="logout">LOG OUT</Link>
 			</p>
 			
 			<p class="userProfile__p" v-if="isEditing">
-				<UpdateProfileInformationForm />
+				<UpdateProfileInformationForm :user="user" :errors="errors" />
 			</p>
-
-			<!-- Edición de usuario -->
-			<!-- <p class="userProfile__p" v-if="isEditing">
-				<img :src="photoPreview" alt="Profile Picture" class="profile-preview" />
-				<input type="file" accept="image/*" @change="handleFileChange" class="userProfile__input" />
-				<br />
-				
-				<input class="userProfile__strong" v-model="form.first_name" type="text" placeholder="First Name" />
-				<input class="userProfile__strong" v-model="form.last_name" type="text" placeholder="Last Name" />
-				<input class="userProfile__strong" v-model="form.email" type="email" placeholder="Email" />
-				<input class="userProfile__strong" v-model="form.gender" type="text" placeholder="Gender" />
-				
-				<button class="userProfile__btn" @click="submit">Save</button> <br />
-				<button class="userProfile__btn" @click="cancelEdit">Cancel</button>
-			</p> -->
 		</div>
 	</AppLayout>
 </template>
+
 
 <style scoped>
 @import "../../css/pages/userProfile.css";
