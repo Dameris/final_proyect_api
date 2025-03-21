@@ -3,6 +3,8 @@ import { computed, ref } from "vue";
 import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 
+const user = computed(() => usePage().props?.auth?.user || null);
+
 // Estado para el menú de la tienda y la búsqueda
 const isShopOpen = ref(false);
 const isSearchOpen = ref(false);
