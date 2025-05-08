@@ -3,7 +3,13 @@ import { computed, ref } from "vue";
 import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 
-const user = computed(() => usePage().props?.auth?.user || null);
+const { props } = usePage();
+const user = computed(() => props.auth?.user);
+const canLogin = computed(() => props.canLogin);
+
+console.log("User:", user.value);
+console.log("Can Login:", canLogin.value);
+console.log("All props:", props);
 
 // Estado para el menú de la tienda y la búsqueda
 const isShopOpen = ref(false);
@@ -70,11 +76,12 @@ const logout = () => {
 							alt="Profile Picture"
 							class="header__profile--img"
 						/>
+						<p v-if="!canLogin">{{ user?.first_name && user?.last_name }}</p>
 					</Link>
 				</li>
 			</ul>
 
-			<ul class="header__list">
+			<ul class="header__list" v-if="canLogin">
 				<li>
 					<Link
 						class="header__btn--logIn"
@@ -92,6 +99,18 @@ const logout = () => {
 					</Link>
 				</li>
 			</ul>
+			<ul class="header__list" v-else>
+				<li>
+					<Link
+						class="header__btn--logIn"
+						href="/"
+						@click="logout"
+					>
+						LOG OUT
+					</Link>
+				</li>
+			</ul>
+			<p>{{ canLogin ? 'Login available' : 'Login not available' }}</p>
 		</div>
 
 		<!-- Sección inferior del encabezado -->

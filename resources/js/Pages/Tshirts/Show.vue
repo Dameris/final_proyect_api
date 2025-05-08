@@ -16,12 +16,17 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+
+	auth: {
+        type: Object,
+        required: true,
+    },
 });
 
 // Función para agregar al carrito
 const addToCart = () => {
-	if (!props.user_id) {
-		alert("Please Log-In first")
+	console.log("Intentando añadir al carrito...");
+	if (!props.auth.user) {
 		return;
 	}
 
