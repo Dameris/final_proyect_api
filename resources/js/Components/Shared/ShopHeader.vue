@@ -2,14 +2,10 @@
 import { computed, ref } from "vue";
 import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
+import { useAuthStore } from "../../stores/auth.js";
 
-const { props } = usePage();
-const user = computed(() => props.auth?.user);
-const canLogin = computed(() => props.canLogin);
-
-console.log("User:", user.value);
-console.log("Can Login:", canLogin.value);
-console.log("All props:", props);
+const auth = useAuthStore();
+const isAuthenticated = computed(() => !!auth.user);
 
 // Estado para el menú de la tienda y la búsqueda
 const isShopOpen = ref(false);
@@ -47,15 +43,12 @@ const search = async () => {
 
 // Función para logout
 const logout = () => {
-	Inertia.post(
-		route("logout"),
-		{},
-		{
-			onSuccess: () => {
-				Inertia.reload();
-			},
-		},
-	);
+  Inertia.post(route("logout"), {}, {
+    onSuccess: () => {
+      auth.logout();
+      Inertia.reload();
+    }
+  });
 };
 </script>
 
@@ -72,16 +65,16 @@ const logout = () => {
 						id="user-profile_link"
 					>
 						<img
-							:src="user?.profile_photo_path || '/img/pfp_image.png'"
+							:src="auth.user?.profile_photo_path || '/img/pfp_image.png'"
 							alt="Profile Picture"
 							class="header__profile--img"
 						/>
-						<p v-if="!canLogin">{{ user?.first_name && user?.last_name }}</p>
+						<p v-if="isAuthenticated">{{ auth.user?.first_name && auth.user?.last_name }}</p>
 					</Link>
 				</li>
 			</ul>
 
-			<ul class="header__list" v-if="canLogin">
+			<ul class="header__list" v-if="!isAuthenticated">
 				<li>
 					<Link
 						class="header__btn--logIn"
@@ -110,7 +103,6 @@ const logout = () => {
 					</Link>
 				</li>
 			</ul>
-			<p>{{ canLogin ? 'Login available' : 'Login not available' }}</p>
 		</div>
 
 		<!-- Sección inferior del encabezado -->
@@ -159,7 +151,7 @@ const logout = () => {
 								id="user-profile_link"
 							>
 								<img
-									:src="user?.profile_photo_path || '/img/pfp_image.png'"
+									:src="auth.user?.profile_photo_path || '/img/pfp_image.png'"
 									alt="Profile Picture"
 									class="header__profile--img"
 								/>
