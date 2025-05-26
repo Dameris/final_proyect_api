@@ -5,7 +5,6 @@ import axios from "axios";
 export const useAuthStore = defineStore("auth", {
 	state: () => ({
 		user: null,
-		isAuthenticated: false,
 		loading: true,
 	}),
 
@@ -15,11 +14,9 @@ export const useAuthStore = defineStore("auth", {
 			try {
 				const response = await axios.get("/auth/session");
 				this.user = response.data.user;
-				this.isAuthenticated = response.data.isAuthenticated;
 			} catch (error) {
 				console.error("Error fetching session:", error);
 				this.user = null;
-				this.isAuthenticated = false;
 			} finally {
 				this.loading = false;
 			}
@@ -29,7 +26,6 @@ export const useAuthStore = defineStore("auth", {
 			try {
 				await axios.post("/logout");
 				this.user = null;
-				this.isAuthenticated = false;
 			} catch (error) {
 				console.error("Logout failed:", error);
 			}
