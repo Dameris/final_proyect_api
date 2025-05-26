@@ -1,21 +1,23 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
+import { useAuthStore } from "../../stores/auth";
 
 const { props } = usePage();
-const user = computed(() => props.auth?.user);
+const auth = useAuthStore();
 const canLogin = computed(() => props.canLogin);
-
-console.log("User:", user.value);
-console.log("Can Login:", canLogin.value);
-console.log("All props:", props);
+const user = computed(() => auth.user);
 
 // Estado para el menú de la tienda y la búsqueda
 const isShopOpen = ref(false);
 const isSearchOpen = ref(false);
 const searchQuery = ref("");
 const searchResults = ref([]);
+
+onMounted(() => {
+	auth.fetchUser();
+});
 
 // Función para toggle del menú de la tienda
 const toggleShopSlide = () => {
@@ -51,8 +53,8 @@ const logout = () => {
 		route("logout"),
 		{},
 		{
-			onSuccess: () => {
-				Inertia.reload();
+			onFinish: () => {
+				Inertia.visit("/");
 			},
 		},
 	);
@@ -76,12 +78,29 @@ const logout = () => {
 							alt="Profile Picture"
 							class="header__profile--img"
 						/>
-						<p v-if="!canLogin">{{ user?.first_name && user?.last_name }}</p>
+						<p v-if="auth.isAuthenticated">{{ user?.first_name }} {{ user?.last_name }}</p>
 					</Link>
 				</li>
 			</ul>
 
-			<ul class="header__list" v-if="canLogin">
+			<ul
+				class="header__list"
+				v-if="auth.isAuthenticated"
+			>
+				<li>
+					<Link
+						class="header__btn--logIn"
+						href="/"
+						@click="logout"
+					>
+						LOG OUT
+					</Link>
+				</li>
+			</ul>
+			<ul
+				class="header__list"
+				v-if="!auth.isAuthenticated"
+			>
 				<li>
 					<Link
 						class="header__btn--logIn"
@@ -99,18 +118,6 @@ const logout = () => {
 					</Link>
 				</li>
 			</ul>
-			<ul class="header__list" v-else>
-				<li>
-					<Link
-						class="header__btn--logIn"
-						href="/"
-						@click="logout"
-					>
-						LOG OUT
-					</Link>
-				</li>
-			</ul>
-			<p>{{ canLogin ? 'Login available' : 'Login not available' }}</p>
 		</div>
 
 		<!-- Sección inferior del encabezado -->
