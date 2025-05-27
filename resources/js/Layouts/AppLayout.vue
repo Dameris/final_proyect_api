@@ -7,9 +7,9 @@ import { usePage } from "@inertiajs/inertia-vue3";
 
 const auth = useAuthStore()
 
-onMounted(() => {
-  auth.init()
-})
+// onMounted(() => {
+//   auth.init()
+// })
 </script>
 
 <template>

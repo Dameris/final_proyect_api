@@ -3,28 +3,24 @@ import { ref } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import AppLayout from "@/Layouts/AppLayout.vue";
 import UpdateProfileInformationForm from "@/Pages/Profile/Partials/UpdateProfileInformationForm.vue";
+import { useAuthStore } from "../../js/stores/auth";
+import { storeToRefs } from "pinia";
 
-const props = defineProps({
-	user: {
-		type: Object,
-		required: true,
-		default: () => ({ permissions: [] })
-	},
-	errors: Object,
-});
+const auth = useAuthStore();
+const { user } = storeToRefs(auth);
 
 // Formulario con los datos del usuario
 const form = useForm({
     _method: 'POST',
-	first_name: props.user.first_name,
-	last_name: props.user.last_name,
-	email: props.user.email,
-	gender: props.user.gender,
+	first_name: user.first_name,
+	last_name: user.last_name,
+	email: user.email,
+	gender: user.gender,
 	profile_photo_path: null,
 });
 
 const isEditing = ref(false);
-const photoPreview = ref(props.user.profile_photo_path || '/img/pfp_image.png');
+const photoPreview = ref(user.profile_photo_path || '/img/pfp_image.png');
 
 const editUserInfo = () => {
 	isEditing.value = true;
@@ -33,12 +29,14 @@ const editUserInfo = () => {
 const cancelEdit = () => {
 	isEditing.value = false;
 	form.reset();
-	photoPreview.value = props.user.profile_photo_path || '/img/pfp_image.png';
+	photoPreview.value = user.profile_photo_path || '/img/pfp_image.png';
 	selectedFile.value = null;
 };
 
-const logout = () => {
-	form.post(route("logout"));
+// Función para logout
+const logout = async () => {
+	await auth.logout();
+	Inertia.visit("/");
 };
 </script>
 
@@ -49,10 +47,10 @@ const logout = () => {
 			<p class="userProfile__p" v-if="!isEditing">
 				<img :src="photoPreview" alt="Profile Picture" />
 				<br />
-				<strong class="userProfile__strong"> {{ user.first_name }} </strong>
-				<strong class="userProfile__strong"> {{ user.last_name }} </strong>
-				<strong class="userProfile__strong"> {{ user.email }} </strong>
-				<strong class="userProfile__strong"> {{ user.gender }} </strong>
+				<strong class="userProfile__strong"> {{ user?.first_name }} </strong>
+				<strong class="userProfile__strong"> {{ user?.last_name }} </strong>
+				<strong class="userProfile__strong"> {{ user?.email }} </strong>
+				<strong class="userProfile__strong"> {{ user?.gender }} </strong>
 				<label class="userProfile__changePhoto" @click="editUserInfo">EDIT USER INFO</label>
 				<br />
 				<!-- Cambiar WISHLIST por ORDER HISTORY -->
