@@ -1,17 +1,22 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
-import { useAuthStore } from "../../stores/auth.js";
+import { useAuthStore } from "../../stores/auth";
+import { storeToRefs } from "pinia";
 
 const auth = useAuthStore();
-const isAuthenticated = computed(() => !!auth.user);
+const { user } = storeToRefs(auth);
 
 // Estado para el menú de la tienda y la búsqueda
 const isShopOpen = ref(false);
 const isSearchOpen = ref(false);
 const searchQuery = ref("");
 const searchResults = ref([]);
+
+onMounted(() => {
+	auth.fetchUser();
+});
 
 // Función para toggle del menú de la tienda
 const toggleShopSlide = () => {
@@ -42,13 +47,9 @@ const search = async () => {
 };
 
 // Función para logout
-const logout = () => {
-  Inertia.post(route("logout"), {}, {
-    onSuccess: () => {
-      auth.logout();
-      Inertia.reload();
-    }
-  });
+const logout = async () => {
+	await auth.logout();
+	Inertia.visit("/");
 };
 </script>
 
@@ -65,16 +66,19 @@ const logout = () => {
 						id="user-profile_link"
 					>
 						<img
-							:src="auth.user?.profile_photo_path || '/img/pfp_image.png'"
+							:src="user?.profile_photo_path || '/img/pfp_image.png'"
 							alt="Profile Picture"
 							class="header__profile--img"
 						/>
-						<p v-if="isAuthenticated">{{ auth.user?.first_name && auth.user?.last_name }}</p>
+						<p v-if="user">{{ user?.first_name }} {{ user?.last_name }}</p>
 					</Link>
 				</li>
 			</ul>
 
-			<ul class="header__list" v-if="!isAuthenticated">
+			<ul
+				class="header__list"
+				v-if="!user"
+			>
 				<li>
 					<Link
 						class="header__btn--logIn"
@@ -92,7 +96,10 @@ const logout = () => {
 					</Link>
 				</li>
 			</ul>
-			<ul class="header__list" v-else>
+			<ul
+				class="header__list"
+				v-else
+			>
 				<li>
 					<Link
 						class="header__btn--logIn"
@@ -151,7 +158,7 @@ const logout = () => {
 								id="user-profile_link"
 							>
 								<img
-									:src="auth.user?.profile_photo_path || '/img/pfp_image.png'"
+									:src="user?.profile_photo_path || '/img/pfp_image.png'"
 									alt="Profile Picture"
 									class="header__profile--img"
 								/>

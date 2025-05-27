@@ -17,6 +17,8 @@ use App\Http\Controllers\OrderHistoryController;
 // NO AUTH ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('/auth/session', [AuthController::class, 'checkSession']);
+
 Route::get('/tshirts', [TshirtController::class, 'index'])->name('tshirts.index');
 Route::get('/search', [TshirtController::class, 'search']);
 
@@ -43,6 +45,7 @@ Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
 Route::get('/auth/check', [AuthController::class, 'checkSession']);
 
 Route::middleware(['auth', 'verified',])->group(function () {
+
     Route::get('/tshirts/create', [TshirtController::class, 'create'])->name('tshirts.create');
     Route::get('/tshirts/{tshirt}/edit', [TshirtController::class, 'edit'])->name('tshirts.edit');
     Route::put('/tshirts/{tshirt}', [TshirtController::class, 'update'])->name('tshirts.update');
