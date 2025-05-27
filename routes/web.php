@@ -67,5 +67,3 @@ Route::middleware(['auth', 'verified',])->group(function () {
 });
 
 Route::get('/tshirts/{tshirt}', [TshirtController::class, 'show'])->name('tshirts.show');
-
-Route::get('/tshirts/{tshirt}', [TshirtController::class, 'show'])->name('tshirts.show');
