@@ -101,6 +101,17 @@ class CartController extends Controller
         }
     }
 
+    // Eliminar todos los productos del carrito
+    public function removeAllFromCart()
+    {
+        try {
+            Cart::where("user_id", Auth::id())->delete();
+            return redirect()->back()->with('alert', 'All items removed from cart')->with('alertType', 'success');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('alert', 'Failed to remove all items')->with('alertType', 'error');
+        }
+    }
+
     public function getCartItems()
     {
         $userId = Auth::id();

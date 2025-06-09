@@ -49,6 +49,8 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/tshirts/create', [TshirtController::class, 'create'])->name('tshirts.create');
     Route::get('/tshirts/{tshirt}/edit', [TshirtController::class, 'edit'])->name('tshirts.edit');
     Route::put('/tshirts/{tshirt}', [TshirtController::class, 'update'])->name('tshirts.update');
+    Route::post('/tshirts', [TshirtController::class, 'store'])->name('tshirts.store');
+    Route::delete('/tshirts/{tshirt}', [TshirtController::class, 'destroy'])->name('tshirts.destroy');
 
     Route::resource('/roles', RoleController::class);
 
@@ -57,6 +59,7 @@ Route::middleware(['auth', 'verified',])->group(function () {
 
     Route::get('/api/cart', [CartController::class, 'getCartItems']);
     Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
+    Route::delete('/cart', [CartController::class, 'removeAllFromCart']);
     Route::put('/cart/{id}', [CartController::class, 'updateCart']);
     Route::post('/checkout', [CheckoutController::class, 'processOrder']);
     Route::get('/private/orders-history', [OrderHistoryController::class, 'index'])->name('orders.history');
