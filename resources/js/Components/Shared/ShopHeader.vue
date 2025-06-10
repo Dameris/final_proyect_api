@@ -135,7 +135,16 @@ const logout = async () => {
 						CLOSE
 					</button>
 					<ul class="header__list--slide">
-						<li>
+						<li v-if="user">
+							<Link
+								class="header__btn--logIn"
+								href="/"
+								@click="logout"
+							>
+								LOG OUT
+							</Link>
+						</li>
+						<li v-if="!user">
 							<Link
 								class="header__btn--logIn"
 								:href="route('login')"
@@ -143,7 +152,7 @@ const logout = async () => {
 								LOG IN
 							</Link>
 						</li>
-						<li>
+						<li v-if="!user">
 							<Link
 								class="header__btn--signUp"
 								:href="route('signup')"
@@ -162,6 +171,7 @@ const logout = async () => {
 									alt="Profile Picture"
 									class="header__profile--img"
 								/>
+								<p v-if="user">{{ user?.first_name }} {{ user?.last_name }}</p>
 							</Link>
 						</li>
 						<li>
