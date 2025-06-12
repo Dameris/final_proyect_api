@@ -34,35 +34,18 @@ const handleFileChange = (field, event) => {
 };
 
 const handleSubmit = () => {
-	const formData = new FormData();
-	formData.append("tshirt_name", props.form.tshirt_name);
-	formData.append("tshirt_composition", props.form.tshirt_composition);
-	formData.append("tshirt_fit", props.form.tshirt_fit);
-	formData.append("tshirt_price", props.form.tshirt_price);
-
-	if (props.form.tshirt_img1 instanceof File) {
-		formData.append("tshirt_img1", props.form.tshirt_img1);
-	} else if (props.form.tshirt_img1) {
-		formData.append("tshirt_img1", props.form.tshirt_img1);
-	}
-
-	if (props.form.tshirt_img2 instanceof File) {
-		formData.append("tshirt_img2", props.form.tshirt_img2);
-	} else if (props.form.tshirt_img2) {
-		formData.append("tshirt_img2", props.form.tshirt_img2);
-	}
-
-	if (props.updating) {
-		router.put(route("tshirts.update", { tshirt: props.form.id }), formData, {
-			preserveScroll: true,
-			forceFormData: true,
-		});
-	} else {
-		router.post(route("tshirts.store"), formData, {
-			preserveScroll: true,
-			forceFormData: true,
-		});
-	}
+    if (props.updating) {
+        props.form._method = 'PUT';
+        router.post(route("tshirts.update", { tshirt: props.form.id }), props.form, {
+            preserveScroll: true,
+            forceFormData: true,
+        });
+    } else {
+        router.post(route("tshirts.store"), props.form, {
+            preserveScroll: true,
+            forceFormData: true,
+        });
+    }
 };
 </script>
 

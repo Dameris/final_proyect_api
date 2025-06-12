@@ -69,7 +69,7 @@ class TshirtController extends Controller
                 "tshirt_img2" => $img2
             ]);
 
-            return Inertia::location(route('tshirts.index'));
+            return redirect()->route('tshirts.index');
         } catch (Exception $e) {
             return back()->withErrors(["error" => "Error in database: " . $e->getMessage()]);
         }
@@ -98,30 +98,33 @@ class TshirtController extends Controller
      */
     public function update(TshirtRequest $request, Tshirt $tshirt)
     {
+        $data = $request->validated();
+
+        // Lógica para tshirt_img1
         if ($request->hasFile("tshirt_img1")) {
             $f = $request->file("tshirt_img1");
             $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
             $f->storeAs("img/tshirts", $img, "public");
             $data["tshirt_img1"] = $img;
+        } else {
+            // Si no se subió una nueva imagen, MANTIENE LA IMAGEN EXISTENTE
+            $data["tshirt_img1"] = $tshirt->tshirt_img1;
         }
 
+        // Lógica para tshirt_img2
         if ($request->hasFile("tshirt_img2")) {
             $f2 = $request->file("tshirt_img2");
             $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
             $f2->storeAs("img/tshirts", $img2, "public");
             $data["tshirt_img2"] = $img2;
+        } else {
+            // Si no se subió una nueva imagen, MANTIENE LA IMAGEN EXISTENTE
+            $data["tshirt_img2"] = $tshirt->tshirt_img2;
         }
 
-        $tshirt->update([
-            "tshirt_name" => $request->tshirt_name,
-            "tshirt_composition" => $request->tshirt_composition,
-            "tshirt_fit" => $request->tshirt_fit,
-            "tshirt_price" => $request->tshirt_price,
-            "tshirt_img1" => $img,
-            "tshirt_img2" => $img2
-        ]);
+        $tshirt->update($data);
 
-        return Inertia::location(route('tshirts.edit', $tshirt->id));
+        return Inertia::location(route('tshirts.index'));
     }
 
     /**
