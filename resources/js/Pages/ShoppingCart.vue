@@ -44,6 +44,12 @@ const updateQuantity = async (itemId, quantity) => {
 	}
 };
 
+const fixQuantity = (item) => {
+	if (item.quantity < 1 || isNaN(item.quantity)) {
+		item.quantity = 1;
+	}
+};
+
 const removeFromCart = async (itemId) => {
 	try {
 		Inertia.delete(`/cart/${itemId}`);
@@ -118,9 +124,10 @@ onMounted(() => {
 						</button>
 						<input
 							type="number"
-							v-model="item.quantity"
-							@change="updateQuantity(item.id, item.quantity)"
 							min="1"
+							v-model="item.quantity"
+							@input="fixQuantity(item)"
+							@change="updateQuantity(item.id, item.quantity)"
 							class="shoppingCart__list--itemAction__quantity"
 						/>
 					</div>
