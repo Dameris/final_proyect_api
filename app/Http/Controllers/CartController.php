@@ -42,11 +42,27 @@ class CartController extends Controller
             return redirect()->back()->with('alert', 'Product not found')->with('alertType', 'error');
         }
 
+        if ($product->stock < 1) {
+            return redirect()->back()
+                ->with('alert', 'Product out of stock')
+                ->with('alertType', 'error');
+        }
+
         // Verifica si el producto con esa talla ya está en el carrito del usuario
         $cartItem = Cart::where("user_id", Auth::id())
             ->where("tshirt_id", $product->id)
             ->where("size", $request->size)
             ->first();
+
+        if ($cartItem) {
+            if ($cartItem->quantity >= $product->stock) {
+                return redirect()->back()
+                    ->with('alert', 'Not enough stock available')
+                    ->with('alertType', 'error');
+            }
+
+            $cartItem->increment('quantity');
+        }
 
         if ($cartItem) {
             $cartItem->increment("quantity");

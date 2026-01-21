@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Tshirt;
 
 class CheckoutController extends Controller
 {
@@ -15,6 +16,16 @@ class CheckoutController extends Controller
 
         if (!$cartItems || count($cartItems) === 0) {
             return redirect()->back()->with('alert', 'The cart is empty')->with('alertType', 'error');
+        }
+
+        foreach ($cartItems as $item) {
+            $tshirt = Tshirt::find($item['tshirt_id']);
+
+            if (!$tshirt || $tshirt->stock < $item['quantity']) {
+                return redirect()->back()
+                    ->with('alert', 'Not enough stock for ' . $tshirt->tshirt_name)
+                    ->with('alertType', 'error');
+            }
         }
 
         // Simular la creación de una orden
@@ -32,6 +43,11 @@ class CheckoutController extends Controller
                 'quantity' => $item['quantity'],
                 'price' => $item['tshirtDetails']['tshirt_price'],
             ]);
+        }
+
+        foreach ($cartItems as $item) {
+            $tshirt = Tshirt::find($item['tshirt_id']);
+            $tshirt->decrement('stock', $item['quantity']);
         }
 
         // Vaciar el carrito después de la compra

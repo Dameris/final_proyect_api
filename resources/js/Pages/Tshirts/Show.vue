@@ -81,6 +81,10 @@ const selectSize = (size) => {
 						<strong>FIT:</strong> <br />
 						{{ tshirt.tshirt_fit.toUpperCase() }}
 					</p>
+					<p id="fit">
+						<strong>STOCK:</strong> <br />
+						{{ tshirt.stock }}
+					</p>
 				</div>
 
 				<div>
@@ -97,7 +101,7 @@ const selectSize = (size) => {
 					</div>
 
 					<!-- Botón de compra -->
-					<button class="tshirtShow_addToCart" @click="addToCart">ADD TO CART</button>
+					<button class="tshirtShow_addToCart" @click="addToCart" :disabled="tshirt.stock < 1">{{ tshirt.stock < 1 ? 'OUT OF STOCK' : 'ADD TO CART' }}</button>
 				</div>
 			</div>
 		</div>
