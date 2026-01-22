@@ -24,6 +24,7 @@ const form = useForm({
 	tshirt_composition: props.tshirt.tshirt_composition,
 	tshirt_fit: props.tshirt.tshirt_fit,
 	tshirt_price: props.tshirt.tshirt_price,
+	stock: props.tshirt.stock,
 });
 
 const submit = () => {

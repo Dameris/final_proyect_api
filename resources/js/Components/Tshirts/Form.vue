@@ -41,6 +41,8 @@ const handleSubmit = () => {
             forceFormData: true,
         });
     } else {
+		props.form.stock = 1;
+
         router.post(route("tshirts.store"), props.form, {
             preserveScroll: true,
             forceFormData: true,
@@ -137,6 +139,19 @@ const handleSubmit = () => {
 					accept="image/*"
 				/>
 				<InputError :message="form.errors.tshirt_img2" />
+			</div>
+			<div>
+				<InputLabel 
+					for="stock" 
+					value="Stock"
+				/>
+				<TextInput
+					id="stock"
+					type="number"
+					min="0"
+					v-model.number="form.stock"
+				/>
+				<InputError :message="form.errors.stock" />
 			</div>
 		</template>
 

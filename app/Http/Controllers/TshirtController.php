@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TshirtRequest;
+use App\Http\Requests\UpdateTshirtStockRequest;
 use App\Models\Tshirt;
+use App\Models\User;
 use App\Http\Responses\ApiResponse;
 use Inertia\Inertia;
 use Exception;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException as EloquentModelNotFound
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TshirtController extends Controller
 {
@@ -66,7 +69,8 @@ class TshirtController extends Controller
                 "tshirt_fit" => $request->tshirt_fit,
                 "tshirt_price" => $request->tshirt_price,
                 "tshirt_img1" => $img,
-                "tshirt_img2" => $img2
+                "tshirt_img2" => $img2,
+                "stock"  => 0
             ]);
 
             return redirect()->route('tshirts.index');
@@ -122,9 +126,28 @@ class TshirtController extends Controller
             $data["tshirt_img2"] = $tshirt->tshirt_img2;
         }
 
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        if ($user instanceof User && $user->hasRole('admin') && $request->filled('stock')) {
+            $data['stock'] = $request->stock;
+        }
+
         $tshirt->update($data);
 
         return Inertia::location(route('tshirts.index'));
+    }
+
+    /**
+     * Update a T-shirt stock
+     */
+    public function updateStock(UpdateTshirtStockRequest $request, Tshirt $tshirt)
+    {
+        $tshirt->update([
+            'stock' => $request->stock
+        ]);
+
+        return back();
     }
 
     /**
