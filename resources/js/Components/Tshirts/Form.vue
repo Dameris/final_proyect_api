@@ -22,6 +22,11 @@ const props = defineProps({
 		required: false,
 		default: false,
 	},
+	isAdmin: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
 });
 
 const emit = defineEmits(["submit"]);
@@ -101,6 +106,19 @@ const handleSubmit = () => {
 				/>
 				<InputError :message="form.errors.tshirt_fit" />
 			</div>
+			<div v-if="isAdmin">
+				<InputLabel
+					for="stock" 
+					value="Stock"
+				/>
+				<TextInput	
+					id="stock"
+					type="number"
+					min="0"
+					v-model.number="form.stock"
+				/>
+				<InputError :message="form.errors.stock" />
+			</div>
 			<div>
 				<InputLabel
 					for="tshirt_price"
@@ -139,19 +157,6 @@ const handleSubmit = () => {
 					accept="image/*"
 				/>
 				<InputError :message="form.errors.tshirt_img2" />
-			</div>
-			<div>
-				<InputLabel 
-					for="stock" 
-					value="Stock"
-				/>
-				<TextInput
-					id="stock"
-					type="number"
-					min="0"
-					v-model.number="form.stock"
-				/>
-				<InputError :message="form.errors.stock" />
 			</div>
 		</template>
 

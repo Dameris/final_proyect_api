@@ -8,11 +8,16 @@ export default {
 
 <script setup>
 import { useForm } from "@inertiajs/vue3";
+import { computed } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import TshirtsForm from "@/Components/Tshirts/Form.vue";
 
 const props = defineProps({
 	tshirt: {
+		type: Object,
+		required: true,
+	},
+	auth: {
 		type: Object,
 		required: true,
 	},
@@ -27,8 +32,12 @@ const form = useForm({
 	stock: props.tshirt.stock,
 });
 
+const isAdmin = computed(() => {
+	return props.auth.user?.roles?.some(role => role.name === 'admin') ?? false;
+});
+
 const submit = () => {
-	form.put(route("tshirts.update", props.form.id), {
+	form.put(route("tshirts.update", form.id), {
 		preserveScroll: true,
 		forceFormData: true,
 	});
@@ -43,6 +52,7 @@ const submit = () => {
 			<TshirtsForm
 				:updating="true"
 				:form="form"
+				:is-admin="isAdmin"
 				@submit="submit"
 			/>
 		</div>

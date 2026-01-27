@@ -94,7 +94,15 @@ class TshirtController extends Controller
      */
     public function edit(Tshirt $tshirt)
     {
-        return inertia("Tshirts/Edit", ["tshirt" => $tshirt]);
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        return inertia('Tshirts/Edit', [
+            'tshirt' => $tshirt,
+            'auth' => [
+                'user' => $user ? $user->load('roles') : null,
+            ],
+        ]);
     }
 
     /**
@@ -129,7 +137,11 @@ class TshirtController extends Controller
         /** @var User|null $user */
         $user = Auth::user();
 
-        if ($user instanceof User && $user->hasRole('admin') && $request->filled('stock')) {
+        if ($user && $user->hasRole('admin')) {
+            $request->validate([
+                'stock' => ['required', 'integer', 'min:0']
+            ]);
+
             $data['stock'] = $request->stock;
         }
 
