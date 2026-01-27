@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $tshirt_name
+ * @property float $tshirt_price
+ * @property int $stock
+ */
+
 class Tshirt extends Model
 {
     /** @use HasFactory<\Database\Factories\TshirtFactory> */

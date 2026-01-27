@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -12,47 +14,71 @@ class CheckoutController extends Controller
 {
     public function processOrder(Request $request)
     {
-        $cartItems = $request->cart;
+        $cartItems = $request->input('cart');
 
-        if (!$cartItems || count($cartItems) === 0) {
-            return redirect()->back()->with('alert', 'The cart is empty')->with('alertType', 'error');
+        if (!$cartItems || \count($cartItems) === 0) {
+            return redirect()->back()
+                ->with('alert', 'The cart is empty')
+                ->with('alertType', 'error');
         }
 
-        foreach ($cartItems as $item) {
-            $tshirt = Tshirt::find($item['tshirt_id']);
+        try {
+            $order = DB::transaction(function () use ($cartItems) {
 
-            if (!$tshirt || $tshirt->stock < $item['quantity']) {
-                return redirect()->back()
-                    ->with('alert', 'Not enough stock for ' . $tshirt->tshirt_name)
-                    ->with('alertType', 'error');
-            }
+                $total = 0;
+
+                /** @var int $userId */
+                $userId = Auth::id();
+
+                if (!$userId) {
+                    throw new \Exception('You must be logged in to place an order');
+                }
+
+                foreach ($cartItems as $item) {
+                    $tshirt = Tshirt::where('id', $item['tshirt_id'])
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (!$tshirt || $tshirt->stock < $item['quantity']) {
+                        throw new \Exception('Not enough stock for ' . ($tshirt->tshirt_name ?? 'a product'));
+                    }
+
+                    $total += $tshirt->tshirt_price * $item['quantity'];
+                }
+
+                $order = Order::create([
+                    'user_id' => $userId,
+                    'total_price' => $total,
+                    'status' => 'Processed',
+                ]);
+
+                foreach ($cartItems as $item) {
+                    $tshirt = Tshirt::where('id', $item['tshirt_id'])
+                        ->lockForUpdate()
+                        ->first();
+
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'tshirt_id' => $tshirt->id,
+                        'quantity' => $item['quantity'],
+                        'price' => $tshirt->tshirt_price,
+                    ]);
+
+                    $tshirt->decrement('stock', $item['quantity']);
+                }
+
+                Cart::where('user_id', $userId)->delete();
+
+                return $order;
+            });
+
+            return redirect()->back()
+                ->with('alert', 'Shop made successfully')
+                ->with('alertType', 'success');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('alert', $e->getMessage())
+                ->with('alertType', 'error');
         }
-
-        // Simular la creación de una orden
-        $order = Order::create([
-            'user_id' => auth()->id(),
-            'total_price' => collect($cartItems)->sum(fn($item) => $item['tshirtDetails']['tshirt_price'] * $item['quantity']),
-            'status' => 'Processed',
-        ]);
-
-        // Agregar los productos a la orden
-        foreach ($cartItems as $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'tshirt_id' => $item['tshirt_id'],
-                'quantity' => $item['quantity'],
-                'price' => $item['tshirtDetails']['tshirt_price'],
-            ]);
-        }
-
-        foreach ($cartItems as $item) {
-            $tshirt = Tshirt::find($item['tshirt_id']);
-            $tshirt->decrement('stock', $item['quantity']);
-        }
-
-        // Vaciar el carrito después de la compra
-        Cart::where('user_id', auth()->id())->delete();
-
-        return redirect()->back()->with('alert', 'Shop made successfully')->with('alertType', 'success');
     }
 }
