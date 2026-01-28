@@ -13,6 +13,7 @@ use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\JoggerController;
 
 // NO AUTH ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -20,6 +21,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/auth/session', [AuthController::class, 'checkSession']);
 
 Route::get('/tshirts', [TshirtController::class, 'index'])->name('tshirts.index');
+Route::get('/joggers', [JoggerController::class, 'index'])->name('joggers.index');
 Route::get('/search', [TshirtController::class, 'search']);
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -53,6 +55,12 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::post('/tshirts', [TshirtController::class, 'store'])->name('tshirts.store');
     Route::delete('/tshirts/{tshirt}', [TshirtController::class, 'destroy'])->name('tshirts.destroy');
 
+    Route::get('/joggers/create', [JoggerController::class, 'create'])->name('joggers.create');
+    Route::get('/joggers/{jogger}/edit', [JoggerController::class, 'edit'])->name('joggers.edit');
+    Route::put('/joggers/{jogger}', [JoggerController::class, 'update'])->name('joggers.update');
+    Route::put('/joggers/{jogger}/stock', [JoggerController::class, 'updateStock'])->name('joggers.stock.update');
+    Route::post('/joggers', [JoggerController::class, 'store'])->name('joggers.store');
+    Route::delete('/joggers/{tshirt}', [JoggerController::class, 'destroy'])->name('joggers.destroy');
 
     Route::resource('/roles', RoleController::class);
 
