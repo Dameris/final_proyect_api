@@ -40,7 +40,7 @@ Route::get('/faqs', [FaqsController::class, 'show'])->name('faqs');
 Route::get("/shipping", [ShippingController::class, 'show'])->name('shipping');
 
 Route::get('/cart', [CartController::class, 'showShoppingCart'])->name('shoppingCart');
-Route::post('/cart/{id}', [CartController::class, 'addToCart']);
+Route::post('/cart/{type}/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::put('/cart/{id}', [CartController::class, 'updateCart']);
 Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
 
@@ -60,7 +60,7 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::put('/joggers/{jogger}', [JoggerController::class, 'update'])->name('joggers.update');
     Route::put('/joggers/{jogger}/stock', [JoggerController::class, 'updateStock'])->name('joggers.stock.update');
     Route::post('/joggers', [JoggerController::class, 'store'])->name('joggers.store');
-    Route::delete('/joggers/{tshirt}', [JoggerController::class, 'destroy'])->name('joggers.destroy');
+    Route::delete('/joggers/{jogger}', [JoggerController::class, 'destroy'])->name('joggers.destroy');
 
     Route::resource('/roles', RoleController::class);
 
@@ -75,8 +75,10 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/private/orders-history', [OrderHistoryController::class, 'index'])->name('orders.history');
 
     Route::get('/api/tshirt/{id}', [TshirtController::class, 'getTshirtDetails']);
+    Route::get('/api/jogger/{id}', [JoggerController::class, 'getJoggerDetails']);
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::get('/tshirts/{tshirt}', [TshirtController::class, 'show'])->name('tshirts.show');
+Route::get('/joggers/{jogger}', [JoggerController::class, 'show'])->name('joggers.show');

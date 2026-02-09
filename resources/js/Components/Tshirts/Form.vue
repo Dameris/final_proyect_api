@@ -27,6 +27,14 @@ const props = defineProps({
 		required: false,
 		default: false,
 	},
+	compositions: {
+		type: Array,
+		required: true,
+	},
+	fits: {
+		type: Array,
+		required: true,
+	},
 });
 
 const emit = defineEmits(["submit"]);
@@ -85,12 +93,20 @@ const handleSubmit = () => {
 					for="tshirt_composition"
 					value="Tshirt composition"
 				/>
-				<TextInput
+				<select
 					id="tshirt_composition"
 					v-model="form.tshirt_composition"
-					type="text"
-					autocomplete="tshirt_composition"
-				/>
+					class="input"
+				>
+					<option disabled value="">Select composition</option>
+					<option
+						v-for="comp in compositions"
+						:key="comp"
+						:value="comp"
+					>
+						{{ comp }}
+					</option>
+				</select>
 				<InputError :message="form.errors.tshirt_composition" />
 			</div>
 			<div>
@@ -98,12 +114,20 @@ const handleSubmit = () => {
 					for="tshirt_fit"
 					value="Tshirt fit"
 				/>
-				<TextInput
+				<select
 					id="tshirt_fit"
 					v-model="form.tshirt_fit"
-					type="text"
-					autocomplete="tshirt_fit"
-				/>
+					class="input"
+				>
+					<option disabled value="">Select fit</option>
+					<option
+						v-for="fit in fits"
+						:key="fit"
+						:value="fit"
+					>
+						{{ fit }}
+					</option>
+				</select>
 				<InputError :message="form.errors.tshirt_fit" />
 			</div>
 			<div v-if="isAdmin">

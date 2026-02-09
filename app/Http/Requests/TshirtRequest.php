@@ -15,6 +15,21 @@ class TshirtRequest extends FormRequest
         return true;
     }
 
+    public const COMPOSITIONS = [
+        'Cotton',
+        'Polyester',
+        'Rayon',
+        'Linen',
+    ];
+
+    public const FITS = [
+        'Oversize',
+        'Regular',
+        'Slim',
+        'Superslim',
+        'Boxy',
+    ];
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,8 +39,8 @@ class TshirtRequest extends FormRequest
     {
         return [
             "tshirt_name" => ["required", "string", "max:50", Rule::unique(table: "tshirts", column: "tshirt_name")->ignore(id: request("tshirt"), idColumn: "id")],
-            "tshirt_composition" => ["required", "string", "max:50", Rule::in("Cotton", "Polyester", "Rayon", "Linen")],
-            "tshirt_fit" => ["required", "string", "max:50", Rule::in("Oversize", "Regular", "Slim", "Superslim", "Boxy")],
+            "tshirt_composition" => ["required", "string", "max:50", Rule::in(self::COMPOSITIONS)],
+            "tshirt_fit" => ["required", "string", "max:50", Rule::in(self::FITS)],
             "tshirt_price" => ["required", "numeric", "min:0"],
             "tshirt_img1" => ["nullable", "image", "mimes:jpg,jpeg,png,gif", "max:2048"],
             "tshirt_img2" => ["nullable", "image", "mimes:jpg,jpeg,png,gif", "max:2048"]

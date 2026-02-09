@@ -16,7 +16,9 @@ class OrderHistoryController extends Controller
     public function index()
     {
         // Obtener las órdenes del usuario autenticado
-        $orders = Order::where('user_id', auth()->id())->with('orderItems.tshirt')->get();
+        $orders = Order::where('user_id', auth()->id())
+            ->with('orderItems.product')
+            ->get();
 
         // Retornar la vista con las órdenes
         return Inertia::render('OrdersHistory', [

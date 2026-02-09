@@ -19,4 +19,9 @@ class Tshirt extends Model
     public $table = "tshirts";
     protected $fillable = ["tshirt_name", "tshirt_composition", "tshirt_fit", "tshirt_price", "tshirt_img1", "tshirt_img2", "stock"];
     public $timestamps = false;
+
+    public function getNameAttribute()
+    {
+        return $this->tshirt_name;
+    }
 }

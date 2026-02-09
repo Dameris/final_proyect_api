@@ -36,7 +36,10 @@ class JoggerController extends Controller
      */
     public function create()
     {
-        return inertia("Joggers/Create");
+        return inertia("Joggers/Create", [
+            'compositions' => JoggerRequest::COMPOSITIONS,
+            'fits' => JoggerRequest::FITS,
+        ]);
     }
 
     /**
@@ -102,6 +105,8 @@ class JoggerController extends Controller
             'auth' => [
                 'user' => $user ? $user->load('roles') : null,
             ],
+            'compositions' => JoggerRequest::COMPOSITIONS,
+            'fits' => JoggerRequest::FITS,
         ]);
     }
 

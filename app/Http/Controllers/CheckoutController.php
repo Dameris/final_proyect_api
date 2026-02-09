@@ -9,41 +9,43 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Tshirt;
+use App\Models\Jogger;
 
 class CheckoutController extends Controller
 {
-    public function processOrder(Request $request)
+    public function processOrder()
     {
-        $cartItems = $request->input('cart');
-
-        if (!$cartItems || \count($cartItems) === 0) {
-            return redirect()->back()
-                ->with('alert', 'The cart is empty')
-                ->with('alertType', 'error');
-        }
-
         try {
-            $order = DB::transaction(function () use ($cartItems) {
+            DB::transaction(function () {
+
+                $userId = Auth::id();
+                if (!$userId) {
+                    throw new \Exception('You must be logged in');
+                }
+
+                $cartItems = Cart::where('user_id', $userId)->get();
+
+                if ($cartItems->isEmpty()) {
+                    throw new \Exception('The cart is empty');
+                }
 
                 $total = 0;
 
-                /** @var int $userId */
-                $userId = Auth::id();
-
-                if (!$userId) {
-                    throw new \Exception('You must be logged in to place an order');
-                }
-
                 foreach ($cartItems as $item) {
-                    $tshirt = Tshirt::where('id', $item['tshirt_id'])
-                        ->lockForUpdate()
-                        ->first();
+                    $model = match ($item->product_type) {
+                        'TSHIRT' => Tshirt::class,
+                        'JOGGER' => Jogger::class,
+                        default => throw new \Exception('Invalid product type'),
+                    };
 
-                    if (!$tshirt || $tshirt->stock < $item['quantity']) {
-                        throw new \Exception('Not enough stock for ' . ($tshirt->tshirt_name ?? 'a product'));
+                    $product = $model::lockForUpdate()->find($item->product_id);
+
+                    if (!$product || $product->stock < $item->quantity) {
+                        throw new \Exception('Not enough stock');
                     }
 
-                    $total += $tshirt->tshirt_price * $item['quantity'];
+                    $price = $product->tshirt_price ?? $product->jogger_price;
+                    $total += $price * $item->quantity;
                 }
 
                 $order = Order::create([
@@ -53,32 +55,25 @@ class CheckoutController extends Controller
                 ]);
 
                 foreach ($cartItems as $item) {
-                    $tshirt = Tshirt::where('id', $item['tshirt_id'])
-                        ->lockForUpdate()
-                        ->first();
-
                     OrderItem::create([
                         'order_id' => $order->id,
-                        'tshirt_id' => $tshirt->id,
-                        'quantity' => $item['quantity'],
-                        'price' => $tshirt->tshirt_price,
+                        'product_id' => $item->product_id,
+                        'product_type' => $item->product_type,
+                        'size' => $item->size,
+                        'quantity' => $item->quantity,
+                        'price' => $item->product->tshirt_price
+                            ?? $item->product->jogger_price,
                     ]);
 
-                    $tshirt->decrement('stock', $item['quantity']);
+                    $item->product->decrement('stock', $item->quantity);
                 }
 
                 Cart::where('user_id', $userId)->delete();
-
-                return $order;
             });
 
-            return redirect()->back()
-                ->with('alert', 'Shop made successfully')
-                ->with('alertType', 'success');
+            return redirect()->route('orders.history');
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('alert', $e->getMessage())
-                ->with('alertType', 'error');
+            abort(422, $e->getMessage());
         }
     }
 }

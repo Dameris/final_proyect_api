@@ -26,7 +26,11 @@ const props = defineProps({
           <p>Items:</p>
           <ul>
             <li v-for="item in order.order_items" :key="item.id">
-              {{ item.quantity }} x <strong>{{ item.tshirt.tshirt_name }}</strong> ({{ item.price }}€ each)
+              {{ item.quantity }} x 
+              <strong>
+                {{ item.product?.tshirt_name ?? item.product?.jogger_name ?? 'Product no longer available' }}
+              </strong>
+              (Size: {{ item.size }}) — {{ item.price }}€
             </li>
           </ul>
         </div>

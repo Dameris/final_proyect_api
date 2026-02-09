@@ -1,5 +1,3 @@
-<!-- @format -->
-
 <script>
 export default {
 	name: "TshirtsEdit",
@@ -19,6 +17,14 @@ const props = defineProps({
 	},
 	auth: {
 		type: Object,
+		required: true,
+	},
+	compositions: {
+		type: Array,
+		required: true,
+	},
+	fits: {
+		type: Array,
 		required: true,
 	},
 });
@@ -42,6 +48,7 @@ const submit = () => {
 		forceFormData: true,
 	});
 };
+console.log(props.compositions)
 </script>
 
 <template>
@@ -53,6 +60,8 @@ const submit = () => {
 				:updating="true"
 				:form="form"
 				:is-admin="isAdmin"
+				:compositions="props.compositions"
+				:fits="props.fits"
 				@submit="submit"
 			/>
 		</div>

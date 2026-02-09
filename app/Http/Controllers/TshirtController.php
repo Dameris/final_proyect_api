@@ -36,7 +36,10 @@ class TshirtController extends Controller
      */
     public function create()
     {
-        return inertia("Tshirts/Create");
+        return inertia("Tshirts/Create", [
+            'compositions' => TshirtRequest::COMPOSITIONS,
+            'fits' => TshirtRequest::FITS,
+        ]);
     }
 
     /**
@@ -102,6 +105,8 @@ class TshirtController extends Controller
             'auth' => [
                 'user' => $user ? $user->load('roles') : null,
             ],
+            'compositions' => TshirtRequest::COMPOSITIONS,
+            'fits' => TshirtRequest::FITS,
         ]);
     }
 

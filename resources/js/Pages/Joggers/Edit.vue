@@ -21,6 +21,14 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+	compositions: {
+		type: Array,
+		required: true,
+	},
+	fits: {
+		type: Array,
+		required: true,
+	},
 });
 
 const form = useForm({
@@ -53,6 +61,8 @@ const submit = () => {
 				:updating="true"
 				:form="form"
 				:is-admin="isAdmin"
+				:compositions="props.compositions"
+				:fits="props.fits"
 				@submit="submit"
 			/>
 		</div>

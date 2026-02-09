@@ -11,6 +11,17 @@ import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import JoggersForm from "@/Components/Joggers/Form.vue";
 
+const props = defineProps({
+	compositions: {
+		type: Array,
+		required: true,
+	},
+	fits: {
+		type: Array,
+		required: true,
+	},
+})
+
 const form = useForm({
 	jogger_name: "",
 	jogger_composition: "",
@@ -26,7 +37,11 @@ const form = useForm({
 		<div>
 			<h1>Create Jogger</h1>
 
-			<JoggersForm :form="form" />
+			<JoggersForm
+				:form="form"
+				:compositions="props.compositions"
+				:fits="props.fits"
+			/>
 		</div>
 	</AppLayout>
 </template>

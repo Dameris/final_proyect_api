@@ -15,6 +15,20 @@ class JoggerRequest extends FormRequest
         return true;
     }
 
+    public const COMPOSITIONS = [
+        'Cotton',
+        'Polyester',
+        'Rayon',
+        'Linen',
+    ];
+
+    public const FITS = [
+        'Oversize',
+        'Regular',
+        'Skinny',
+        'Superskinny',
+    ];
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,8 +38,8 @@ class JoggerRequest extends FormRequest
     {
         return [
             "jogger_name" => ["required", "string", "max:50", Rule::unique(table: "joggers", column: "jogger_name")->ignore(id: request("jogger"), idColumn: "id")],
-            "jogger_composition" => ["required", "string", "max:50", Rule::in("Cotton", "Polyester", "Rayon", "Linen")],
-            "jogger_fit" => ["required", "string", "max:50", Rule::in("Oversize", "Regular", "Slim", "Superslim", "Boxy")],
+            "jogger_composition" => ["required", "string", "max:50", Rule::in(self::COMPOSITIONS)],
+            "jogger_fit" => ["required", "string", "max:50", Rule::in(self::FITS)],
             "jogger_price" => ["required", "numeric", "min:0"],
             "jogger_img1" => ["nullable", "image", "mimes:jpg,jpeg,png,gif", "max:2048"],
             "jogger_img2" => ["nullable", "image", "mimes:jpg,jpeg,png,gif", "max:2048"]

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tshirt;
+use App\Models\Jogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -21,7 +22,7 @@ class CartController extends Controller
 
         // Recuperar los productos del carrito con sus detalles
         $cart = Cart::where("user_id", $userId)
-            ->with('tshirt')
+            ->with('product')
             ->get();
 
         return Inertia::render('ShoppingCart', [
@@ -30,52 +31,50 @@ class CartController extends Controller
     }
 
     // Agregar al carrito
-    public function addToCart(Request $request, $id)
+    public function addToCart(Request $request, $type, $id)
     {
         $request->validate([
             "size" => "required|string",
         ]);
 
-        $product = Tshirt::find($id);
+        $modelMap = [
+            'TSHIRT' => Tshirt::class,
+            'JOGGER' => Jogger::class,
+        ];
+
+        if (!isset($modelMap[$type])) {
+            return back()->with('alert', 'Invalid product type')->with('alertType', 'error');
+        }
+
+        $product = $modelMap[$type]::find($id);
 
         if (!$product) {
-            return redirect()->back()->with('alert', 'Product not found')->with('alertType', 'error');
+            return back()->with('alert', 'Product not found')->with('alertType', 'error');
         }
 
         if ($product->stock < 1) {
-            return redirect()->back()
-                ->with('alert', 'Product out of stock')
-                ->with('alertType', 'error');
+            return back()->with('alert', 'Product out of stock')->with('alertType', 'error');
         }
 
-        // Verifica si el producto con esa talla ya está en el carrito del usuario
         $cartItem = Cart::where("user_id", Auth::id())
-            ->where("tshirt_id", $product->id)
+            ->where("product_id", $product->id)
+            ->where("product_type", $product->getMorphClass())
             ->where("size", $request->size)
             ->first();
 
         if ($cartItem) {
-            if ($cartItem->quantity >= $product->stock) {
-                return redirect()->back()
-                    ->with('alert', 'Not enough stock available')
-                    ->with('alertType', 'error');
-            }
-
-            $cartItem->increment('quantity');
-        }
-
-        if ($cartItem) {
             $cartItem->increment("quantity");
-            return redirect()->back()->with('alert', 'Product quantity increased in cart')->with('alertType', 'success');
         } else {
             Cart::create([
                 "user_id" => Auth::id(),
-                "tshirt_id" => $product->id,
+                "product_id" => $product->id,
+                "product_type" => $product->getMorphClass(),
                 "size" => $request->size,
                 "quantity" => 1,
             ]);
-            return redirect()->back()->with('alert', 'Product added to the cart')->with('alertType', 'success');
         }
+
+        return back()->with('alert', 'Product added to cart')->with('alertType', 'success');
     }
 
     // Obtener el carrito
@@ -102,7 +101,7 @@ class CartController extends Controller
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
-        return redirect()->back()->with("alert", "Cart updated successfully")->with("alertType", "success");
+        return response()->noContent();
     }
 
     // Eliminar un producto del carrito
@@ -111,9 +110,9 @@ class CartController extends Controller
         try {
             $cartItem = Cart::findOrFail($id);
             $cartItem->delete();
-            return redirect()->back()->with('alert', 'Item removed from cart')->with('alertType', 'success');
+            return response()->noContent();
         } catch (\Exception $e) {
-            return redirect()->back()->with('alert', 'Failed to remove item')->with('alertType', 'error');
+            return response()->noContent();
         }
     }
 
@@ -122,9 +121,9 @@ class CartController extends Controller
     {
         try {
             Cart::where("user_id", Auth::id())->delete();
-            return redirect()->back()->with('alert', 'All items removed from cart')->with('alertType', 'success');
+            return response()->noContent();
         } catch (\Exception $e) {
-            return redirect()->back()->with('alert', 'Failed to remove all items')->with('alertType', 'error');
+            return response()->noContent();
         }
     }
 
@@ -132,9 +131,9 @@ class CartController extends Controller
     {
         $userId = Auth::id();
 
-        // Obtener los productos del carrito con los detalles de la camiseta
+        // Obtener los productos del carrito con los detalles del producto
         $cartItems = Cart::where("user_id", $userId)
-            ->with("tshirt")
+            ->with("product")
             ->get();
 
         return response()->json($cartItems);

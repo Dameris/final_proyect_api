@@ -26,9 +26,8 @@ const props = defineProps({
 // Función para agregar al carrito
 const addToCart = () => {
 	console.log("Intentando añadir al carrito...");
-	if (!props.auth.user) {
-		return;
-	}
+
+	if (!props.auth.user) return;
 
 	if (!selectedSize.value) {
 		alert("Please select a size.");
@@ -36,7 +35,10 @@ const addToCart = () => {
 	}
 
 	// Enviar el producto y la talla seleccionada al servidor
-	Inertia.post(`/cart/${props.tshirt.id}`, {
+	Inertia.post(route('cart.add', { 
+		type: 'tshirt', 
+		id: props.tshirt.id 
+	}), {
 		size: selectedSize.value
 	});
 };

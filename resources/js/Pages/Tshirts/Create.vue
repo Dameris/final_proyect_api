@@ -11,6 +11,17 @@ import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import TshirtsForm from "@/Components/Tshirts/Form.vue";
 
+const props = defineProps({
+	compositions: {
+		type: Array,
+		required: true,
+	},
+	fits: {
+		type: Array,
+		required: true,
+	},
+})
+
 const form = useForm({
 	tshirt_name: "",
 	tshirt_composition: "",
@@ -26,7 +37,11 @@ const form = useForm({
 		<div>
 			<h1>Create Tshirt</h1>
 
-			<TshirtsForm :form="form" />
+			<TshirtsForm 
+				:form="form"
+				:compositions="props.compositions"
+				:fits="props.fits"
+			/>
 		</div>
 	</AppLayout>
 </template>

@@ -27,6 +27,14 @@ const props = defineProps({
 		required: false,
 		default: false,
 	},
+	compositions: {
+		type: Array,
+		required: true,
+	},
+	fits: {
+		type: Array,
+		required: true,
+	},
 });
 
 const emit = defineEmits(["submit"]);
@@ -85,12 +93,20 @@ const handleSubmit = () => {
 					for="jogger_composition"
 					value="Jogger composition"
 				/>
-				<TextInput
+				<select
 					id="jogger_composition"
 					v-model="form.jogger_composition"
-					type="text"
-					autocomplete="jogger_composition"
-				/>
+					class="input"
+				>
+					<option disabled value="">Select composition</option>
+					<option
+						v-for="comp in compositions"
+						:key="comp"
+						:value="comp"
+					>
+						{{ comp }}
+					</option>
+				</select>
 				<InputError :message="form.errors.jogger_composition" />
 			</div>
 			<div>
@@ -98,12 +114,20 @@ const handleSubmit = () => {
 					for="jogger_fit"
 					value="Jogger fit"
 				/>
-				<TextInput
+				<select
 					id="jogger_fit"
 					v-model="form.jogger_fit"
-					type="text"
-					autocomplete="jogger_fit"
-				/>
+					class="input"
+				>
+					<option disabled value="">Select fit</option>
+					<option
+						v-for="fit in fits"
+						:key="fit"
+						:value="fit"
+					>
+						{{ fit }}
+					</option>
+				</select>
 				<InputError :message="form.errors.jogger_fit" />
 			</div>
 			<div v-if="isAdmin">

@@ -11,25 +11,8 @@ const fetchCart = async () => {
 	try {
 		const response = await axios.get("/api/cart");
 		cart.value = response.data || [];
-
-		// Para cada producto en el carrito, obtener los detalles de la camiseta
-		for (let item of cart.value) {
-			await fetchTshirtDetails(item.tshirt_id, item);
-		}
 	} catch (error) {
 		console.error("Error fetching cart:", error);
-	}
-};
-
-// Obtener los detalles de una camiseta por ID
-const fetchTshirtDetails = async (tshirtId, item) => {
-	try {
-		const response = await axios.get(`/api/tshirt/${tshirtId}`);
-		if (response.data) {
-			item.tshirtDetails = response.data;
-		}
-	} catch (error) {
-		console.error("Error fetching tshirt details:", error);
 	}
 };
 
@@ -68,16 +51,14 @@ const removeAllFromCart = async () => {
 	}
 };
 
-const checkout = async () => {
-	try {
-		Inertia.post("/checkout", {
-			cart: cart.value,
-		});
-		alert("Shop made successfully. Thanks for your purchase");
-	} catch (error) {
-		console.error("Error processing the checkout", error);
-		alert("Error with the checkout. Try again.");
-	}
+const checkout = () => {
+    Inertia.post("/checkout", {
+        cart: cart.value
+    }, {
+        onSuccess: () => {
+            fetchCart();
+        },
+    });
 };
 
 // Obtener el carrito cuando el componente se monta
@@ -107,11 +88,11 @@ onMounted(() => {
 				>
 					<div class="shoppingCart__list--itemDetails">
 						<span class="shoppingCart__list--itemName">
-							{{ item.tshirtDetails?.tshirt_name || item.tshirt.tshirt_name }}
+							{{ item.product?.tshirt_name ?? item.product?.jogger_name ?? 'Product removed' }}
 						</span>
 						-
 						<span class="shoppingCart__list--itemPrice">
-							€{{ item.tshirtDetails?.tshirt_price || item.tshirt.tshirt_price }}
+							€{{ item.product?.tshirt_price ?? item.product?.jogger_price ?? 0 }}
 						</span>
 						x {{ item.quantity }} (Size: {{ item.size }})
 					</div>
@@ -138,7 +119,7 @@ onMounted(() => {
 					>Total:
 					{{
 						cart.reduce(
-							(sum, item) => sum + (item.tshirtDetails?.tshirt_price || item.tshirt.tshirt_price) * item.quantity,
+							(sum, item) => sum + (item.product?.tshirt_price ?? item.product?.jogger_price ?? 0) * item.quantity,
 							0,
 						)
 					}}€</strong

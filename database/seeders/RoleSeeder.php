@@ -14,18 +14,23 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $role_admin = Role::create(["name" => "admin"]);
-        $role_editor = Role::create(["name" => "editor"]);
+        $role_admin = Role::firstOrCreate(["name" => "admin"]);
+        $role_editor = Role::firstOrCreate(["name" => "editor"]);
 
-        $premission_create_role = Permission::create(["name" => "createRoles"]);
-        $premission_read_role = Permission::create(["name" => "readRoles"]);
-        $premission_update_role = Permission::create(["name" => "updateRoles"]);
-        $premission_delete_role = Permission::create(["name" => "deleteRoles"]);
+        $premission_create_role = Permission::firstOrCreate(["name" => "createRoles"]);
+        $premission_read_role = Permission::firstOrCreate(["name" => "readRoles"]);
+        $premission_update_role = Permission::firstOrCreate(["name" => "updateRoles"]);
+        $premission_delete_role = Permission::firstOrCreate(["name" => "deleteRoles"]);
 
-        $premission_create_tshirt = Permission::create(["name" => "createtshirts"]);
-        $premission_read_tshirt = Permission::create(["name" => "readtshirts"]);
-        $premission_update_tshirt = Permission::create(["name" => "updatetshirts"]);
-        $premission_delete_tshirt = Permission::create(["name" => "deletetshirts"]);
+        $premission_create_tshirt = Permission::firstOrCreate(["name" => "createtshirts"]);
+        $premission_read_tshirt = Permission::firstOrCreate(["name" => "readtshirts"]);
+        $premission_update_tshirt = Permission::firstOrCreate(["name" => "updatetshirts"]);
+        $premission_delete_tshirt = Permission::firstOrCreate(["name" => "deletetshirts"]);
+
+        $premission_create_jogger = Permission::firstOrCreate(["name" => "createjoggers"]);
+        $premission_read_jogger = Permission::firstOrCreate(["name" => "readjoggers"]);
+        $premission_update_jogger = Permission::firstOrCreate(["name" => "updatejoggers"]);
+        $premission_delete_jogger = Permission::firstOrCreate(["name" => "deletejoggers"]);
 
         $permissions_admin = [
             $premission_create_role,
@@ -35,10 +40,23 @@ class RoleSeeder extends Seeder
             $premission_create_tshirt,
             $premission_read_tshirt,
             $premission_update_tshirt,
-            $premission_delete_tshirt
+            $premission_delete_tshirt,
+            $premission_create_jogger,
+            $premission_read_jogger,
+            $premission_update_jogger,
+            $premission_delete_jogger
         ];
 
-        $permissions_editor = [$premission_create_tshirt, $premission_read_tshirt, $premission_update_tshirt, $premission_delete_tshirt];
+        $permissions_editor = [
+            $premission_create_tshirt,
+            $premission_read_tshirt,
+            $premission_update_tshirt,
+            $premission_delete_tshirt,
+            $premission_create_jogger,
+            $premission_read_jogger,
+            $premission_update_jogger,
+            $premission_delete_jogger
+        ];
 
         $role_admin->syncPermissions($permissions_admin);
         $role_editor->syncPermissions($permissions_editor);

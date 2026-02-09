@@ -10,7 +10,7 @@ class OrderItem extends Model
     /** @use HasFactory<\Database\Factories\CartFactory> */
     use HasFactory;
     public $table = "order_items";
-    protected $fillable = ["order_id", "tshirt_id", "quantity", "price"];
+    protected $fillable = ["order_id", "product_id", "product_type", "quantity", "size", "price"];
     public $timestamps = false;
 
     // Relación inversa con Order
@@ -19,9 +19,8 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class);
     }
 
-    // Relación con Tshirt (suponiendo que tienes este modelo)
-    public function tshirt()
+    public function product()
     {
-        return $this->belongsTo(Tshirt::class);
+        return $this->morphTo();
     }
 }
