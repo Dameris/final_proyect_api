@@ -4,6 +4,8 @@ import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { useAuthStore } from "../../stores/auth";
 import { storeToRefs } from "pinia";
+import axios from "axios";
+import { watch } from "vue";
 
 const auth = useAuthStore();
 const { user } = storeToRefs(auth);
@@ -29,22 +31,27 @@ const toggleSearch = () => {
 };
 
 // Función para realizar búsqueda
-const search = async () => {
-	if (searchQuery.value.length >= 3) {
+let timeout = null;
+
+watch(searchQuery, (newValue) => {
+	clearTimeout(timeout);
+
+	if (newValue.length < 3) {
+		searchResults.value = [];
+		return;
+	}
+
+	timeout = setTimeout(async () => {
 		try {
 			const response = await axios.get("/search", {
-				params: {
-					query: searchQuery.value,
-				},
+				params: { query: newValue },
 			});
 			searchResults.value = response.data;
 		} catch (error) {
-			console.error("Error making the search", error);
+			console.error("Search error:", error);
 		}
-	} else {
-		searchResults.value = [];
-	}
-};
+	}, 400);
+});
 
 // Función para logout
 const logout = async () => {
@@ -213,7 +220,6 @@ const logout = async () => {
 										type="text"
 										placeholder="Type to search..."
 										v-model="searchQuery"
-										@input="search"
 									/>
 								</div>
 								<div
@@ -221,20 +227,25 @@ const logout = async () => {
 									class="header__fullscreenSearch--results"
 								>
 									<ul>
-										<li
-											v-for="result in searchResults"
-											:key="result.id"
-										>
+										<li v-for="result in searchResults" :key="result.id">
 											<Link
-												:href="route('tshirts.show', { tshirt: result.id })"
+												:href="
+												result.type === 'tshirt'
+												? route('tshirts.show', { tshirt: result.id })
+												: route('joggers.show', { jogger: result.id })"
 												class="header__link"
 											>
 												<img
-													:src="'/storage/img/tshirts/' + result.tshirt_img1"
-													alt="Tshirt Image"
+													:src="
+													result.type === 'tshirt'
+													? '/storage/img/tshirts/' + result.image
+													: '/storage/img/joggers/' + result.image"
+												alt="Product Image"
 												/>
 												<br />
-												{{ result.tshirt_name }} - {{ result.tshirt_price }}€
+												{{ result.name }} - {{ result.price }}€
+												<br />
+												<small>{{ result.type.toUpperCase() }}</small>
 											</Link>
 										</li>
 									</ul>
@@ -304,7 +315,6 @@ const logout = async () => {
 								type="text"
 								placeholder="Type to search..."
 								v-model="searchQuery"
-								@input="search"
 							/>
 						</div>
 						<div
@@ -312,22 +322,27 @@ const logout = async () => {
 							v-if="searchResults.length > 0"
 						>
 							<ul>
-								<li
-									v-for="result in searchResults"
-									:key="result.id"
-								>
-									<Link
-										:href="route('tshirts.show', { tshirt: result.id })"
-										class="header__link"
-									>
-										<img
-											:src="'/storage/img/tshirts/' + result.tshirt_img1"
-											alt="Tshirt Image"
-										/>
-										<br />
-										{{ result.tshirt_name }} - {{ result.tshirt_price }}€
-									</Link>
-								</li>
+								<li v-for="result in searchResults" :key="result.id">
+											<Link
+												:href="
+												result.type === 'tshirt'
+												? route('tshirts.show', { tshirt: result.id })
+												: route('joggers.show', { jogger: result.id })"
+												class="header__link"
+											>
+												<img
+													:src="
+													result.type === 'tshirt'
+													? '/storage/img/tshirts/' + result.image
+													: '/storage/img/joggers/' + result.image"
+												alt="Product Image"
+												/>
+												<br />
+												{{ result.name }} - {{ result.price }}€
+												<br />
+												<small>{{ result.type.toUpperCase() }}</small>
+											</Link>
+										</li>
 							</ul>
 						</div>
 					</div>

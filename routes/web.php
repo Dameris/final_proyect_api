@@ -15,6 +15,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\JoggerController;
 use Inertia\Inertia;
+use App\Http\Controllers\SearchController;
 
 // NO AUTH ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -47,7 +48,11 @@ Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
 
 Route::get('/auth/check', [AuthController::class, 'checkSession']);
 
-Route::get('/shop', function () {return Inertia::render('Shop');})->name('shop.index');
+Route::get('/shop', function () {
+    return Inertia::render('Shop');
+})->name('shop.index');
+
+Route::get('/search', [SearchController::class, 'search']);
 
 Route::middleware(['auth', 'verified',])->group(function () {
 
