@@ -177,7 +177,7 @@ const logout = async () => {
 						<li>
 							<Link
 								class="header__btn"
-								:href="route('tshirts.index')"
+								:href="route('shop.index')"
 							>
 								<strong>SHOP</strong>
 							</Link>
@@ -256,7 +256,7 @@ const logout = async () => {
 					<li>
 						<Link
 							class="header__btn"
-							:href="route('tshirts.index')"
+							:href="route('shop.index')"
 						>
 							<strong>SHOP</strong>
 						</Link>

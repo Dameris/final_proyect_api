@@ -1,0 +1,67 @@
+.shop__container {
+	text-align: center;
+	padding: 2em;
+}
+
+.shop__options {
+	display: flex;
+	justify-content: center;
+	gap: 2em;
+	margin-top: 1.5em;
+}
+
+.shop__card {
+	padding: 2em;
+	background: #56b5e4;
+	color: white;
+	text-decoration: none;
+	font-size: 1.2em;
+	border-radius: 0.5em;
+	transition: 0.3s;
+}
+
+.shop__card:hover {
+	background: #8aceef;
+}
+
+/** Media queries */
+@media (max-width: 1024px) {
+	.shop__options {
+		gap: 1.5em;
+	}
+
+	.shop__card {
+		padding: 2em;
+		font-size: 1em;
+	}
+}
+
+@media (max-width: 768px) {
+	.shop__container {
+		padding: 2em;
+	}
+
+	.shop__options {
+		flex-direction: column;
+		align-items: center;
+		gap: 1em;
+	}
+
+	.shop__card {
+		width: 80%;
+		padding: 1em;
+		font-size: 1em;
+	}
+}
+
+@media (max-width: 480px) {
+	.shop__container {
+		padding: 2em;
+	}
+
+	.shop__card {
+		width: 100%;
+		font-size: 1em;
+		padding: 1em;
+	}
+}
