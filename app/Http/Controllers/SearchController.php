@@ -13,25 +13,33 @@ class SearchController extends Controller
     {
         try {
             $query = strtolower(trim($request->query('query')));
-
-            if (!$query || strlen($query) < 2) {
-                return response()->json([]);
-            }
+            $category = $request->query('category'); // tshirt | jogger | null
+            $minPrice = $request->query('min_price');
+            $maxPrice = $request->query('max_price');
 
             $results = collect();
 
-            $searchTshirts = str_contains($query, 'tshirt')
-                || str_contains($query, 'shirt');
+            if (!$category || $category === 'tshirt') {
 
-            $searchJoggers = str_contains($query, 'jogger')
-                || str_contains($query, 'pants');
+                $tshirtsQuery = Tshirt::query();
 
-            if ($searchTshirts || (!$searchTshirts && !$searchJoggers)) {
+                if ($query) {
+                    $tshirtsQuery->where(function ($q) use ($query) {
+                        $q->where('tshirt_name', 'like', "%{$query}%")
+                            ->orWhere('tshirt_composition', 'like', "%{$query}%")
+                            ->orWhere('tshirt_fit', 'like', "%{$query}%");
+                    });
+                }
 
-                $tshirts = Tshirt::where('tshirt_name', 'like', "%{$query}%")
-                    ->orWhere('tshirt_composition', 'like', "%{$query}%")
-                    ->orWhere('tshirt_fit', 'like', "%{$query}%")
-                    ->get();
+                if ($minPrice) {
+                    $tshirtsQuery->where('tshirt_price', '>=', $minPrice);
+                }
+
+                if ($maxPrice) {
+                    $tshirtsQuery->where('tshirt_price', '<=', $maxPrice);
+                }
+
+                $tshirts = $tshirtsQuery->get();
 
                 foreach ($tshirts as $item) {
                     $results->push([
@@ -44,12 +52,27 @@ class SearchController extends Controller
                 }
             }
 
-            if ($searchJoggers || (!$searchTshirts && !$searchJoggers)) {
+            if (!$category || $category === 'jogger') {
 
-                $joggers = Jogger::where('jogger_name', 'like', "%{$query}%")
-                    ->orWhere('jogger_composition', 'like', "%{$query}%")
-                    ->orWhere('jogger_fit', 'like', "%{$query}%")
-                    ->get();
+                $joggersQuery = Jogger::query();
+
+                if ($query) {
+                    $joggersQuery->where(function ($q) use ($query) {
+                        $q->where('jogger_name', 'like', "%{$query}%")
+                            ->orWhere('jogger_composition', 'like', "%{$query}%")
+                            ->orWhere('jogger_fit', 'like', "%{$query}%");
+                    });
+                }
+
+                if ($minPrice) {
+                    $joggersQuery->where('jogger_price', '>=', $minPrice);
+                }
+
+                if ($maxPrice) {
+                    $joggersQuery->where('jogger_price', '<=', $maxPrice);
+                }
+
+                $joggers = $joggersQuery->get();
 
                 foreach ($joggers as $item) {
                     $results->push([

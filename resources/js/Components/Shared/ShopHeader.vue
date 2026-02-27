@@ -15,6 +15,9 @@ const isShopOpen = ref(false);
 const isSearchOpen = ref(false);
 const searchQuery = ref("");
 const searchResults = ref([]);
+const category = ref("");
+const minPrice = ref("");
+const maxPrice = ref("");
 
 onMounted(() => {
 	auth.fetchUser();
@@ -33,10 +36,16 @@ const toggleSearch = () => {
 // Función para realizar búsqueda
 let timeout = null;
 
-watch(searchQuery, (newValue) => {
+watch([searchQuery, category, minPrice, maxPrice], ([query]) => {
 	clearTimeout(timeout);
 
-	if (newValue.length < 3) {
+	// si no hay nada escrito y no hay filtros → limpiar resultados
+	if (
+		query.length < 3 &&
+		!category.value &&
+		!minPrice.value &&
+		!maxPrice.value
+	) {
 		searchResults.value = [];
 		return;
 	}
@@ -44,8 +53,14 @@ watch(searchQuery, (newValue) => {
 	timeout = setTimeout(async () => {
 		try {
 			const response = await axios.get("/search", {
-				params: { query: newValue },
+				params: {
+					query: query,
+					category: category.value,
+					min_price: minPrice.value,
+					max_price: maxPrice.value,
+				},
 			});
+
 			searchResults.value = response.data;
 		} catch (error) {
 			console.error("Search error:", error);
@@ -206,7 +221,7 @@ const logout = async () => {
 							</button>
 
 							<div
-								v-if="isSearchOpen"
+								v-show="isSearchOpen"
 								class="header__fullscreenSearch"
 							>
 								<div class="header__fullscreenSearch--bar">
@@ -221,6 +236,23 @@ const logout = async () => {
 										placeholder="Type to search..."
 										v-model="searchQuery"
 									/>
+									<div class="header__filters">
+										<select v-model="category">
+											<option value="">All</option>
+											<option value="tshirt">Tshirts</option>
+											<option value="jogger">Joggers</option>
+										</select>
+										<input
+											type="number"
+											placeholder="Min €"
+											v-model="minPrice"
+										/>
+										<input
+											type="number"
+											placeholder="Max €"
+											v-model="maxPrice"
+										/>
+									</div>
 								</div>
 								<div
 									v-if="Array.isArray(searchResults) && searchResults.length > 0"
@@ -301,7 +333,7 @@ const logout = async () => {
 					</button>
 
 					<div
-						v-if="isSearchOpen"
+						v-show="isSearchOpen"
 						class="header__fullscreenSearch"
 					>
 						<div class="header__fullscreenSearch--bar">
@@ -316,6 +348,23 @@ const logout = async () => {
 								placeholder="Type to search..."
 								v-model="searchQuery"
 							/>
+							<div class="header__filters">
+								<select v-model="category">
+									<option value="">All</option>
+									<option value="tshirt">Tshirts</option>
+									<option value="jogger">Joggers</option>
+								</select>
+								<input
+									type="number"
+									placeholder="Min €"
+									v-model="minPrice"
+								/>
+								<input
+									type="number"
+									placeholder="Max €"
+									v-model="maxPrice"
+								/>
+							</div>		
 						</div>
 						<div
 							class="header__fullscreenSearch--results"

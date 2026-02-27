@@ -278,6 +278,22 @@
 	margin-right: 10px;
 }
 
+.header__filters {
+	display: flex;
+	gap: 10px;
+	margin-top: 15px;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.header__filters select,
+.header__filters input {
+	padding: 6px 10px;
+	border-radius: 4px;
+	border: 1px solid #ccc;
+	font-size: 14px;
+}
+
 /*^ Search container*/
 
 /** Media query */
