@@ -68,6 +68,14 @@ watch([searchQuery, category, minPrice, maxPrice], ([query]) => {
 	}, 400);
 });
 
+const clearFilters = () => {
+	category.value = "";
+	minPrice.value = "";
+	maxPrice.value = "";
+	searchQuery.value = "";
+	searchResults.value = [];
+};
+
 // Función para logout
 const logout = async () => {
 	await auth.logout();
@@ -236,6 +244,9 @@ const logout = async () => {
 										placeholder="Type to search..."
 										v-model="searchQuery"
 									/>
+									<button @click="clearFilters" class="clearFilters">
+									Clear filters
+									</button>
 									<div class="header__filters">
 										<select v-model="category">
 											<option value="">All</option>
@@ -348,6 +359,9 @@ const logout = async () => {
 								placeholder="Type to search..."
 								v-model="searchQuery"
 							/>
+							<button @click="clearFilters" class="clear__filters">
+								Clear filters
+							</button>
 							<div class="header__filters">
 								<select v-model="category">
 									<option value="">All</option>
@@ -364,7 +378,7 @@ const logout = async () => {
 									placeholder="Max €"
 									v-model="maxPrice"
 								/>
-							</div>		
+							</div>
 						</div>
 						<div
 							class="header__fullscreenSearch--results"

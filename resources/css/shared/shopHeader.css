@@ -236,15 +236,15 @@
 .header__fullscreenSearch--results {
 	background-color: #ffffff;
 	position: absolute;
-	top: 60px;
+	top: 7vh;
 	left: 0;
 	width: 100%;
-	max-height: 300px;
+	max-height: 20em;
 	overflow-y: auto;
 	border: 1px solid #ddd;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	z-index: 9999;
-	padding: 10px;
+	padding: 0.5em;
 }
 
 .header__fullscreenSearch--results ul {
@@ -254,8 +254,8 @@
 }
 
 .header__fullscreenSearch--results li {
-	padding: 8px;
-	margin: 5px 0;
+	padding: 0.5em;
+	margin: 1em 0;
 	border-bottom: 1px solid #f0f0f0;
 	cursor: pointer;
 }
@@ -273,25 +273,37 @@
 }
 
 .header__fullscreenSearch--results li img {
-	width: 50px;
+	width: 20vh;
 	height: auto;
-	margin-right: 10px;
+	margin-right: 0.5vw;
 }
 
 .header__filters {
 	display: flex;
-	gap: 10px;
-	margin-top: 15px;
+	gap: 1em;
+	margin-top: 1vh;
 	justify-content: center;
 	flex-wrap: wrap;
 }
 
 .header__filters select,
 .header__filters input {
-	padding: 6px 10px;
-	border-radius: 4px;
-	border: 1px solid #ccc;
+	padding: 1vh 1vw;
+	border: 1px solid #8aceef;
 	font-size: 14px;
+}
+
+.clear__filters {
+	padding: 0.5em;
+	margin-left: 1em;
+	background: #8aceef;
+	border: none;
+	font-size: medium;
+	cursor: pointer;
+}
+
+.clear__filters:hover {
+	background: #56b5e4;
 }
 
 /*^ Search container*/
