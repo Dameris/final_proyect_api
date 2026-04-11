@@ -27,20 +27,25 @@ const props = defineProps({
 const addToCart = () => {
 	console.log("Intentando añadir al carrito...");
 
-	if (!props.auth.user) return;
+	if (!props.auth.user) {
+		Inertia.visit(route('login'));
+		return;
+	}
 
 	if (!selectedSize.value) {
-		alert("Please select a size.");
+		alert("Please, select a size.");
 		return;
 	}
 
 	// Enviar el producto y la talla seleccionada al servidor
 	Inertia.post(route('cart.add', { 
-		type: 'jogger', 
-		id: props.jogger.id 
+		type: 'JOGGER', 
+		id: props.jogger.id 	
 	}), {
 		size: selectedSize.value
 	});
+
+	alert("Jogger added successfully")
 };
 
 // Función para manejar el cambio de talla

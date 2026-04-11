@@ -10,12 +10,12 @@
 }
 
 .logIn__link-signUp #link {
-	color: #8aceef;
+	color: #56b5e4;
 }
 
 .logIn__link-signUp:hover #link {
 	text-decoration: underline;
-	color: #56b5e4;
+	color: #8aceef;
 }
 
 /** Link to Sign Up*/

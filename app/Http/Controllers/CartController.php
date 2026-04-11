@@ -101,7 +101,7 @@ class CartController extends Controller
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
-        return response()->noContent();
+        return redirect()->back();
     }
 
     // Eliminar un producto del carrito
@@ -110,9 +110,9 @@ class CartController extends Controller
         try {
             $cartItem = Cart::findOrFail($id);
             $cartItem->delete();
-            return response()->noContent();
+            return redirect()->back();
         } catch (\Exception $e) {
-            return response()->noContent();
+            return redirect()->back();
         }
     }
 
@@ -121,9 +121,9 @@ class CartController extends Controller
     {
         try {
             Cart::where("user_id", Auth::id())->delete();
-            return response()->noContent();
+            return redirect()->back();
         } catch (\Exception $e) {
-            return response()->noContent();
+            return redirect()->back();
         }
     }
 

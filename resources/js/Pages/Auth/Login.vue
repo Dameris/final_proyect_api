@@ -155,6 +155,14 @@ const submit = () => {
 					LOG IN
 				</button>
 			</form>
+			<!-- <p class="logIn__link-signUp">
+				<Link
+					:href="route('password.request')"
+					id="link"
+				>
+					FORGOT YOUR PASSWORD?
+				</Link>
+			</p> -->
 			<p class="logIn__link-signUp">
 				NOT A MEMBER?
 				<Link
