@@ -16,6 +16,8 @@ use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\JoggerController;
 use Inertia\Inertia;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 
 // NO AUTH ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -90,3 +92,9 @@ Route::middleware(['auth', 'verified',])->group(function () {
 
 Route::get('/tshirts/{tshirt}', [TshirtController::class, 'show'])->name('tshirts.show');
 Route::get('/joggers/{jogger}', [JoggerController::class, 'show'])->name('joggers.show');
+
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');

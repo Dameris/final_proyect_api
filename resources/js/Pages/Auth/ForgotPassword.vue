@@ -1,61 +1,89 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-
-defineProps({
-    status: String,
-});
+import { useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import SuccessAlert from "@/Components/Shared/SuccessAlert.vue";
+import ErrorAlert from "@/Components/Shared/ErrorAlert.vue";
 
 const form = useForm({
-    email: '',
+    email: "",
 });
 
+const emailError = ref(false);
+
+const showSuccessAlert = ref(false);
+const showErrorAlert = ref(false);
+const successMessage = ref("");
+const errorMessage = ref("");
+
+const validateEmail = () => {
+    const pattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    emailError.value = !pattern.test(form.email);
+};
+
 const submit = () => {
-    form.post(route('password.email'));
+    validateEmail();
+
+    if (emailError.value) {
+        showErrorAlert.value = true;
+        errorMessage.value = "Enter a valid email.";
+        return;
+    }
+
+    form.post(route("password.email"), {
+        onSuccess: () => {
+            showSuccessAlert.value = true;
+            successMessage.value = "CHECK YOUR EMAIL 📩";
+
+            setTimeout(() => {
+                showSuccessAlert.value = false;
+            }, 2500);
+        },
+        onError: () => {
+            showErrorAlert.value = true;
+            errorMessage.value = "Something went wrong.";
+        },
+    });
 };
 </script>
 
 <template>
-    <Head title="Forgot Password" />
+    <AppLayout>
+        <div class="formBox">
+            <p class="formBox__title">RESET PASSWORD</p>
 
-    <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
+            <form @submit.prevent="submit">
+                <input
+					class="formBox-form__input"
+					type="email"
+					title="email"
+					name="email"
+					placeholder="EMAIL"
+					required
+					v-model="form.email"
+					@input="validateEmail"
+				/>
+                <span
+					v-if="emailError"
+					class="formBox-form--errorMessage"
+				>
+					Please enter a valid email address.
+				</span>
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+                <button
+					class="formBox-form__btn"
+					type="submit"
+				>
+                    SEND RESET LINK
+                </button>
+            </form>
+
+            <SuccessAlert v-if="showSuccessAlert" :message="successMessage" />
+            <ErrorAlert v-if="showErrorAlert" :message="errorMessage" />
         </div>
-
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
-                </PrimaryButton>
-            </div>
-        </form>
-    </AuthenticationCard>
+    </AppLayout>
 </template>
+
+<style scoped>
+@import "../../../css/auth/formBox.css";
+</style>

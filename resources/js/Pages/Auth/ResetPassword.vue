@@ -1,85 +1,105 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { useForm, usePage } from "@inertiajs/vue3";
+import { ref } from "vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import SuccessAlert from "@/Components/Shared/SuccessAlert.vue";
+import ErrorAlert from "@/Components/Shared/ErrorAlert.vue";
 
-const props = defineProps({
-    email: String,
-    token: String,
-});
+const props = usePage().props;
 
 const form = useForm({
     token: props.token,
     email: props.email,
-    password: '',
-    password_confirmation: '',
+    password: "",
+    password_confirmation: "",
 });
 
+const passwordError = ref(false);
+
+const showSuccessAlert = ref(false);
+const showErrorAlert = ref(false);
+const successMessage = ref("");
+const errorMessage = ref("");
+
+const validatePassword = () => {
+	const lengthRegex = /.{8,}/;
+	const upperCaseRegex = /[A-Z]/;
+	const specialCharRegex = /[*, +, -, ., @, #, %, &, _, ~, ^, /, <, >]/;
+
+	const hasLength = lengthRegex.test(form.password);
+	const hasUpperCase = upperCaseRegex.test(form.password);
+	const hasSpecialChar = specialCharRegex.test(form.password);
+
+	passwordError.value = !hasLength || !hasUpperCase || !hasSpecialChar;
+};
+
 const submit = () => {
-    form.post(route('password.update'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+    validatePassword();
+
+    if (passwordError.value) {
+        showErrorAlert.value = true;
+        errorMessage.value = "Invalid password format.";
+        return;
+    }
+
+    form.post(route("password.store"), {
+        onSuccess: () => {
+            showSuccessAlert.value = true;
+            successMessage.value = "PASSWORD UPDATED ✅";
+
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2000);
+        },
+        onError: () => {
+            showErrorAlert.value = true;
+            errorMessage.value = "Reset failed.";
+        },
     });
 };
 </script>
 
 <template>
-    <Head title="Reset Password" />
+    <AppLayout>
+        <div class="formBox">
+            <p class="formBox__title">NEW PASSWORD</p>
 
-    <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
+            <form
+				class="formBox-form"
+				@submit.prevent="submit"
+			>
+                <input
+					class="formBox-form__input"
+					type="password"
+					placeholder="PASSWORD"
+					required
+					v-model="form.password"
+					@input="validatePassword"
+				/>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-                <TextInput
-                    id="password"
-                    v-model="form.password"
+                <input
+					class="formBox-form__input"
                     type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
-                    id="password_confirmation"
+                    placeholder="CONFIRM PASSWORD"
+					required
                     v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
+					@input="validatePassword"
                 />
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Reset Password
-                </PrimaryButton>
-            </div>
-        </form>
-    </AuthenticationCard>
+                <button
+					class="formBox-form__btn"
+					type="submit"
+				>
+                    RESET PASSWORD
+                </button>
+            </form>
+
+            <SuccessAlert v-if="showSuccessAlert" :message="successMessage" />
+            <ErrorAlert v-if="showErrorAlert" :message="errorMessage" />
+        </div>
+    </AppLayout>
 </template>
+
+<style scoped>
+@import "../../../css/auth/formBox.css";
+</style>
