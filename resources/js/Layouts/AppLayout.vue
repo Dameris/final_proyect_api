@@ -4,6 +4,7 @@ import ShopFooter from "@/Components/Shared/ShopFooter.vue";
 import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { usePage } from "@inertiajs/inertia-vue3";
+import { Head } from '@inertiajs/vue3'
 
 const auth = useAuthStore()
 

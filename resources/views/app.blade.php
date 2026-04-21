@@ -11,7 +11,7 @@
 			content="{{ csrf_token() }}"
 		/>
 
-		<title inertia>{{ config("app.name", "Laravel") }}</title>
+		<title inertia>{{ config("app.name", "SkyUrban") }}</title>
 
 		<!-- Fonts -->
 		<link
