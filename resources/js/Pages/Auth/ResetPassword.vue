@@ -38,7 +38,7 @@ const submit = () => {
 
     if (passwordError.value) {
         showErrorAlert.value = true;
-        errorMessage.value = "Invalid password format.";
+        errorMessage.value = "Invalid password format. (8+ characters, 1+ uppercase and 1+ special character)";
         return;
     }
 
@@ -101,5 +101,5 @@ const submit = () => {
 </template>
 
 <style scoped>
-@import "../../../css/auth/formBox.css";
+@import "../../../css/auth/resetPassword.css";
 </style>

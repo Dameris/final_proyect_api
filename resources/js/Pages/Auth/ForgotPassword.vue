@@ -85,5 +85,5 @@ const submit = () => {
 </template>
 
 <style scoped>
-@import "../../../css/auth/formBox.css";
+@import "../../../css/auth/forgotPassword.css";
 </style>
