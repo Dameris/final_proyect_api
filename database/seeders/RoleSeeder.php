@@ -32,6 +32,11 @@ class RoleSeeder extends Seeder
         $premission_update_jogger = Permission::firstOrCreate(["name" => "updatejoggers"]);
         $premission_delete_jogger = Permission::firstOrCreate(["name" => "deletejoggers"]);
 
+        $permission_create_event = Permission::firstOrCreate(["name" => "createEvents"]);
+        $permission_read_event = Permission::firstOrCreate(["name" => "readEvents"]);
+        $permission_update_event = Permission::firstOrCreate(["name" => "updateEvents"]);
+        $permission_delete_event = Permission::firstOrCreate(["name" => "deleteEvents"]);
+
         $permissions_admin = [
             $premission_create_role,
             $premission_read_role,
@@ -44,7 +49,11 @@ class RoleSeeder extends Seeder
             $premission_create_jogger,
             $premission_read_jogger,
             $premission_update_jogger,
-            $premission_delete_jogger
+            $premission_delete_jogger,
+            $permission_create_event,
+            $permission_read_event,
+            $permission_update_event,
+            $permission_delete_event
         ];
 
         $permissions_editor = [
@@ -55,7 +64,11 @@ class RoleSeeder extends Seeder
             $premission_create_jogger,
             $premission_read_jogger,
             $premission_update_jogger,
-            $premission_delete_jogger
+            $premission_delete_jogger,
+            $permission_create_event,
+            $permission_read_event,
+            $permission_update_event,
+            $permission_delete_event
         ];
 
         $role_admin->syncPermissions($permissions_admin);

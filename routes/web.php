@@ -18,6 +18,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\EventController;
 
 // NO AUTH ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -56,6 +57,8 @@ Route::get('/shop', function () {
 
 Route::get('/search', [SearchController::class, 'search']);
 
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+
 Route::middleware(['auth', 'verified',])->group(function () {
 
     Route::get('/tshirts/create', [TshirtController::class, 'create'])->name('tshirts.create');
@@ -86,6 +89,12 @@ Route::middleware(['auth', 'verified',])->group(function () {
 
     Route::get('/api/tshirt/{id}', [TshirtController::class, 'getTshirtDetails']);
     Route::get('/api/jogger/{id}', [JoggerController::class, 'getJoggerDetails']);
+
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
