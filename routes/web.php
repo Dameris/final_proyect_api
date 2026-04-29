@@ -102,6 +102,8 @@ Route::middleware(['auth', 'verified',])->group(function () {
 Route::get('/tshirts/{tshirt}', [TshirtController::class, 'show'])->name('tshirts.show');
 Route::get('/joggers/{jogger}', [JoggerController::class, 'show'])->name('joggers.show');
 
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
 Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 

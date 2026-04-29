@@ -1,0 +1,149 @@
+.events {
+	padding: 2em;
+	text-align: center;
+}
+
+.events__title {
+	color: #8aceef;
+	margin-bottom: 1em;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.events__create {
+	margin-bottom: 1.5em;
+}
+
+.events__create a {
+	background: #56b5e4;
+	color: #fff;
+	padding: 0.6em 1.2em;
+	border-radius: 0.5em;
+	text-decoration: none;
+	transition: 0.2s;
+	font-weight: bold;
+}
+
+.events__create a:hover {
+	background: #8aceef;
+}
+
+.events__calendar {
+	max-width: 50vw;
+	margin: 0 auto;
+	background: #fff;
+	padding: 1em;
+	border-radius: 0.5em;
+	box-shadow: 1em 1em 1em rgba(0, 0, 0, 0.1);
+}
+
+:deep(.fc) {
+	font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+:deep(.fc-toolbar-title) {
+	text-transform: uppercase;
+	color: #56b5e4;
+}
+
+:deep(.fc-button) {
+	background: #56b5e4 !important;
+	border: none !important;
+	border-radius: 0.5em !important;
+	text-transform: uppercase;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+}
+
+:deep(.fc-button:hover) {
+	background: #8aceef !important;
+}
+
+:deep(.fc-button-disabled) {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+/* DÍAS DE LA SEMANA */
+:deep(.fc-col-header-cell-cushion) {
+	text-transform: uppercase;
+	color: #8aceef;
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+
+:deep(.fc-daygrid-day) {
+	background: #fff;
+	transition: 0.2s;
+}
+
+:deep(.fc-daygrid-day:hover) {
+	background: #c3ebff;
+}
+
+:deep(.fc-daygrid-day-number) {
+	color: #0093dd;
+	font-weight: bold;
+}
+
+:deep(.fc-day-today) {
+	background: #d4f0ff !important;
+	border: 1px solid #8aceef;
+}
+
+:deep(.fc-day-sat),
+:deep(.fc-day-sun) {
+	background: #f0f8ff;
+}
+
+:deep(.fc-day-other) {
+	opacity: 0.4;
+}
+
+:deep(.fc-daygrid-event) {
+	border: none !important;
+	border-radius: 0.5em;
+	padding: 0.5em 1em;
+}
+
+:deep(.fc-event-title) {
+	font-weight: bold;
+}
+
+/** Media queries */
+
+@media (max-width: 1024px) {
+	.events {
+		padding: 1.5em;
+	}
+
+	.events__calendar {
+		max-width: 90%;
+	}
+}
+
+@media (max-width: 768px) {
+	.events {
+		padding: 1em;
+	}
+
+	.events__title {
+		font-size: 1.5rem;
+	}
+
+	.events__create a {
+		display: inline-block;
+		width: 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.events__calendar {
+		padding: 0.5em;
+	}
+
+	.events__title {
+		font-size: 1.3rem;
+	}
+}
+/** Media queries */

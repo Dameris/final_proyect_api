@@ -7,6 +7,7 @@ use App\Http\Requests\EventRequest;
 use Inertia\Inertia;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -20,11 +21,12 @@ class EventController extends Controller
                 return [
                     'id' => $event->id,
                     'title' => $event->title,
-                    'start' => \Carbon\Carbon::parse($event->start_date)->toIso8601String(),
+                    'start' => Carbon::parse($event->start_date)->toIso8601String(),
                     'end' => $event->end_date
-                        ? \Carbon\Carbon::parse($event->end_date)->toIso8601String()
+                        ? Carbon::parse($event->end_date)->toIso8601String()
                         : null,
                     'color' => $event->color,
+                    'location' => $event->location,
                 ];
             });
 
@@ -59,18 +61,28 @@ class EventController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(Event $event)
+    {
+        return Inertia::render('Events/Show', [
+            'event' => $event
+        ]);
+    }
+
+    /**
      * Show edit form
      */
     public function edit(Event $event)
     {
-        /** @var \App\Models\User|null $user */
-        $user = Auth::user();
+        $event->start_date = Carbon::parse($event->start_date)->format('Y-m-d\TH:i');
+
+        if ($event->end_date) {
+            $event->end_date = Carbon::parse($event->end_date)->format('Y-m-d\TH:i');
+        }
 
         return Inertia::render('Events/Edit', [
-            'event' => $event,
-            'auth' => [
-                'user' => $user ? $user->load('roles') : null,
-            ],
+            'event' => $event
         ]);
     }
 
