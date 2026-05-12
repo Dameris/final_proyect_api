@@ -46,13 +46,13 @@ const calendarOptions = {
 
     return {
       html: `
-      <div style="
+      <div class="custom-event" style="
         background:${bgColor};
         color:${textColor};
       ">
-        <strong>${title}</strong>
+        <strong class="custom-event__title">${title}</strong>
         <br>
-        <small>📍${location}</small>
+        <small class="custom-event__location">📍${location}</small>
       </div>
     `,
     };

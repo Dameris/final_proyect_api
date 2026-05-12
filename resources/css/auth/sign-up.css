@@ -5,12 +5,14 @@
 	justify-content: space-between;
 	flex-direction: row;
 	width: 100%;
+	gap: 1em;
 }
 
 .signUp__genderSelection-btn {
-	margin-bottom: 1vh;
-	width: 24.8em;
+	flex: 1;
+	width: 100%;
 	padding: 0.8rem;
+	margin-bottom: 1vh;
 	color: rgba(0, 0, 0, 0.4);
 	font-family:
 		Inter,
@@ -98,10 +100,6 @@
 	.formBox-form__btn {
 		width: 30em;
 		margin-bottom: 1em;
-	}
-
-	.signUp__genderSelection {
-		width: 25em;
 	}
 }
 /** Media query */

@@ -65,7 +65,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-	<FormSection>
+	<FormSection class="formSection">
 		<template #title>
 			{{ updating ? "Update Jogger" : "Create Jogger" }}
 		</template>
@@ -191,3 +191,7 @@ const handleSubmit = () => {
 		</template>
 	</FormSection>
 </template>
+
+<style scoped>
+@import "../../../css/pages/form.css";
+</style>
