@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tshirt;
-use App\Models\Jogger;
+use App\Models\Product;
 use Illuminate\Http\Request;
-
 
 class SearchController extends Controller
 {
@@ -17,78 +15,50 @@ class SearchController extends Controller
             $minPrice = $request->query('min_price');
             $maxPrice = $request->query('max_price');
 
-            $results = collect();
+            // Inicializamos la consulta unificada
+            $productsQuery = Product::query();
 
-            if (!$category || $category === 'tshirt') {
-
-                $tshirtsQuery = Tshirt::query();
-
-                if ($query) {
-                    $tshirtsQuery->where(function ($q) use ($query) {
-                        $q->where('tshirt_name', 'like', "%{$query}%")
-                            ->orWhere('tshirt_composition', 'like', "%{$query}%")
-                            ->orWhere('tshirt_fit', 'like', "%{$query}%");
-                    });
-                }
-
-                if ($minPrice) {
-                    $tshirtsQuery->where('tshirt_price', '>=', $minPrice);
-                }
-
-                if ($maxPrice) {
-                    $tshirtsQuery->where('tshirt_price', '<=', $maxPrice);
-                }
-
-                $tshirts = $tshirtsQuery->get();
-
-                foreach ($tshirts as $item) {
-                    $results->push([
-                        'id' => $item->id,
-                        'name' => $item->tshirt_name,
-                        'price' => $item->tshirt_price,
-                        'image' => $item->tshirt_img1,
-                        'type' => 'tshirt'
-                    ]);
-                }
+            // Filtrar por categoría (tipo de producto) si viene definida
+            if ($category && in_array(strtolower($category), ['tshirt', 'jogger'])) {
+                $productsQuery->where('type', strtolower($category));
             }
 
-            if (!$category || $category === 'jogger') {
+            // Búsqueda por texto unificada en las columnas comunes
+            if ($query) {
+                $productsQuery->where(function ($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%")
+                        ->orWhere('composition', 'like', "%{$query}%")
+                        ->orWhere('fit', 'like', "%{$query}%");
+                });
+            }
 
-                $joggersQuery = Jogger::query();
+            // Rangos de precio aplicados sobre la columna única 'price'
+            if ($minPrice) {
+                $productsQuery->where('price', '>=', $minPrice);
+            }
 
-                if ($query) {
-                    $joggersQuery->where(function ($q) use ($query) {
-                        $q->where('jogger_name', 'like', "%{$query}%")
-                            ->orWhere('jogger_composition', 'like', "%{$query}%")
-                            ->orWhere('jogger_fit', 'like', "%{$query}%");
-                    });
-                }
+            if ($maxPrice) {
+                $productsQuery->where('price', '<=', $maxPrice);
+            }
 
-                if ($minPrice) {
-                    $joggersQuery->where('jogger_price', '>=', $minPrice);
-                }
+            $products = $productsQuery->get();
+            $results = collect();
 
-                if ($maxPrice) {
-                    $joggersQuery->where('jogger_price', '<=', $maxPrice);
-                }
-
-                $joggers = $joggersQuery->get();
-
-                foreach ($joggers as $item) {
-                    $results->push([
-                        'id' => $item->id,
-                        'name' => $item->jogger_name,
-                        'price' => $item->jogger_price,
-                        'image' => $item->jogger_img1,
-                        'type' => 'jogger'
-                    ]);
-                }
+            // Estructuramos la respuesta mapeando las claves exactas que el frontend espera recibir
+            foreach ($products as $item) {
+                $results->push([
+                    'id'    => $item->id,
+                    'name'  => $item->name,
+                    'price' => $item->price,
+                    'image' => $item->img1,
+                    'type'  => $item->type // 'tshirt' o 'jogger'
+                ]);
             }
 
             return response()->json($results);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Search failed',
+                'error'   => 'Search failed',
                 'message' => $e->getMessage()
             ], 500);
         }

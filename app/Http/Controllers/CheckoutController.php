@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Tshirt;
-use App\Models\Jogger;
+use App\Models\Product;
+use App\Models\ProductStock;
 
 class CheckoutController extends Controller
 {
@@ -32,20 +32,35 @@ class CheckoutController extends Controller
                 $total = 0;
 
                 foreach ($cartItems as $item) {
-                    $model = match ($item->product_type) {
-                        'TSHIRT' => Tshirt::class,
-                        'JOGGER' => Jogger::class,
+                    $type = match (strtoupper($item->product_type)) {
+                        'TSHIRT', 'PRODUCT' => 'tshirt',
+                        'JOGGER' => 'jogger',
                         default => throw new \Exception('Invalid product type'),
                     };
 
-                    $product = $model::lockForUpdate()->find($item->product_id);
+                    $product = Product::where('type', $type)->find($item->product_id);
 
-                    if (!$product || $product->stock < $item->quantity) {
-                        throw new \Exception('Not enough stock');
+                    if (!$product) {
+                        throw new \Exception('Product not found');
                     }
 
-                    $price = $product->tshirt_price ?? $product->jogger_price;
+                    // BLOQUEO POR TALLA: Buscamos y bloqueamos la talla específica requerida
+                    $sizeStock = ProductStock::lockForUpdate()
+                        ->where('product_id', $product->id)
+                        ->where('size', $item->size)
+                        ->first();
+
+                    // Verificamos si hay stock suficiente en esa talla concreta
+                    if (!$sizeStock || $sizeStock->stock < $item->quantity) {
+                        throw new \Exception("Not enough stock for product '{$product->name}' in size '{$item->size}'");
+                    }
+
+                    $price = $product->price;
                     $total += $price * $item->quantity;
+
+                    // Adjuntamos las referencias procesadas al objeto en memoria
+                    $item->calculated_price = $price;
+                    $item->resolved_stock_model = $sizeStock;
                 }
 
                 $order = Order::create([
@@ -61,11 +76,11 @@ class CheckoutController extends Controller
                         'product_type' => $item->product_type,
                         'size' => $item->size,
                         'quantity' => $item->quantity,
-                        'price' => $item->product->tshirt_price
-                            ?? $item->product->jogger_price,
+                        'price' => $item->calculated_price,
                     ]);
 
-                    $item->product->decrement('stock', $item->quantity);
+                    // Decrementamos el inventario únicamente en la talla comprada
+                    $item->resolved_stock_model->decrement('stock', $item->quantity);
                 }
 
                 Cart::where('user_id', $userId)->delete();

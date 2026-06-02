@@ -35,6 +35,10 @@ const props = defineProps({
 		type: Array,
 		required: true,
 	},
+	sizes: {
+		type: Array,
+		required: true,
+	},
 });
 
 const emit = defineEmits(["submit"]);
@@ -54,8 +58,6 @@ const handleSubmit = () => {
             forceFormData: true,
         });
     } else {
-		props.form.stock = 1;
-
         router.post(route("joggers.store"), props.form, {
             preserveScroll: true,
             forceFormData: true,
@@ -131,17 +133,18 @@ const handleSubmit = () => {
 				<InputError :message="form.errors.jogger_fit" />
 			</div>
 			<div v-if="isAdmin">
-				<InputLabel
-					for="stock" 
-					value="Stock"
-				/>
-				<TextInput	
-					id="stock"
-					type="number"
-					min="0"
-					v-model.number="form.stock"
-				/>
-				<InputError :message="form.errors.stock" />
+    			<h3>Stock by sizes</h3>
+    
+    			<div v-for="size in sizes" :key="size" class="form-group">
+        			<label :for="'stock_' + size">Stock Size: {{ size }}</label>
+        			<input 
+            			:id="'stock_' + size"
+            			type="number" 
+            			min="0"
+            			v-model.number="form.stock[size]" 
+            			class="form-control"
+        			/>
+    			</div>
 			</div>
 			<div>
 				<InputLabel

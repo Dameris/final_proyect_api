@@ -29,7 +29,31 @@ const props = defineProps({
 		type: Array,
 		required: true,
 	},
+	sizes: {
+		type: Array,
+		required: true,
+	},
 });
+
+/**
+ * Convertimos el array de relaciones 'stocks' que viene de Laravel
+ * en un objeto clave-valor para Vue.
+ * Ejemplo: { 'Oversize': 12, 'Regular': 0, 'Slim': 5 }
+ */
+const initializeStocks = () => {
+    const stockMap = {};
+
+    props.sizes.forEach(size => {
+        stockMap[size] = 0;
+    });
+    if (props.tshirt.stocks && Array.isArray(props.tshirt.stocks)) {
+        props.tshirt.stocks.forEach(item => {
+            stockMap[item.size] = item.stock;
+        });
+    }
+
+    return stockMap;
+};
 
 const form = useForm({
 	id: props.jogger.id,
@@ -37,7 +61,7 @@ const form = useForm({
 	jogger_composition: props.jogger.jogger_composition,
 	jogger_fit: props.jogger.jogger_fit,
 	jogger_price: props.jogger.jogger_price,
-	stock: props.jogger.stock,
+	stock: initializeStocks(), 
 });
 
 const isAdmin = computed(() => {
@@ -45,9 +69,13 @@ const isAdmin = computed(() => {
 });
 
 const submit = () => {
-	form.put(route("joggers.update", form.id), {
+	// Laravel tiene un bug conocido procesando archivos (FormData) mediante PUT.
+	// Al usar "forceFormData: true", se recomienda usar .post() simulando el método PUT con '_method'
+	form.transform((data) => ({
+		...data,
+		_method: 'PUT',
+	})).post(route("tshirts.update", form.id), {
 		preserveScroll: true,
-		forceFormData: true,
 	});
 };
 </script>
@@ -63,6 +91,7 @@ const submit = () => {
 				:is-admin="isAdmin"
 				:compositions="props.compositions"
 				:fits="props.fits"
+				:sizes="props.sizes"
 				@submit="submit"
 			/>
 		</div>

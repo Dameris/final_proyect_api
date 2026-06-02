@@ -31,13 +31,23 @@ class JoggerRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
+        // Capturamos el ID de la ruta dinámicamente
+        $joggerId = $this->route('jogger') ?? $this->route('id');
+
         return [
-            "jogger_name" => ["required", "string", "max:50", Rule::unique(table: "joggers", column: "jogger_name")->ignore(id: request("jogger"), idColumn: "id")],
+            "jogger_name" => [
+                "required",
+                "string",
+                "max:50",
+                Rule::unique(table: "products", column: "name")
+                    ->ignore(id: $joggerId, idColumn: "id")
+                    ->where(function ($query) {
+                        return $query->where('type', 'jogger');
+                    })
+            ],
             "jogger_composition" => ["required", "string", "max:50", Rule::in(self::COMPOSITIONS)],
             "jogger_fit" => ["required", "string", "max:50", Rule::in(self::FITS)],
             "jogger_price" => ["required", "numeric", "min:0"],
@@ -50,7 +60,7 @@ class JoggerRequest extends FormRequest
     {
         return [
             "jogger_name.unique" => "The jogger already exists.",
-            "jogger_img1.mimes",
+            "jogger_img1.mimes" => "The image/s must be a JPG, JPEG, PNG, or GIF.",
             "jogger_img2.mimes" => "The image/s must be a JPG, JPEG, PNG, or GIF."
         ];
     }

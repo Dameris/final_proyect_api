@@ -11,6 +11,7 @@ import InputError from "../InputError.vue";
 import InputLabel from "../InputLabel.vue";
 import PrimaryButton from "../PrimaryButton.vue";
 import TextInput from "../TextInput.vue";
+import { onMounted } from "vue";
 
 const props = defineProps({
 	form: {
@@ -35,9 +36,22 @@ const props = defineProps({
 		type: Array,
 		required: true,
 	},
+	sizes: {
+		type: Array,
+		required: true,
+	},
 });
 
 const emit = defineEmits(["submit"]);
+
+onMounted(() => {
+    if (!props.updating) {
+        props.form.stock = {};
+        props.sizes.forEach(size => {
+            props.form.stock[size] = 0;
+        });
+    }
+});
 
 const handleFileChange = (field, event) => {
 	const file = event.target.files[0];
@@ -54,8 +68,6 @@ const handleSubmit = () => {
             forceFormData: true,
         });
     } else {
-		props.form.stock = 1;
-
         router.post(route("tshirts.store"), props.form, {
             preserveScroll: true,
             forceFormData: true,
@@ -131,17 +143,18 @@ const handleSubmit = () => {
 				<InputError :message="form.errors.tshirt_fit" />
 			</div>
 			<div v-if="isAdmin">
-				<InputLabel
-					for="stock" 
-					value="Stock"
-				/>
-				<TextInput	
-					id="stock"
-					type="number"
-					min="0"
-					v-model.number="form.stock"
-				/>
-				<InputError :message="form.errors.stock" />
+    			<h3>Stock by sizes</h3>
+    
+    			<div v-for="size in sizes" :key="size" class="form-group">
+        			<label :for="'stock_' + size">Stock Size: {{ size }}</label>
+        			<input 
+            			:id="'stock_' + size"
+            			type="number" 
+            			min="0"
+            			v-model.number="form.stock[size]" 
+            			class="form-control"
+        			/>
+    			</div>
 			</div>
 			<div>
 				<InputLabel

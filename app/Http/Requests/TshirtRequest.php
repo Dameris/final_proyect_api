@@ -32,13 +32,23 @@ class TshirtRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
+        // Capturamos el ID de la ruta, dependas de cómo definiste el parámetro en web.php o api.php
+        $tshirtId = $this->route('tshirt') ?? $this->route('id');
+
         return [
-            "tshirt_name" => ["required", "string", "max:50", Rule::unique(table: "tshirts", column: "tshirt_name")->ignore(id: request("tshirt"), idColumn: "id")],
+            "tshirt_name" => [
+                "required",
+                "string",
+                "max:50",
+                Rule::unique(table: "products", column: "name")
+                    ->ignore(id: $tshirtId, idColumn: "id")
+                    ->where(function ($query) {
+                        return $query->where('type', 'tshirt');
+                    })
+            ],
             "tshirt_composition" => ["required", "string", "max:50", Rule::in(self::COMPOSITIONS)],
             "tshirt_fit" => ["required", "string", "max:50", Rule::in(self::FITS)],
             "tshirt_price" => ["required", "numeric", "min:0"],
@@ -51,7 +61,7 @@ class TshirtRequest extends FormRequest
     {
         return [
             "tshirt_name.unique" => "The tshirt already exists.",
-            "tshirt_img1.mimes",
+            "tshirt_img1.mimes" => "The image/s must be a JPG, JPEG, PNG, or GIF.",
             "tshirt_img2.mimes" => "The image/s must be a JPG, JPEG, PNG, or GIF."
         ];
     }

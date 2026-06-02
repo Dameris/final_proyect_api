@@ -4,36 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TshirtRequest;
 use App\Http\Requests\UpdateTshirtStockRequest;
-use App\Models\Tshirt;
-use App\Models\User;
+use App\Models\Product;
+use App\Models\ProductStock;
 use App\Http\Responses\ApiResponse;
 use Inertia\Inertia;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException as EloquentModelNotFoundException;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TshirtController extends Controller
 {
     public const items_per_page = 20;
-    /**
-     * List of T-shirts.
-     */
+
     public function index()
     {
         try {
-            $tshirts = Tshirt::paginate(self::items_per_page);
-            return inertia("Tshirts/Index", ["tshirts" => $tshirts]);
+            $paginator = Product::where('type', 'tshirt')->paginate(self::items_per_page);
+
+            $paginator->getCollection()->each(function ($product) {
+                $product->append(['tshirt_name', 'tshirt_composition', 'tshirt_fit', 'tshirt_price', 'tshirt_img1', 'tshirt_img2', 'stock']);
+            });
+
+            return inertia("Tshirts/Index", ["tshirts" => $paginator]);
         } catch (Exception $e) {
             return ApiResponse::error("Error in database", 500);
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return inertia("Tshirts/Create", [
@@ -42,39 +39,42 @@ class TshirtController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(TshirtRequest $request)
     {
         try {
             $img = null;
             $img2 = null;
 
-            // Verificar si se subió tshirt_img1
             if ($request->hasFile("tshirt_img1")) {
                 $f = $request->file("tshirt_img1");
                 $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
                 $f->storeAs("img/tshirts", $img, "public");
             }
 
-            // Verificar si se subió tshirt_img2
             if ($request->hasFile("tshirt_img2")) {
                 $f2 = $request->file("tshirt_img2");
                 $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
                 $f2->storeAs("img/tshirts", $img2, "public");
             }
 
-            // Guardar en la base de datos
-            Tshirt::create([
-                "tshirt_name" => $request->tshirt_name,
-                "tshirt_composition" => $request->tshirt_composition,
-                "tshirt_fit" => $request->tshirt_fit,
-                "tshirt_price" => $request->tshirt_price,
-                "tshirt_img1" => $img,
-                "tshirt_img2" => $img2,
-                "stock"  => 0
+            $product = Product::create([
+                "name" => $request->tshirt_name,
+                "type" => "tshirt",
+                "composition" => $request->tshirt_composition,
+                "fit" => $request->tshirt_fit,
+                "price" => $request->tshirt_price,
+                "img1" => $img,
+                "img2" => $img2,
             ]);
+
+            // Inicializamos el stock por tallas
+            foreach (TshirtRequest::FITS as $size) {
+                ProductStock::create([
+                    'product_id' => $product->id,
+                    'size' => $size,
+                    'stock' => 0
+                ]);
+            }
 
             return redirect()->route('tshirts.index');
         } catch (Exception $e) {
@@ -82,23 +82,23 @@ class TshirtController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Tshirt $tshirt)
+    public function show($id)
     {
+        $tshirt = Product::where('type', 'tshirt')->findOrFail($id);
+        $tshirt->append(['tshirt_name', 'tshirt_composition', 'tshirt_fit', 'tshirt_price', 'tshirt_img1', 'tshirt_img2', 'stock']);
+
         return Inertia::render('Tshirts/Show', [
             'tshirt' => $tshirt
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Tshirt $tshirt)
+    public function edit($id)
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
+
+        $tshirt = Product::where('type', 'tshirt')->findOrFail($id);
+        $tshirt->append(['tshirt_name', 'tshirt_composition', 'tshirt_fit', 'tshirt_price', 'tshirt_img1', 'tshirt_img2', 'stock']);
 
         return inertia('Tshirts/Edit', [
             'tshirt' => $tshirt,
@@ -107,80 +107,87 @@ class TshirtController extends Controller
             ],
             'compositions' => TshirtRequest::COMPOSITIONS,
             'fits' => TshirtRequest::FITS,
+            'sizes' => ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
         ]);
     }
 
-    /**
-     * Update a T-shirt.
-     */
-    public function update(TshirtRequest $request, Tshirt $tshirt)
+    public function update(TshirtRequest $request, $id)
     {
-        $data = $request->validated();
+        $tshirt = Product::where('type', 'tshirt')->findOrFail($id);
+        $validated = $request->validated();
 
-        // Lógica para tshirt_img1
+        $data = [
+            "name" => $validated["tshirt_name"] ?? $tshirt->name,
+            "composition" => $validated["tshirt_composition"] ?? $tshirt->composition,
+            "fit" => $validated["tshirt_fit"] ?? $tshirt->fit,
+            "price" => $validated["tshirt_price"] ?? $tshirt->price,
+        ];
+
         if ($request->hasFile("tshirt_img1")) {
             $f = $request->file("tshirt_img1");
             $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
             $f->storeAs("img/tshirts", $img, "public");
-            $data["tshirt_img1"] = $img;
-        } else {
-            // Si no se subió una nueva imagen, MANTIENE LA IMAGEN EXISTENTE
-            $data["tshirt_img1"] = $tshirt->tshirt_img1;
+            $data["img1"] = $img;
         }
 
-        // Lógica para tshirt_img2
         if ($request->hasFile("tshirt_img2")) {
             $f2 = $request->file("tshirt_img2");
             $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
             $f2->storeAs("img/tshirts", $img2, "public");
-            $data["tshirt_img2"] = $img2;
-        } else {
-            // Si no se subió una nueva imagen, MANTIENE LA IMAGEN EXISTENTE
-            $data["tshirt_img2"] = $tshirt->tshirt_img2;
-        }
-
-        /** @var User|null $user */
-        $user = Auth::user();
-
-        if ($user && $user->hasRole('admin')) {
-            $request->validate([
-                'stock' => ['required', 'integer', 'min:0']
-            ]);
-
-            $data['stock'] = $request->stock;
+            $data["img2"] = $img2;
         }
 
         $tshirt->update($data);
+
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        if ($user && $user->hasRole('admin') && $request->has('stock')) {
+            $request->validate(['stock' => 'required|array']);
+            foreach ($request->stock as $size => $quantity) {
+                ProductStock::updateOrCreate(
+                    ['product_id' => $tshirt->id, 'size' => $size],
+                    ['stock' => max(0, intval($quantity))]
+                );
+            }
+        }
 
         return Inertia::location(route('tshirts.index'));
     }
 
     /**
-     * Update a T-shirt stock
+     * Actualiza el stock por tallas individuales
      */
-    public function updateStock(UpdateTshirtStockRequest $request, Tshirt $tshirt)
+    public function updateStock(UpdateTshirtStockRequest $request, $id)
     {
-        $tshirt->update([
-            'stock' => $request->stock
+        $tshirt = Product::where('type', 'tshirt')->findOrFail($id);
+
+        $request->validate([
+            'size' => 'required|string',
+            'stock' => 'required|integer|min:0'
         ]);
+
+        ProductStock::updateOrCreate(
+            ['product_id' => $tshirt->id, 'size' => $request->size],
+            ['stock' => $request->stock]
+        );
 
         return back();
     }
 
-    /**
-     * Delete a T-shirt.
-     */
-    public function destroy(Tshirt $tshirt)
+    public function destroy($id)
     {
+        $tshirt = Product::where('type', 'tshirt')->findOrFail($id);
         $tshirt->delete();
+
         return redirect()->route('tshirts.index');
     }
 
     public function getTshirtDetails($id)
     {
-        $tshirt = Tshirt::find($id);
+        $tshirt = Product::where('type', 'tshirt')->find($id);
 
         if ($tshirt) {
+            $tshirt->append(['tshirt_name', 'tshirt_composition', 'tshirt_fit', 'tshirt_price', 'tshirt_img1', 'tshirt_img2', 'stock']);
             return response()->json($tshirt);
         }
 
@@ -196,11 +203,15 @@ class TshirtController extends Controller
         }
 
         try {
-            // Buscar camisetas que coincidan con la consulta
-            $results = Tshirt::where('tshirt_name', 'like', '%' . $query . '%')->get();
+            $results = Product::where('type', 'tshirt')
+                ->where('name', 'like', '%' . $query . '%')
+                ->get()
+                ->each(function ($item) {
+                    $item->append(['tshirt_name', 'tshirt_composition', 'tshirt_fit', 'tshirt_price', 'tshirt_img1', 'tshirt_img2', 'stock']);
+                });
+
             return response()->json($results);
         } catch (Exception $e) {
-            // Capturar cualquier error y devolverlo en la respuesta
             return response()->json(['error' => 'Error making the search', 'message' => $e->getMessage()], 500);
         }
     }

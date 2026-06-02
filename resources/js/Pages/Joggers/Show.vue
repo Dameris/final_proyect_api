@@ -52,6 +52,13 @@ const addToCart = () => {
 const selectSize = (size) => {
 	selectedSize.value = size;
 };
+
+// Comprueba si la talla en el bucle existe en la colección 'stocks' enviada por Laravel y si tiene unidades
+const hasStockForSize = (sizeName) => {
+    if (!props.jogger.stocks) return false;
+    const sizeRecord = props.jogger.stocks.find(s => s.size === sizeName);
+    return sizeRecord ? sizeRecord.stock > 0 : false;
+};
 </script>
 
 <template>
@@ -97,14 +104,17 @@ const selectSize = (size) => {
 				<div>
 					<!-- Tallas como botones -->
 					<div class="jogger__sizes">
-						<span
-							v-for="size in ['XS', 'S', 'M', 'L', 'XL', 'XXL']"
-							:key="size"
-							:class="{'active': selectedSize === size}"
-							@click="selectSize(size)"
-						>
-							{{ size }}
-						</span>
+    					<span
+        					v-for="size in ['XS', 'S', 'M', 'L', 'XL', 'XXL']"
+        					:key="size"
+        					:class="{
+            					'active': selectedSize === size,
+            					'out-of-stock-size': !hasStockForSize(size)
+        					}"
+        					@click="hasStockForSize(size) ? selectSize(size) : null"
+    					>
+        					{{ size }} {{ !hasStockForSize(size) ? '(Sin stock)' : '' }}
+    					</span>
 					</div>
 
 					<!-- Botón de compra -->

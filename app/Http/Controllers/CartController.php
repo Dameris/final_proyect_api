@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tshirt;
-use App\Models\Jogger;
+use App\Models\Product;
+use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Models\Cart;
 
 class CartController extends Controller
 {
@@ -20,10 +19,24 @@ class CartController extends Controller
 
         $userId = Auth::id();
 
-        // Recuperar los productos del carrito con sus detalles
+        // Recuperar los productos del carrito agregando los accesores esperados por la UI
         $cart = Cart::where("user_id", $userId)
             ->with('product')
-            ->get();
+            ->get()
+            ->each(function ($item) {
+                if ($item->product) {
+                    $type = strtolower($item->product->type);
+                    $item->product->append([
+                        "{$type}_name",
+                        "{$type}_composition",
+                        "{$type}_fit",
+                        "{$type}_price",
+                        "{$type}_img1",
+                        "{$type}_img2",
+                        "stock"
+                    ]);
+                }
+            });
 
         return Inertia::render('ShoppingCart', [
             "cart" => $cart,
@@ -37,16 +50,15 @@ class CartController extends Controller
             "size" => "required|string",
         ]);
 
-        $modelMap = [
-            'TSHIRT' => Tshirt::class,
-            'JOGGER' => Jogger::class,
-        ];
+        $normalizedType = strtoupper($type);
+        $allowedTypes = ['TSHIRT', 'JOGGER'];
 
-        if (!isset($modelMap[$type])) {
+        if (!in_array($normalizedType, $allowedTypes)) {
             return back()->with('alert', 'Invalid product type')->with('alertType', 'error');
         }
 
-        $product = $modelMap[$type]::find($id);
+        // Buscamos el producto en la tabla unificada asegurando su tipo
+        $product = Product::where('type', strtolower($normalizedType))->find($id);
 
         if (!$product) {
             return back()->with('alert', 'Product not found')->with('alertType', 'error');
@@ -58,7 +70,7 @@ class CartController extends Controller
 
         $cartItem = Cart::where("user_id", Auth::id())
             ->where("product_id", $product->id)
-            ->where("product_type", $product->getMorphClass())
+            ->where("product_type", $product->getMorphClass()) // Resolverá dinámicamente según el proveedor
             ->where("size", $request->size)
             ->first();
 
@@ -93,7 +105,6 @@ class CartController extends Controller
             return response()->json(['message' => 'Cart item not found'], 404);
         }
 
-        // Validar la cantidad
         $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
@@ -131,10 +142,20 @@ class CartController extends Controller
     {
         $userId = Auth::id();
 
-        // Obtener los productos del carrito con los detalles del producto
         $cartItems = Cart::where("user_id", $userId)
             ->with("product")
-            ->get();
+            ->get()
+            ->each(function ($item) {
+                if ($item->product) {
+                    $type = strtolower($item->product->type);
+                    $item->product->append([
+                        "{$type}_name",
+                        "{$type}_price",
+                        "{$type}_img1",
+                        "stock"
+                    ]);
+                }
+            });
 
         return response()->json($cartItems);
     }

@@ -8,6 +8,13 @@ import { Head } from '@inertiajs/vue3'
 
 const auth = useAuthStore()
 
+defineProps({
+    title: {
+        type: String,
+        required: false,
+        default: 'SkyUrban'
+    }
+});
 // onMounted(() => {
 //   auth.init()
 // })
