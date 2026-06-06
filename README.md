@@ -46,13 +46,12 @@ npm install
 ```
 
 4. Configurar las variables de entorno:
-
-        Copia el archivo de ejemplo a tu archivo definitivo:
+Copia el archivo de ejemplo a tu archivo definitivo:
 ```bash
 cp .env.example .env
 ```
 
-        Abre el archivo .env recién creado y configura las credenciales de tu base de datos local:
+Abre el archivo .env recién creado y configura las credenciales de tu base de datos local:
 ```properties
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -78,18 +77,17 @@ php artisan storage:link
 ```
 
 8. Arrancar los servidores de desarrollo:
-
-        En una terminal ejecuta el servidor de Laravel:
+En una terminal ejecuta el servidor de Laravel:
 ```bash
 php artisan serve
 ```
 
-        En otra terminal paralela, ejecuta el compilador en tiempo real de Vite para Vue:
+En otra terminal paralela, ejecuta el compilador en tiempo real de Vite para Vue:
 ```bash
 npm run dev
 ```
 
-        Accede a la plataforma mediante: http://127.0.0.1:8000
+Accede a la plataforma mediante: http://127.0.0.1:8000
 
 ## 🧬 3. Flujo de Trabajo en Git y Gitflow Coherente
 
