@@ -28,6 +28,7 @@
         "@fullcalendar/interaction": "^6.1.20",
         "@fullcalendar/vue3": "^6.1.20",
         "@inertiajs/inertia-vue3": "^0.6.0",
+        "mitt": "^3.0.1",
         "pinia": "^3.0.2",
         "ziggy": "^2.4.0"
     }
