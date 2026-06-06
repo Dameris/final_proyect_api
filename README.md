@@ -27,7 +27,7 @@ Sigue estos pasos detallados para replicar y arrancar el entorno de desarrollo d
 
 ### Pasos de Configuración
 
-    1\. Clonar el repositorio y acceder al directorio:
+1. Clonar el repositorio y acceder al directorio:
 ```bash
 git clone https://github.com/Dameris/final\_proyect\_api.git
 ```
@@ -35,17 +35,17 @@ git clone https://github.com/Dameris/final\_proyect\_api.git
 cd final_proyect_api
 ```
 
-    2\. Instalar dependencias del backend (PHP):
+2. Instalar dependencias del backend (PHP):
 ```bash
 composer install
 ```
 
-    3\. Instalar dependencias del frontend (JavaScript):
+3. Instalar dependencias del frontend (JavaScript):
 ```bash
 npm install
 ```
 
-    4\. Configurar las variables de entorno:
+4. Configurar las variables de entorno:
 
         Copia el archivo de ejemplo a tu archivo definitivo:
 ```bash
@@ -62,22 +62,22 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-    5\. Generar la clave única de la aplicación:
+5. Generar la clave única de la aplicación:
 ```bash
 php artisan key:generate
 ```
 
-    6\. Ejecutar migraciones y poblado de datos (Seeders):
+6. Ejecutar migraciones y poblado de datos (Seeders):
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-    7\. Crear el enlace simbólico para el almacenamiento de imágenes:
+7. Crear el enlace simbólico para el almacenamiento de imágenes:
 ```bash
 php artisan storage:link
 ```
 
-    8\. Arrancar los servidores de desarrollo:
+8. Arrancar los servidores de desarrollo:
 
         En una terminal ejecuta el servidor de Laravel:
 ```bash
