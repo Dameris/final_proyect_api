@@ -20,6 +20,10 @@ const props = defineProps({
 		type: Array,
 		required: true,
 	},
+	sizes: {
+		type: Array,
+		required: true,
+	},
 })
 
 const form = useForm({
@@ -29,6 +33,7 @@ const form = useForm({
 	tshirt_price: 0,
 	tshirt_img1: null,
 	tshirt_img2: null,
+	stock: {},
 });
 </script>
 
@@ -41,6 +46,8 @@ const form = useForm({
 				:form="form"
 				:compositions="props.compositions"
 				:fits="props.fits"
+				:sizes="props.sizes"
+				:isAdmin="true"
 			/>
 		</div>
 	</AppLayout>

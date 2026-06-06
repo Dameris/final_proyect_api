@@ -46,6 +46,55 @@
 	text-decoration: none;
 }
 
+.tshirts__create {
+	display: inline-block;
+	margin-left: 1em;
+	margin-top: 1em;
+	padding: 0.4em 0.8em;
+	background-color: #56b5e4;
+	color: white;
+	border-radius: 0.3em;
+	text-decoration: none;
+	font-weight: bold;
+}
+.tshirts__create:hover {
+	background-color: #8aceef;
+}
+
+.tshirts__edit,
+.tshirts__delete {
+	display: inline-block;
+	padding: 0.4em 0.8em;
+	margin-top: 1em;
+	font-size: 0.8em;
+	font-family: inherit;
+	font-weight: bold;
+	border-radius: 0.3em;
+	text-decoration: none;
+	cursor: pointer;
+	border: none;
+	outline: none;
+	transition: background-color 0.2s ease;
+}
+
+.tshirts__edit {
+	background-color: #f59e0b;
+	color: #fff;
+}
+
+.tshirts__edit:hover {
+	background-color: #d97706;
+}
+
+.tshirts__delete {
+	background-color: #ef4444;
+	color: #fff;
+}
+
+.tshirts__delete:hover {
+	background-color: #dc2626;
+}
+
 /** Media queries */
 @media (max-width: 800px) {
 	.tshirtIndex__list {

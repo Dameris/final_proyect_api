@@ -13,10 +13,10 @@ use App\Models\ProductStock;
 
 class CheckoutController extends Controller
 {
-    public function processOrder()
+    public function processOrder(Request $request)
     {
         try {
-            DB::transaction(function () {
+            DB::transaction(function () use ($request) {
 
                 $userId = Auth::id();
                 if (!$userId) {
@@ -32,41 +32,45 @@ class CheckoutController extends Controller
                 $total = 0;
 
                 foreach ($cartItems as $item) {
-                    $type = match (strtoupper($item->product_type)) {
-                        'TSHIRT', 'PRODUCT' => 'tshirt',
-                        'JOGGER' => 'jogger',
-                        default => throw new \Exception('Invalid product type'),
-                    };
-
-                    $product = Product::where('type', $type)->find($item->product_id);
+                    $product = Product::find($item->product_id);
 
                     if (!$product) {
-                        throw new \Exception('Product not found');
+                        throw new \Exception("Product with ID {$item->product_id} not found in database.");
                     }
 
-                    // BLOQUEO POR TALLA: Buscamos y bloqueamos la talla específica requerida
                     $sizeStock = ProductStock::lockForUpdate()
                         ->where('product_id', $product->id)
                         ->where('size', $item->size)
                         ->first();
 
-                    // Verificamos si hay stock suficiente en esa talla concreta
-                    if (!$sizeStock || $sizeStock->stock < $item->quantity) {
-                        throw new \Exception("Not enough stock for product '{$product->name}' in size '{$item->size}'");
+                    if (!$sizeStock) {
+                        throw new \Exception("Size '{$item->size}' does not exist for product '{$product->id}'");
                     }
 
-                    $price = $product->price;
+                    if ($sizeStock->stock < 0) {
+                        throw new \Exception("Not enough stock for size '{$item->size}'");
+                    }
+
+                    $type = strtolower($product->type);
+                    $price = $product->{"{$type}_price"} ?? $product->price ?? 0;
+
                     $total += $price * $item->quantity;
 
-                    // Adjuntamos las referencias procesadas al objeto en memoria
                     $item->calculated_price = $price;
                     $item->resolved_stock_model = $sizeStock;
                 }
+
+                $shipping = $request->input('shipping_details', []);
 
                 $order = Order::create([
                     'user_id' => $userId,
                     'total_price' => $total,
                     'status' => 'Processed',
+                    'shipping_name'    => $shipping['fullName'] ?? null,
+                    'shipping_address' => $shipping['address'] ?? null,
+                    'shipping_city'    => $shipping['city'] ?? null,
+                    'shipping_zip'     => $shipping['zipCode'] ?? null,
+                    'shipping_phone'   => $shipping['phone'] ?? null,
                 ]);
 
                 foreach ($cartItems as $item) {
@@ -86,7 +90,7 @@ class CheckoutController extends Controller
                 Cart::where('user_id', $userId)->delete();
             });
 
-            return redirect()->route('orders.history');
+            return redirect()->route('orders.history')->with('alert', 'Order placed successfully!')->with('alertType', 'success');
         } catch (\Exception $e) {
             abort(422, $e->getMessage());
         }

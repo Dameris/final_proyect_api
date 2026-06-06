@@ -1,14 +1,20 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
-import { usePage, Link } from "@inertiajs/inertia-vue3";
-import { Inertia } from "@inertiajs/inertia";
+import { computed, ref, onMounted, watch } from "vue";
+// 1. Corregimos las importaciones al paquete moderno v1.0+
+import { usePage, Link, router } from "@inertiajs/vue3"; 
 import { useAuthStore } from "../../stores/auth";
 import { storeToRefs } from "pinia";
 import axios from "axios";
-import { watch } from "vue";
 
 const auth = useAuthStore();
 const { user } = storeToRefs(auth);
+
+const page = usePage();
+const cartCount = computed(() => {
+    const props = page.props;
+    
+    return props && props.cartTotalQuantity !== undefined ? props.cartTotalQuantity : 0;
+});
 
 // Estado para el menú de la tienda y la búsqueda
 const isShopOpen = ref(false);
@@ -39,7 +45,6 @@ let timeout = null;
 watch([searchQuery, category, minPrice, maxPrice], ([query]) => {
 	clearTimeout(timeout);
 
-	// si no hay nada escrito y no hay filtros → limpiar resultados
 	if (
 		query.length < 3 &&
 		!category.value &&
@@ -76,7 +81,6 @@ const clearFilters = () => {
 	searchResults.value = [];
 };
 
-// Función para logout
 const logout = async () => {
 	await auth.logout();
 	Inertia.visit("/");
@@ -297,10 +301,11 @@ const logout = async () => {
 						</li>
 						<li>
 							<Link
-								class="header__btn"
-								:href="route('shoppingCart')"
-								>CART</Link
-							>
+                        		class="header__cart-badge"
+                        		:href="route('shoppingCart')"
+                    		>
+                        		CART <span v-if="cartCount > 0" >({{ cartCount }})</span>
+                    		</Link>
 						</li>
 					</ul>
 				</div>
@@ -412,10 +417,11 @@ const logout = async () => {
 
 					<!-- Carrito de compra -->
 					<Link
-						class="header__btn"
-						:href="route('shoppingCart')"
-						>CART</Link
-					>
+                        class="header__cart-badge"
+                        :href="route('shoppingCart')"
+                    >
+                        CART <span v-if="cartCount > 0" >({{ cartCount }})</span>
+                    </Link>
 				</div>
 			</nav>
 		</div>

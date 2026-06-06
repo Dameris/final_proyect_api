@@ -36,6 +36,7 @@ class TshirtController extends Controller
         return inertia("Tshirts/Create", [
             'compositions' => TshirtRequest::COMPOSITIONS,
             'fits' => TshirtRequest::FITS,
+            'sizes' => ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
         ]);
     }
 
@@ -67,12 +68,19 @@ class TshirtController extends Controller
                 "img2" => $img2,
             ]);
 
+            $validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
             // Inicializamos el stock por tallas
-            foreach (TshirtRequest::FITS as $size) {
+            foreach ($validSizes as $size) {
+                $quantity = 0;
+                if ($request->has('stock') && isset($request->stock[$size])) {
+                    $quantity = max(0, intval($request->stock[$size]));
+                }
+
                 ProductStock::create([
                     'product_id' => $product->id,
                     'size' => $size,
-                    'stock' => 0
+                    'stock' => $quantity
                 ]);
             }
 
@@ -84,7 +92,7 @@ class TshirtController extends Controller
 
     public function show($id)
     {
-        $tshirt = Product::where('type', 'tshirt')->findOrFail($id);
+        $tshirt = Product::where('type', 'tshirt')->with('stocks')->findOrFail($id);
         $tshirt->append(['tshirt_name', 'tshirt_composition', 'tshirt_fit', 'tshirt_price', 'tshirt_img1', 'tshirt_img2', 'stock']);
 
         return Inertia::render('Tshirts/Show', [
@@ -114,13 +122,13 @@ class TshirtController extends Controller
     public function update(TshirtRequest $request, $id)
     {
         $tshirt = Product::where('type', 'tshirt')->findOrFail($id);
-        $validated = $request->validated();
+        $request->validated();
 
         $data = [
-            "name" => $validated["tshirt_name"] ?? $tshirt->name,
-            "composition" => $validated["tshirt_composition"] ?? $tshirt->composition,
-            "fit" => $validated["tshirt_fit"] ?? $tshirt->fit,
-            "price" => $validated["tshirt_price"] ?? $tshirt->price,
+            "name" => $request->input("tshirt_name", $tshirt->name),
+            "composition" => $request->input("tshirt_composition", $tshirt->composition),
+            "fit" => $request->input("tshirt_fit", $tshirt->fit),
+            "price" => $request->input("tshirt_price", $tshirt->price),
         ];
 
         if ($request->hasFile("tshirt_img1")) {

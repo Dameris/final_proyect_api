@@ -308,6 +308,21 @@
 
 /*^ Search container*/
 
+.header__cart-badge {
+	background-color: #2ab7fd;
+	color: white;
+	padding: 0.5em 0.5em;
+	font-size: 0.8rem;
+	border-radius: 1em;
+	margin-left: 1vh;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.header__cart-badge:hover {
+	background-color: #8aceef;
+}
+
 /** Media query */
 @media (max-width: 400px) {
 	.headerBottom,

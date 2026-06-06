@@ -37,8 +37,8 @@ const deleteJogger = (id) => {
 
 <template>
 	<AppLayout>
-		<div v-if="$page.props.user.permissions.includes('createjoggers')">
-			<Link :href="route('joggers.create')"> CREATE JOGGER </Link>
+		<div if="$page.props.user.permissions.includes('createjoggers')">
+			<Link :href="route('joggers.create')" class="joggers__create"> CREATE JOGGER </Link>
 		</div>
 		<div class="joggerIndex">
 			<h2 class="joggerIndex__title">JOGGERS</h2>
@@ -65,10 +65,11 @@ const deleteJogger = (id) => {
 						</p>
 
 						<p v-if="$page.props.user.permissions.includes('updatejoggers')">
-							<Link :href="route('joggers.edit', jogger.id)"> Edit </Link>
+							<Link :href="route('joggers.edit', jogger.id)" class="joggers__edit"> Edit </Link>
 							<Link
 								:href="route('joggers.index')"
 								@click="deleteJogger(jogger.id)"
+								class="joggers__delete"
 							>
 								Delete
 							</Link>
@@ -80,7 +81,7 @@ const deleteJogger = (id) => {
 				<li
 					class="joggerIndex__list--element"
 					v-for="jogger in joggers.data"
-					:key="`second-${jogger.id}`"
+					:key="`first-${jogger.id}`"
 				>
 					<Link
 						class="joggerIndex__list--elementLink"
@@ -98,10 +99,11 @@ const deleteJogger = (id) => {
 						</p>
 
 						<p v-if="$page.props.user.permissions.includes('updatejoggers')">
-							<Link :href="route('joggers.edit', jogger.id)"> Edit </Link>
+							<Link :href="route('joggers.edit', jogger.id)" class="joggers__edit"> Edit </Link>
 							<Link
 								:href="route('joggers.index')"
 								@click="deleteJogger(jogger.id)"
+								class="joggers__delete"
 							>
 								Delete
 							</Link>

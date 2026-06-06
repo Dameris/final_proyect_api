@@ -4,63 +4,51 @@ namespace App\Policies;
 
 use App\Models\Product;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ProductPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determina si el usuario puede ver el listado o el detalle.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return false;
+        return true;
+    }
+
+    public function view(?User $user, Product $product): bool
+    {
+        return true;
     }
 
     /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Product $product): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can create models.
+     * Determina si el usuario puede crear productos.
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo('createtshirts') || $user->hasRole('admin');
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determina si el usuario puede actualizar el producto.
      */
     public function update(User $user, Product $product): bool
     {
-        return false;
+        if ($product->type === 'tshirt') {
+            return $user->hasPermissionTo('updatetshirts') || $user->hasRole('admin');
+        }
+
+        return $user->hasRole('admin');
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determina si el usuario puede borrar el producto.
      */
     public function delete(User $user, Product $product): bool
     {
-        return false;
-    }
+        if ($product->type === 'tshirt') {
+            return $user->hasPermissionTo('updatetshirts') || $user->hasRole('admin');
+        }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Product $product): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Product $product): bool
-    {
-        return false;
+        return $user->hasRole('admin');
     }
 }

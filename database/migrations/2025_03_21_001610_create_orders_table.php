@@ -16,6 +16,11 @@ return new class extends Migration
             $table->foreignId("user_id")->constrained()->onDelete("cascade");
             $table->decimal("total_price", 8, 2);
             $table->string("status")->default("Processed");
+            $table->string("shipping_name")->nullable();
+            $table->string("shipping_address")->nullable();
+            $table->string("shipping_city")->nullable();
+            $table->string("shipping_zip", 10)->nullable();
+            $table->string("shipping_phone", 20)->nullable();
         });
     }
 

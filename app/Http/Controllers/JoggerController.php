@@ -36,6 +36,7 @@ class JoggerController extends Controller
         return inertia("Joggers/Create", [
             'compositions' => JoggerRequest::COMPOSITIONS,
             'fits' => JoggerRequest::FITS,
+            'sizes' => ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
         ]);
     }
 
@@ -67,12 +68,19 @@ class JoggerController extends Controller
                 "img2" => $img2,
             ]);
 
-            // Inicializamos el stock en 0 para cada una de las tallas permitidas
-            foreach (JoggerRequest::FITS as $size) {
+            $validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+            // Inicializamos el stock por tallas
+            foreach ($validSizes as $size) {
+                $quantity = 0;
+                if ($request->has('stock') && isset($request->stock[$size])) {
+                    $quantity = max(0, intval($request->stock[$size]));
+                }
+
                 ProductStock::create([
                     'product_id' => $product->id,
                     'size' => $size,
-                    'stock' => 0
+                    'stock' => $quantity
                 ]);
             }
 
@@ -84,7 +92,7 @@ class JoggerController extends Controller
 
     public function show($id)
     {
-        $jogger = Product::where('type', 'jogger')->findOrFail($id);
+        $jogger = Product::where('type', 'jogger')->with('stocks')->findOrFail($id);
         $jogger->append(['jogger_name', 'jogger_composition', 'jogger_fit', 'jogger_price', 'jogger_img1', 'jogger_img2', 'stock']);
 
         return Inertia::render('Joggers/Show', [
@@ -113,16 +121,14 @@ class JoggerController extends Controller
 
     public function update(JoggerRequest $request, $id)
     {
-        // El método update se mantiene igual ya que el stock se delega preferiblemente a updateStock
-        // o si viene un array de 'stock' desde la edición general se procesa de la siguiente manera:
         $jogger = Product::where('type', 'jogger')->findOrFail($id);
-        $validated = $request->validated();
+        $request->validated();
 
         $data = [
-            "name" => $validated["jogger_name"] ?? $jogger->name,
-            "composition" => $validated["jogger_composition"] ?? $jogger->composition,
-            "fit" => $validated["jogger_fit"] ?? $jogger->fit,
-            "price" => $validated["jogger_price"] ?? $jogger->price,
+            "name" => $request->input("jogger_name", $jogger->name),
+            "composition" => $request->input("jogger_composition", $jogger->composition),
+            "fit" => $request->input("jogger_fit", $jogger->fit),
+            "price" => $request->input("jogger_price", $jogger->price),
         ];
 
         if ($request->hasFile("jogger_img1")) {

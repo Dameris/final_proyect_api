@@ -6,7 +6,7 @@ export default {
 
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { ref } from "vue";
 
@@ -29,16 +29,27 @@ const resetImage = (id, img1) => {
 };
 
 const deleteTshirt = (id) => {
-	if (confirm("Are you sure?")) {
-		Inertia.delete(route("tshirts.destroy", id));
-	}
+    window.emitter.emit('trigger-confirm', {
+        message: "Are you sure you want to delete this tshirt?",
+        onConfirm: () => {
+            router.delete(route("tshirts.destroy", id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    window.emitter.emit('trigger-alert', { 
+                        message: "The tshirt has been successfully deleted.", 
+                        type: "success" 
+                    });
+                }
+            });
+        }
+    });
 };
 </script>
 
 <template>
 	<AppLayout>
 		<div v-if="$page.props.user.permissions.includes('createtshirts')">
-			<Link :href="route('tshirts.create')"> CREATE TSHIRT </Link>
+			<Link :href="route('tshirts.create')" class="tshirts__create"> CREATE TSHIRT </Link>
 		</div>
 		<div class="tshirtIndex">
 			<h2 class="tshirtIndex__title">T-SHIRTS</h2>
@@ -65,13 +76,14 @@ const deleteTshirt = (id) => {
 						</p>
 
 						<p v-if="$page.props.user.permissions.includes('updatetshirts')">
-							<Link :href="route('tshirts.edit', tshirt.id)"> Edit </Link>
-							<Link
+							<Link :href="route('tshirts.edit', tshirt.id)" class="tshirts__edit"> Edit </Link>
+							<button
 								:href="route('tshirts.index')"
-								@click="deleteTshirt(tshirt.id)"
+								@click.prevent.stop="deleteTshirt(tshirt.id)"
+								class="tshirts__delete"
 							>
 								Delete
-							</Link>
+							</button>
 						</p>
 					</Link>
 				</li>
@@ -80,7 +92,7 @@ const deleteTshirt = (id) => {
 				<li
 					class="tshirtIndex__list--element"
 					v-for="tshirt in tshirts.data"
-					:key="`second-${tshirt.id}`"
+					:key="`first-${tshirt.id}`"
 				>
 					<Link
 						class="tshirtIndex__list--elementLink"
@@ -98,13 +110,14 @@ const deleteTshirt = (id) => {
 						</p>
 
 						<p v-if="$page.props.user.permissions.includes('updatetshirts')">
-							<Link :href="route('tshirts.edit', tshirt.id)"> Edit </Link>
-							<Link
+							<Link :href="route('tshirts.edit', tshirt.id)" class="tshirts__edit"> Edit </Link>
+							<button
 								:href="route('tshirts.index')"
-								@click="deleteTshirt(tshirt.id)"
+								@click.prevent.stop="deleteTshirt(tshirt.id)"
+								class="tshirts__delete"
 							>
 								Delete
-							</Link>
+							</button>
 						</p>
 					</Link>
 				</li>

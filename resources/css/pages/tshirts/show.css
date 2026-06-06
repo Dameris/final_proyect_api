@@ -34,7 +34,7 @@
 	text-decoration: underline;
 }
 
-.tshirtShow__details #fit {
+.tshirtShow__details #fit, #stock {
 	margin-top: 0.5em;
 }
 
@@ -95,6 +95,24 @@
 	text-decoration: none;
 	background-color: #8aceef;
 	transition: background-color 0.3s ease;
+}
+
+.stock-list {
+    display: flex;
+    flex-wrap: wrap;
+    font-family: monospace;
+	font-weight: bolder;
+	font-size: larger;
+}
+
+.stock-item {
+    padding: 0.5em 1em;
+    border-radius: 1em;
+}
+
+.out-of-stock-text {
+    color: #dc2626;
+    opacity: 0.6;
 }
 
 /** Media queries */

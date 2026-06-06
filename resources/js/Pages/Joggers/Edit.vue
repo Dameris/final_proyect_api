@@ -35,19 +35,14 @@ const props = defineProps({
 	},
 });
 
-/**
- * Convertimos el array de relaciones 'stocks' que viene de Laravel
- * en un objeto clave-valor para Vue.
- * Ejemplo: { 'Oversize': 12, 'Regular': 0, 'Slim': 5 }
- */
 const initializeStocks = () => {
     const stockMap = {};
 
     props.sizes.forEach(size => {
         stockMap[size] = 0;
     });
-    if (props.tshirt.stocks && Array.isArray(props.tshirt.stocks)) {
-        props.tshirt.stocks.forEach(item => {
+    if (props.jogger.stocks && Array.isArray(props.jogger.stocks)) {
+        props.jogger.stocks.forEach(item => {
             stockMap[item.size] = item.stock;
         });
     }
@@ -74,7 +69,7 @@ const submit = () => {
 	form.transform((data) => ({
 		...data,
 		_method: 'PUT',
-	})).post(route("tshirts.update", form.id), {
+	})).post(route("joggers.update", form.id), {
 		preserveScroll: true,
 	});
 };

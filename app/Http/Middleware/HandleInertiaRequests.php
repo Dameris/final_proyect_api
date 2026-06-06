@@ -17,7 +17,12 @@ class HandleInertiaRequests extends Middleware
 
     public function share(Request $request): array
     {
-        $user = Auth::user();
+        $user = $request->user();
+
+        $cartTotalQuantity = 0;
+        if ($user) {
+            $cartTotalQuantity = \App\Models\Cart::where('user_id', $user->id)->sum('quantity');
+        }
 
         return array_merge(parent::share($request), [
             'auth' => [
@@ -26,7 +31,13 @@ class HandleInertiaRequests extends Middleware
             'canLogin' => app('router')->has('login'),
             'canSignup' => app('router')->has('signup'),
             'user.roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
-            'user.permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : []
+            'user.permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
+            'cartTotalQuantity' => $cartTotalQuantity,
+            'flash' => [
+                'alert' => fn() => $request->session()->get('alert'),
+                'alertType' => fn() => $request->session()->get('alertType'),
+            ],
+
         ]);
     }
 }

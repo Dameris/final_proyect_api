@@ -44,11 +44,6 @@ Route::get('/faqs', [FaqsController::class, 'show'])->name('faqs');
 
 Route::get("/shipping", [ShippingController::class, 'show'])->name('shipping');
 
-Route::get('/cart', [CartController::class, 'showShoppingCart'])->name('shoppingCart');
-Route::post('/cart/{type}/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-Route::put('/cart/{id}', [CartController::class, 'updateCart']);
-Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
-
 Route::get('/auth/check', [AuthController::class, 'checkSession']);
 
 Route::get('/shop', function () {
@@ -59,42 +54,49 @@ Route::get('/search', [SearchController::class, 'search']);
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 
-Route::middleware(['auth', 'verified',])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/tshirts/create', [TshirtController::class, 'create'])->name('tshirts.create');
-    Route::get('/tshirts/{tshirt}/edit', [TshirtController::class, 'edit'])->name('tshirts.edit');
-    Route::put('/tshirts/{tshirt}', [TshirtController::class, 'update'])->name('tshirts.update');
-    Route::put('/tshirts/{tshirt}/stock', [TshirtController::class, 'updateStock'])->name('tshirts.stock.update');
-    Route::post('/tshirts', [TshirtController::class, 'store'])->name('tshirts.store');
-    Route::delete('/tshirts/{tshirt}', [TshirtController::class, 'destroy'])->name('tshirts.destroy');
+    // RUTAS EXCLUSIVAS DE ADMIN
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/tshirts/create', [TshirtController::class, 'create'])->name('tshirts.create');
+        Route::get('/tshirts/{tshirt}/edit', [TshirtController::class, 'edit'])->name('tshirts.edit');
+        Route::put('/tshirts/{tshirt}', [TshirtController::class, 'update'])->name('tshirts.update');
+        Route::put('/tshirts/{tshirt}/stock', [TshirtController::class, 'updateStock'])->name('tshirts.stock.update');
+        Route::post('/tshirts', [TshirtController::class, 'store'])->name('tshirts.store');
+        Route::delete('/tshirts/{tshirt}', [TshirtController::class, 'destroy'])->name('tshirts.destroy');
 
-    Route::get('/joggers/create', [JoggerController::class, 'create'])->name('joggers.create');
-    Route::get('/joggers/{jogger}/edit', [JoggerController::class, 'edit'])->name('joggers.edit');
-    Route::put('/joggers/{jogger}', [JoggerController::class, 'update'])->name('joggers.update');
-    Route::put('/joggers/{jogger}/stock', [JoggerController::class, 'updateStock'])->name('joggers.stock.update');
-    Route::post('/joggers', [JoggerController::class, 'store'])->name('joggers.store');
-    Route::delete('/joggers/{jogger}', [JoggerController::class, 'destroy'])->name('joggers.destroy');
+        Route::get('/joggers/create', [JoggerController::class, 'create'])->name('joggers.create');
+        Route::get('/joggers/{jogger}/edit', [JoggerController::class, 'edit'])->name('joggers.edit');
+        Route::put('/joggers/{jogger}', [JoggerController::class, 'update'])->name('joggers.update');
+        Route::put('/joggers/{jogger}/stock', [JoggerController::class, 'updateStock'])->name('joggers.stock.update');
+        Route::post('/joggers', [JoggerController::class, 'store'])->name('joggers.store');
+        Route::delete('/joggers/{jogger}', [JoggerController::class, 'destroy'])->name('joggers.destroy');
 
-    Route::resource('/roles', RoleController::class);
+        Route::resource('/roles', RoleController::class);
 
+        Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+        Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+        Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+        Route::post('/events', [EventController::class, 'store'])->name('events.store');
+        Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+    });
+
+    // RUTAS USUARIO LOGUEADO
     Route::get('/user-profile', [UserProfileController::class, 'showUserProfile'])->name('profile');
     Route::post('/user-profile', [UserProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/api/cart', [CartController::class, 'getCartItems']);
-    Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
+    Route::get('/cart', [CartController::class, 'showShoppingCart'])->name('shoppingCart');
+    Route::post('/cart/{type}/{id}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::delete('/cart', [CartController::class, 'removeAllFromCart']);
     Route::put('/cart/{id}', [CartController::class, 'updateCart']);
+    Route::delete('/cart/{id}', [CartController::class, 'removeFromCart']);
+
+    Route::get('/api/cart', [CartController::class, 'getCartItems']);
     Route::post('/checkout', [CheckoutController::class, 'processOrder']);
     Route::get('/private/orders-history', [OrderHistoryController::class, 'index'])->name('orders.history');
 
     Route::get('/api/tshirt/{id}', [TshirtController::class, 'getTshirtDetails']);
     Route::get('/api/jogger/{id}', [JoggerController::class, 'getJoggerDetails']);
-
-    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
-    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
-    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
-    Route::post('/events', [EventController::class, 'store'])->name('events.store');
-    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

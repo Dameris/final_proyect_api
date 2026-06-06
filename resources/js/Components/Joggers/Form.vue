@@ -11,6 +11,7 @@ import InputError from "../InputError.vue";
 import InputLabel from "../InputLabel.vue";
 import PrimaryButton from "../PrimaryButton.vue";
 import TextInput from "../TextInput.vue";
+import { onMounted } from "vue";
 
 const props = defineProps({
 	form: {
@@ -38,10 +39,23 @@ const props = defineProps({
 	sizes: {
 		type: Array,
 		required: true,
+		default: () => [],
 	},
 });
 
 const emit = defineEmits(["submit"]);
+
+onMounted(() => {
+    if (!props.updating) {
+        props.form.stock = {};
+        
+        if (props.sizes && Array.isArray(props.sizes)) {
+            props.sizes.forEach(size => {
+                props.form.stock[size] = 0;
+            });
+        }
+    }
+});
 
 const handleFileChange = (field, event) => {
 	const file = event.target.files[0];
@@ -132,7 +146,7 @@ const handleSubmit = () => {
 				</select>
 				<InputError :message="form.errors.jogger_fit" />
 			</div>
-			<div v-if="isAdmin">
+			<div v-if="isAdmin && form.stock">
     			<h3>Stock by sizes</h3>
     
     			<div v-for="size in sizes" :key="size" class="form-group">
@@ -141,7 +155,7 @@ const handleSubmit = () => {
             			:id="'stock_' + size"
             			type="number" 
             			min="0"
-            			v-model.number="form.stock[size]" 
+            			v-model.number="form.stock[size]"
             			class="form-control"
         			/>
     			</div>

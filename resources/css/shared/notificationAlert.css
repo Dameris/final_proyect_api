@@ -1,0 +1,72 @@
+/* Contenedor flotante tipo Pop-up (Toast) */
+.alert__notification {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 300px;
+	max-width: 450px;
+	padding: 16px;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	color: #ffffff;
+	font-family: sans-serif;
+}
+
+/* Estilos según el tipo de alerta */
+.alert__notification.success {
+	background-color: #10b981;
+	border-left: 6px solid #047857;
+}
+
+.alert__notification.error {
+	background-color: #ef4444;
+	border-left: 6px solid #b91c1c;
+}
+
+.alert__icon {
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.alert__content {
+	flex-grow: 1;
+	font-size: 0.95rem;
+}
+
+.alert__close {
+	background: none;
+	border: none;
+	color: white;
+	font-size: 1.4rem;
+	cursor: pointer;
+	opacity: 0.7;
+	line-height: 1;
+}
+
+.alert__close:hover {
+	opacity: 1;
+}
+
+.alert-enter-from {
+	transform: translateX(100%);
+	opacity: 0;
+}
+.alert-enter-to {
+	transform: translateX(0);
+	opacity: 1;
+}
+.alert-leave-from {
+	opacity: 1;
+}
+.alert-leave-to {
+	opacity: 0;
+	transform: translateY(-20px);
+}
+.alert-enter-active,
+.alert-leave-active {
+	transition: all 0.4s ease;
+}
