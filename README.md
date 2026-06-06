@@ -1,4 +1,4 @@
-# 🛒 E-Commerce Platform - 2º DAW Project
+# 🛒 Plataforma E-Commerce - 2º DAW
 
 Este es el repositorio oficial de la web de e-commerce especializada en ropa urbana ***(SkyUrban)***. La aplicación está construida siguiendo una arquitectura desacoplada moderna utilizando ***Laravel 11/12*** como backend robusto y ***Vue 3*** (Inertia.js) en el entorno cliente.
 
