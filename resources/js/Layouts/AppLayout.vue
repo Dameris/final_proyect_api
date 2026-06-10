@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from "vue";
 import ShopHeader from "@/Components/Shared/ShopHeader.vue";
 import ShopFooter from "@/Components/Shared/ShopFooter.vue";
 import NotificationAlert from "@/Components/Shared/NotificationAlert.vue";
@@ -14,6 +15,16 @@ defineProps({
         default: 'SkyUrban'
     }
 });
+
+// Aasegurar que el HTML tenga el atributo correcto
+onMounted(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+        document.documentElement.removeAttribute("data-theme");
+    }
+});
 </script>
 
 <template>
@@ -22,9 +33,17 @@ defineProps({
 
     <ShopHeader />
 
-    <main>
+    <!-- Clase envolvente para controlar transiciones suaves en toda la app -->
+    <main class="app-main-content">
         <slot />
     </main>
 
     <ShopFooter />
 </template>
+
+<style scoped>
+.app-main-content {
+    min-height: 80vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+</style>

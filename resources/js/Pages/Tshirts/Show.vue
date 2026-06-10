@@ -98,18 +98,18 @@ const hasStockForSize = (sizeName) => {
 					</p>
 					<p id="stock">
     					<strong>STOCK BY SIZES:</strong> <br />
-    					<span class="stock-list">
+    					<span class="stock__list">
         					<template v-if="tshirt.stocks && tshirt.stocks.length > 0">
             					<span 
                 					v-for="item in tshirt.stocks" 
                 					:key="item.id" 
-                					class="stock-item"
-                					:class="{ 'out-of-stock-text': item.stock === 0 }"
+                					class="stock__item"
+                					:class="{ 'outOfStock__text': item.stock === 0 }"
             					>
                 					{{ item.size }}: {{ item.stock }}
             					</span>
         					</template>
-        					<span v-else class="no-stock-text">No stock available</span>
+        					<span v-else class="outOfStock__text">No stock available</span>
     					</span>
 					</p>
 				</div>

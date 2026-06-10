@@ -47,3 +47,51 @@ footer {
 	width: 100%;
 	text-align: center;
 }
+
+:root {
+	/* MODO CLARO */
+	--bg-main: #f8fafc; /* Fondo principal */
+	--bg-card: #ffffff; /* Tarjetas y Header */
+	--text-primary: #0f172a; /* Texto principal */
+	--text-secondary: #475569; /* Texto secundario */
+	--accent: #2563eb; /* Color de marca principal */
+	--accent-light: #8aceef; /* Tu azul claro de acento */
+	--border-color: #e2e8f0; /* Bordes ultra sutiles */
+	--shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+html[data-theme="dark"] {
+	/* MODO OSCURO */
+	--bg-main: #041231; /* Fondo principal */
+	--bg-card: #131b27; /* Tarjetas y Header */
+	--text-primary: #f8fafc; /* Texto principal */
+	--text-secondary: #94a3b8; /* Texto secundario */
+	--accent: #3b82f6; /* Azul de marca un poco más brillante para contraste */
+	--accent-light: #8aceef; /* Mantenemos tu azul de acento */
+	--border-color: #334155; /* Bordes oscuros pero visibles */
+	--shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+}
+
+/* Aplicación general */
+html,
+body {
+	background-color: var(--bg-main);
+	color: var(--text-primary);
+	font-family:
+		"Inter",
+		system-ui,
+		-apple-system,
+		sans-serif;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease,
+		border-color 0.3s ease;
+}
+
+/* Forzar que las vistas del slot hereden el color */
+main,
+.app-main-content,
+#app {
+	background-color: var(--bg-main);
+	color: var(--text-primary);
+}

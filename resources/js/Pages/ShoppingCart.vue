@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
-import { useForm, usePage, router } from "@inertiajs/vue3"; // Pasamos a la importación moderna v1+
+import { useForm, usePage, router } from "@inertiajs/vue3";
 import axios from "axios";
 import AppLayout from "@/Layouts/AppLayout.vue";
 

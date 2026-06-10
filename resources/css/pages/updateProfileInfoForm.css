@@ -5,14 +5,14 @@
 	height: 80vh;
 	width: 60vw;
 	padding: 1em;
-	background-color: #f9f9f9;
+	background-color: var(--bg-main);
 }
 
 .updateForm__profileForm {
 	width: 60vw;
 	padding: 2em;
 	border-radius: 1em;
-	background: #fff;
+	background-color: var(--bg-main);
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 

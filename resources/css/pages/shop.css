@@ -1,67 +1,95 @@
 .shop__container {
 	text-align: center;
-	padding: 2em;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 4rem 1.5rem;
+}
+
+.shop__container h1 {
+	font-size: 2.2rem;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	margin-bottom: 2rem;
+	color: var(--text-primary);
 }
 
 .shop__options {
 	display: flex;
 	justify-content: center;
-	gap: 2em;
-	margin-top: 1.5em;
+	gap: 2rem;
+	margin-top: 2rem;
 }
 
 .shop__card {
-	padding: 2em;
-	background: #56b5e4;
-	color: white;
+	flex: 1;
+	max-width: 280px;
+	padding: 2.5rem 2rem;
+	background-color: var(--bg-card);
+	color: var(--text-primary);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow);
 	text-decoration: none;
-	font-size: 1.2em;
-	border-radius: 0.5em;
-	transition: 0.3s;
+	font-size: 1.25rem;
+	font-weight: 700;
+	border-radius: 0.75em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	transition:
+		transform 0.2s ease,
+		border-color 0.2s ease,
+		box-shadow 0.2s ease;
 }
 
 .shop__card:hover {
-	background: #8aceef;
+	transform: translateY(-4px);
+	border-color: var(--accent-light);
+	color: var(--accent-light);
 }
 
 /** Media queries */
 @media (max-width: 1024px) {
 	.shop__options {
-		gap: 1.5em;
+		gap: 1.5rem;
 	}
 
 	.shop__card {
-		padding: 2em;
-		font-size: 1em;
+		padding: 2rem 1.5rem;
+		font-size: 1.1rem;
 	}
 }
 
 @media (max-width: 768px) {
 	.shop__container {
-		padding: 2em;
+		padding: 2.5rem 1rem;
 	}
 
 	.shop__options {
 		flex-direction: column;
 		align-items: center;
-		gap: 1em;
+		gap: 1.25rem;
 	}
 
 	.shop__card {
-		width: 80%;
-		padding: 1em;
-		font-size: 1em;
+		width: 100%;
+		max-width: 350px;
+		padding: 1.75rem;
 	}
 }
 
 @media (max-width: 480px) {
 	.shop__container {
-		padding: 2em;
+		padding: 2rem 1rem;
+	}
+
+	.shop__container h1 {
+		font-size: 1.75rem;
 	}
 
 	.shop__card {
-		width: 100%;
-		font-size: 1em;
-		padding: 1em;
+		max-width: 100%;
+		padding: 1.5rem;
 	}
 }
+/** Media queries */

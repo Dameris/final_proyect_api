@@ -1,13 +1,61 @@
 @import url("../auth/formBox.css");
 
-/** Media query */
-@media (max-width: 500px) {
+.formBox__label {
+	color: var(--text-primary);
+	line-height: 1.4;
+	margin-bottom: 2vh;
+}
+
+.formBox__label strong {
+	color: var(--accent-light);
+}
+
+.form__textarea {
+	margin-bottom: 1.5vh;
+	width: 100%;
+	min-height: 150px;
+	padding: 0.9rem;
+	background-color: var(--bg-card);
+	color: var(--text-primary);
+	font-family:
+		Inter,
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Roboto,
+		sans-serif;
+	border: 1px solid #8aceef;
+	border-radius: 0.5em;
+	resize: vertical;
+	transition: all 0.2s ease;
+}
+
+.form__textarea::placeholder {
+	color: var(--text-secondary);
+	opacity: 0.8;
+}
+
+.form__textarea:focus {
+	border-color: var(--accent-light);
+	box-shadow: 0 0 0 3px rgba(138, 206, 239, 0.15);
+	outline: none;
+}
+
+/** Media queries */
+@media (max-width: 700px) {
 	.formBox {
 		padding: 0 2em;
+		align-items: center;
 	}
 
 	.formBox__title {
 		font-size: 1.5em;
+	}
+
+	.formBox-form {
+		width: 100%;
+		max-width: 30em;
+		align-items: center;
 	}
 
 	.formBox-form__input,
@@ -18,21 +66,13 @@
 	}
 }
 
-@media (max-width: 700px) {
+@media (max-width: 500px) {
 	.formBox {
-		padding: 0 2em;
+		padding: 0 1.5em;
 	}
 
-	.formBox__title {
-		font-size: 1.5em;
-	}
-
-	.formBox-form__input,
-	.form__textarea,
-	.formBox-form__btn {
-		width: 30em;
-		margin-bottom: 1em;
+	.formBox-form {
+		max-width: 100%;
 	}
 }
-
-/** Media query */
+/** Media queries */

@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class SearchController extends Controller
 {
     public function search(Request $request)
     {
         try {
+            $request->validate([
+                'min_price' => 'nullable|numeric|min:0',
+                'max_price' => 'nullable|numeric|min:0',
+            ]);
+
             $query = strtolower(trim($request->query('query')));
-            $category = $request->query('category'); // tshirt | jogger | null
+            $category = $request->query('category');
             $minPrice = $request->query('min_price');
             $maxPrice = $request->query('max_price');
 
@@ -25,37 +31,44 @@ class SearchController extends Controller
 
             // Búsqueda por texto unificada en las columnas comunes
             if ($query) {
-                $productsQuery->where(function ($q) use ($query) {
-                    $q->where('name', 'like', "%{$query}%")
-                        ->orWhere('composition', 'like', "%{$query}%")
-                        ->orWhere('fit', 'like', "%{$query}%");
-                });
+                $keywords = array_filter(preg_split('/[\s,]+/', $query));
+
+                foreach ($keywords as $word) {
+                    $productsQuery->where(function ($q) use ($word) {
+                        $q->where('name', 'like', "%{$word}%")
+                            ->orWhere('composition', 'like', "%{$word}%")
+                            ->orWhere('fit', 'like', "%{$word}%")
+                            ->orWhere('type', 'like', "%{$word}%");
+                    });
+                }
             }
 
-            // Rangos de precio aplicados sobre la columna única 'price'
-            if ($minPrice) {
+            if ($minPrice !== null) {
                 $productsQuery->where('price', '>=', $minPrice);
             }
 
-            if ($maxPrice) {
+            if ($maxPrice !== null) {
                 $productsQuery->where('price', '<=', $maxPrice);
             }
 
             $products = $productsQuery->get();
-            $results = collect();
 
-            // Estructuramos la respuesta mapeando las claves exactas que el frontend espera recibir
-            foreach ($products as $item) {
-                $results->push([
+            $results = $products->map(function ($item) {
+                return [
                     'id'    => $item->id,
                     'name'  => $item->name,
                     'price' => $item->price,
                     'image' => $item->img1,
-                    'type'  => $item->type // 'tshirt' o 'jogger'
-                ]);
-            }
+                    'type'  => $item->type
+                ];
+            });
 
             return response()->json($results);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'error'   => 'Validation failed',
+                'messages' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'error'   => 'Search failed',

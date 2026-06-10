@@ -1,19 +1,22 @@
 .joggerIndex {
 	margin: 0 auto;
 	min-height: 100%;
+	padding-bottom: 3rem;
 }
 
 .joggerIndex__title {
-	margin: 1em;
-	color: #8aceef;
+	margin: 1.5rem 1em;
+	color: var(--text-primary);
+	font-size: 2.25rem;
+	font-weight: 800;
 }
 
 .joggerIndex__list {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(25em, 1fr));
-	gap: 1vw;
+	grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+	gap: 1.5rem;
 	padding: 0;
-	margin: 2em;
+	margin: 1.5rem;
 	list-style: none;
 }
 
@@ -22,43 +25,61 @@
 	text-align: center;
 	border-radius: 1em;
 	overflow: hidden;
-	background-color: #f9f9f9;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	transition: transform 0.3s ease-in-out;
+	background-color: var(--bg-card);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow);
+	transition:
+		transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+		box-shadow 0.3s ease;
 }
 
 .joggerIndex__list--element:hover {
-	transform: scale(1.03);
+	transform: translateY(-5px) scale(1.01);
+	box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="dark"] .tshirtIndex__list--element:hover {
+	box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.5);
 }
 
 .joggerIndex__list--element img {
 	max-width: 100%;
 	height: auto;
 	border-radius: 1em;
+	object-fit: cover;
 }
 
 .joggerIndex__list--element p {
-	color: #8aceef;
-	font-weight: bold;
+	color: var(--text-primary);
+	font-weight: 600;
+	font-size: 1.05rem;
+	margin-top: 1rem;
 }
 
 .joggerIndex__list--elementLink {
 	text-decoration: none;
+	display: block;
 }
 
 .joggers__create {
 	display: inline-block;
-	margin-left: 1em;
-	margin-top: 1em;
-	padding: 0.4em 0.8em;
-	background-color: #56b5e4;
-	color: white;
-	border-radius: 0.3em;
+	margin-left: 1.5rem;
+	margin-top: 1.5rem;
+	padding: 0.6rem 1.2rem;
+	background-color: var(--accent-light);
+	color: #0f172a;
+	border-radius: 6px;
 	text-decoration: none;
-	font-weight: bold;
+	font-weight: 700;
+	font-size: 0.9rem;
+	transition:
+		background-color 0.2s ease,
+		transform 0.1s ease;
 }
+
 .joggers__create:hover {
-	background-color: #8aceef;
+	background-color: #56b5e4;
+	transform: translateY(-1px);
 }
 
 .joggers__edit,
@@ -68,18 +89,21 @@
 	margin-top: 1em;
 	font-size: 0.8em;
 	font-family: inherit;
-	font-weight: bold;
+	font-weight: 700;
 	border-radius: 0.3em;
 	text-decoration: none;
 	cursor: pointer;
 	border: none;
 	outline: none;
-	transition: background-color 0.2s ease;
+	transition:
+		background-color 0.2s ease,
+		transform 0.1s ease;
 }
 
 .joggers__edit {
 	background-color: #f59e0b;
 	color: #fff;
+	margin-right: 0.5rem;
 }
 
 .joggers__edit:hover {
@@ -97,18 +121,21 @@
 
 /** Media queries */
 @media (max-width: 800px) {
-	.joggerIndex__list {
-		grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
-		gap: 2vw;
-		margin: 1em;
+	.tshirtIndex__list {
+		grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+		gap: 1rem;
+		margin: 1rem;
 	}
 }
 
 @media (max-width: 500px) {
-	.joggerIndex__list {
+	.tshirtIndex__list {
 		grid-template-columns: 1fr;
-		gap: 2vw;
-		margin: 1em;
+		gap: 1.25rem;
+		margin: 1rem;
+	}
+	.tshirtIndex__title {
+		font-size: 1.75rem;
 	}
 }
 /** Media queries */

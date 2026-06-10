@@ -1,87 +1,124 @@
 .aboutContainer {
-	max-width: 120vh;
+	max-width: 1000px;
 	margin: 0 auto;
-	padding: 20px;
+	padding: 2rem 1.5rem;
 	text-align: center;
 }
 
 .aboutContainer__title {
-	padding: 3em 1em;
-	color: #8aceef;
-	border-radius: 1em;
+	padding: 3em 1em 1.5em 1em;
+	color: var(--accent-light);
+}
+
+.aboutContainer__title h1 {
+	font-size: 3rem;
+	font-weight: 800;
+	letter-spacing: -0.04em;
+	margin-bottom: 0.5rem;
+}
+
+.aboutContainer__title p {
+	color: var(--text-secondary);
+	font-size: 0.95rem;
+	letter-spacing: 0.1em;
+	font-weight: 600;
 }
 
 h2 {
-	margin-bottom: 0.5em;
-	color: #19a6ec;
+	margin-bottom: 0.75rem;
+	color: var(--accent-light);
+	font-weight: 700;
 }
 
 .aboutContainer__history,
 .aboutContainer__mission,
 .aboutContainer__engagement {
-	margin: 2em 0;
-	padding: 2em;
+	margin: 2rem 0;
+	padding: 2.5rem;
 	border-radius: 1em;
-	background: #f9f9f9;
+	background-color: var(--bg-card);
+	border: 1px solid var(--border-color);
+	transition:
+		transform 0.2s ease,
+		border-color 0.2s ease;
 }
 
+.aboutContainer__history:hover,
+.aboutContainer__mission:hover,
+.aboutContainer__engagement:hover {
+	border-color: var(--accent-light);
+}
+
+.aboutContainer p {
+	color: var(--text-primary);
+	line-height: 1.7;
+	font-size: 1.05rem;
+}
+
+/* Cita inspiradora */
 .aboutContainer__inspiration {
-	margin-top: 2em;
+	margin: 3rem 0;
+	padding: 0 1rem;
+}
+
+.aboutContainer__inspiration blockquote {
 	font-style: italic;
-	font-size: 1.2rem;
-	color: #19a6ec;
+	font-size: 1.35rem;
+	color: var(--accent-light);
+	line-height: 1.5;
+	font-weight: 500;
+	max-width: 600px;
+	margin: 0 auto;
 }
 
 /** Media queries */
 @media (max-width: 800px) {
 	.aboutContainer {
-		padding: 0.5em;
+		padding: 1.5rem 1rem;
 	}
 
-	.aboutContainer__title {
-		padding: 2em 0.5em;
-		font-size: 1.8em;
+	.aboutContainer__title h1 {
+		font-size: 2.25rem;
 	}
 
 	h2 {
-		font-size: 1.5em;
+		font-size: 1.5rem;
 	}
 
 	.aboutContainer__history,
 	.aboutContainer__mission,
 	.aboutContainer__engagement {
-		margin: 1.5em 0;
-		padding: 1.5em;
+		margin: 1.5rem 0;
+		padding: 1.75rem;
 	}
 
-	.aboutContainer__inspiration {
-		font-size: 1rem;
+	.aboutContainer__inspiration blockquote {
+		font-size: 1.15rem;
 	}
 }
 
 @media (max-width: 500px) {
 	.aboutContainer {
-		padding: 0.2em;
+		padding: 1rem 0.75rem;
 	}
 
-	.aboutContainer__title {
-		padding: 1.5em 0.5em;
-		font-size: 1.5em;
+	.aboutContainer__title h1 {
+		font-size: 1.85rem;
 	}
 
 	h2 {
-		font-size: 1.2em;
+		font-size: 1.3rem;
 	}
 
 	.aboutContainer__history,
 	.aboutContainer__mission,
 	.aboutContainer__engagement {
-		margin: 1em 0;
-		padding: 1em;
+		margin: 1.25rem 0;
+		padding: 1.25rem;
 	}
 
-	.aboutContainer__inspiration {
-		font-size: 0.9rem;
+	.aboutContainer__inspiration blockquote {
+		font-size: 1rem;
 	}
 }
 /** Media queries */

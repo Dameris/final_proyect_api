@@ -1,6 +1,6 @@
 <script>
 export default {
-	name: "JoggerShow",
+	name: "joggerShow",
 };
 </script>
 
@@ -67,16 +67,12 @@ const hasStockForSize = (sizeName) => {
 		<div class="joggerShow">
 			<!-- Imágenes a la izquierda -->
 			<div class="joggerShow__imagesBox">
-				<img
-					v-if="jogger.jogger_img1"
-					:src="'/storage/img/joggers/' + jogger.jogger_img1"
-					alt="Front view"
-				/>
-				<img
-					v-if="jogger.jogger_img2"
-					:src="'/storage/img/joggers/' + jogger.jogger_img2"
-					alt="Back view"
-				/>
+    			<div v-if="jogger.jogger_img1" class="joggerShow__image-card">
+        			<img :src="'/storage/img/joggers/' + jogger.jogger_img1" alt="Front view" />
+    			</div>
+    			<div v-if="jogger.jogger_img2" class="joggerShow__image-card">
+        			<img :src="'/storage/img/joggers/' + jogger.jogger_img2" alt="Back view" />
+    			</div>
 			</div>
 
 			<!-- Información a la derecha -->
@@ -98,18 +94,18 @@ const hasStockForSize = (sizeName) => {
 					</p>
 					<p id="stock">
     					<strong>STOCK BY SIZES:</strong> <br />
-    					<span class="stock-list">
+    					<span class="stock__list">
         					<template v-if="jogger.stocks && jogger.stocks.length > 0">
             					<span 
                 					v-for="item in jogger.stocks" 
                 					:key="item.id" 
-                					class="stock-item"
-                					:class="{ 'out-of-stock-text': item.stock === 0 }"
+                					class="stock__item"
+                					:class="{ 'outOfStock__text': item.stock === 0 }"
             					>
                 					{{ item.size }}: {{ item.stock }}
             					</span>
         					</template>
-        					<span v-else class="no-stock-text">No stock available</span>
+        					<span v-else class="outOfStock__text">No stock available</span>
     					</span>
 					</p>
 				</div>
