@@ -67,7 +67,7 @@ jobs:
           port: ${{ secrets.HOSTINGER_PORT }}
           passphrase: ${{ secrets.HOSTINGER_PASSPHRASE }}
           script: |
-            cd public_html
+            cd domains/skyurban.space/public_html
 
             git pull origin master
 
