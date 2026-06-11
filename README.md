@@ -124,9 +124,9 @@ Los commits deben seguir la estructura estándar corporativa: **_[tipo]: [descri
 
 La seguridad del sistema está estructurada en dos capas infranqueables que no dependen exclusivamente de la interfaz visual del cliente:
 
-1.  **Middleware de Rutas (Kernel/Bootstrap):** Almacenado como alias perimetral en **_bootstrap/app.php._** Bloquea peticiones directas HTTP a endpoints administrativos si la sesión activa no posee el rol requerido (**role:admin**).
+1.  **Middleware de Rutas (Kernel/Bootstrap):** Almacenado como alias perimetral en `bootstrap/app.php`. Bloquea peticiones directas HTTP a endpoints administrativos si la sesión activa no posee el rol requerido (`role:admin`).
 
-2.  **Policies de Laravel (Lógica de Dominio):** El modelo **_Product_** se encuentra blindado mediante **ProductPolicy.php**. Métodos específicos como **_update_** y **_delete_** evalúan mediante métodos de Spatie (**_$user->hasPermissionTo()_**) los privilegios del usuario autenticado, retornando excepciones HTTP **_403 Forbidden_** en ataques de suplantación de identidad.
+2.  **Policies de Laravel (Lógica de Dominio):** El modelo `Product` se encuentra blindado mediante `ProductPolicy.php`. Métodos específicos como `update` y `delete` evalúan mediante métodos de Spatie (`$user->hasPermissionTo()`) los privilegios del usuario autenticado, retornando excepciones HTTP `403 Forbidden` en ataques de suplantación de identidad.
 
 ## 🌐 5. Documentación de la API y Endpoints Públicos
 
@@ -141,7 +141,7 @@ La plataforma interactúa mediante peticiones REST asíncronas para flujos opera
 | POST        | /checkout         | Procesa la orden de compra mandando los datos del carrito e inyectando los datos de envío.   | Sí            | 201 Created, 422 Unprocessable Entity      |
 | GET         | /api/tshirt/{id}  | Devuelve los metadatos y stocks en formato JSON de una camiseta en específico.               | No            | 200 OK, 404 Not Found                      |
 
-Ejemplo de Payload (Request) - **_POST /checkout_**
+Ejemplo de Payload (Request) - `POST /checkout`
 
 ```json
 {
@@ -181,17 +181,33 @@ Ejemplo de Payload (Request) - **_POST /checkout_**
 
 ## 🚀 6. Pipeline de Integración Continua (CI/CD)
 
-El proyecto cuenta con un flujo de trabajo de Integración Continua automatizado mediante GitHub Actions (configurado en **_.github/workflows/ci-cd.yml_**).
+La plataforma implementa un flujo automatizado de nivel profesional de **Integración Continua (CI)** y **Despliegue Continuo (CD)** gestionado de forma íntegra a través de **GitHub Actions** (`.github/workflows/ci-cd.yml`). El flujo se divide en dos fases críticas encadenadas:
 
-Cada vez que se realiza una actualización (**_push_** o **_pull_** request) hacia las ramas principales, un servidor en la nube ejecuta de forma automática las siguientes fases de validación técnica:
+### Fase 1: Integración Continua (CI) - Control de Calidad
 
-1. **Entorno de Servidor**: Levanta un contenedor virtual con PHP 8.2 e instala de manera aislada y limpia las dependencias de Composer.
+Cada vez que se efectúa un `push` a la rama `main`, un runner virtual aislado (`ubuntu-latest`) inicializa un entorno de pruebas idéntico al de producción:
 
-2. **Entorno de Base de Datos**: Inicializa un servicio en segundo plano de MySQL 8.0, configura las variables de entorno de prueba y ejecuta las migraciones (**_php artisan migrate_**) desde cero para certificar la consistencia y la reproducibilidad absoluta del esquema.
+1. **Entorno PHP & Node:** Configura PHP 8.2 e instala las dependencias mediante Composer de forma limpia. Paralelamente, levanta Node.js 18 para la descarga de paquetes NPM.
 
-3. **Entorno de Cliente**: Instala Node.js, descarga los paquetes de NPM y compila el frontend con Vite (**_npm run build_**) para verificar que no existan fallos de sintaxis en los componentes Vue 3 e Inertia.
+2. **Base de Datos en Aislamiento:** Instala un contenedor de servicios en segundo plano con MySQL 8.0, inyecta dinámicamente un esquema limpio y ejecuta el juego de migraciones (`php artisan migrate --force`) para asegurar la reproducibilidad de la estructura relacional.
 
-Este pipeline actúa como control de calidad previo, garantizando la estabilidad integral del software antes de proceder a la publicación manual final.
+3. **Compilación de Assets:** Procesa y compila el frontend reactivo (`npm run build`) para interceptar fallos de sintaxis en las vistas o propiedades compartidas de Vue 3 e Inertia.js.
+
+### Fase 2: Despliegue Continuo (CD) - Publicación en Caliente
+
+Una vez la Fase 1 concluye con éxito, se dispara de manera automatizada el job de despliegue mediante una conexión segura **SSH tunelizada**:
+
+1. **Autenticación mediante Secretos Encriptados:** El flujo utiliza variables de entorno seguras inyectadas en el repositorio (`HOSTINGER_HOST`, `HOSTINGER_USER`, `HOSTINGER_SSH_KEY`, `HOSTINGER_PORT`) evitando exponer credenciales en el código fuente.
+
+2. **Sincronización Git Remota:** Accede al directorio raíz del servidor web remoto (`public_html`) en Hostinger y ejecuta de forma asíncrona un comando `git pull origin main`.
+
+3. **Optimización de Producción:** El pipeline ejecuta los comandos de optimización del framework en el servidor web:
+   - `composer install --no-dev --optimize-autoloader` (Optimiza el mapa de clases de PHP).
+   - `npm run build` (Genera los nuevos bundles de producción minimizados para el cliente).
+   - `php artisan migrate --force` (Impacta alteraciones de base de datos en caliente).
+   - `php artisan config:cache` y `php artisan route:cache` (Sella las configuraciones en memoria de producción para maximizar la velocidad de respuesta HTTP).
+
+Este sistema elimina los errores humanos del despliegue manual por FTP y garantiza que los cambios validados localmente se reflejen en tiempo real en la URL pública sin cortes de servicio.
 
 ## 🌐 7. Proceso de Despliegue en Producción (Hostinger)
 
@@ -201,15 +217,15 @@ El despliegue de la aplicación en el entorno de producción se realiza de forma
 
 1. **Empaquetado del Proyecto:**
 
-Se genera un archivo comprimido **_.zip_** que contiene la estructura limpia del proyecto, excluyendo directorios locales pesados como **_node_modules_** (los assets de Vue ya van compilados para producción dentro de **_public/build_** gracias a **_npm run build_**).
+Se genera un archivo comprimido `.zip` que contiene la estructura limpia del proyecto, excluyendo directorios locales pesados como `node_modules` (los assets de Vue ya van compilados para producción dentro de `public/build` gracias a `npm run build`).
 
 2. **Carga y Extracción en Servidor:**
 
-El archivo **_.zip_** se sube a través del Administrador de Archivos de Hostinger (o vía cliente SFTP) y se extrae directamente en la raíz del directorio **_public_html_**.
+El archivo `.zip` se sube a través del Administrador de Archivos de Hostinger (o vía cliente SFTP) y se extrae directamente en la raíz del directorio `public_html`.
 
 3. **Configuración de Seguridad y Redirección (.htaccess):**
 
-Dado que Laravel utiliza la carpeta **_/public_** como el único punto de entrada seguro expuesto a Internet, se añade un archivo **_.htaccess_** en la raíz de **_public_html_** que actúa como configuración del servidor web Apache. Este archivo redirige el tráfico de forma limpia sin exponer el resto del código fuente del backend:
+Dado que Laravel utiliza la carpeta `/public` como el único punto de entrada seguro expuesto a Internet, se añade un archivo `.htaccess` en la raíz de `public_html` que actúa como configuración del servidor web Apache. Este archivo redirige el tráfico de forma limpia sin exponer el resto del código fuente del backend:
 
 ```apache
 <IfModule mod_rewrite.c>
@@ -220,11 +236,11 @@ Dado que Laravel utiliza la carpeta **_/public_** como el único punto de entrad
 
 4. **Persistencia y Base de Datos:**
 
-Se crea una base de datos MySQL relacional desde el panel de control de Hostinger. El esquema de tablas inicial se vuelca importando el archivo **_.sql_** generado localmente o ejecutando de forma remota los comandos de migración.
+Se crea una base de datos MySQL relacional desde el panel de control de Hostinger. El esquema de tablas inicial se vuelca importando el archivo `.sql` generado localmente o ejecutando de forma remota los comandos de migración.
 
-5. **Configuración del Entorno de Producción \***(.env)**\*:**
+5. **Configuración del Entorno de Producción (`.env`):**
 
-El archivo **_.env_** del servidor se edita minuciosamente para activar el modo seguro, asegurar el aislamiento de errores y enlazar los servicios web:
+El archivo `.env` del servidor se edita minuciosamente para activar el modo seguro, asegurar el aislamiento de errores y enlazar los servicios web:
 
 ```properties
 APP_ENV=production
@@ -240,7 +256,7 @@ DB_PASSWORD=********
 
 ## ❓ 8. FAQ de Errores Comunes y Soluciones
 
-- **Error:** **_Target class \[role\] does not exist._**
-- - **Solución:** Ocurre al no registrar el alias de Spatie. Se resuelve encadenando el método **_$middleware->alias(\['role' => ...\])_** en el archivo interno **_bootstrap/app.php_**.
+- **Error:** `Target class \[role\] does not exist.`
+- - **Solución:** Ocurre al no registrar el alias de Spatie. Se resuelve encadenando el método `$middleware->alias(\['role' => ...\])` en el archivo interno `bootstrap/app.php`.
 - **Error:** Los contadores del carrito aumentan el stock fantasma.
-- - **Solución:** La función **_getMaxStock_** en el cliente ha sido corregida para consultar de manera pura la respuesta de los almacenes (**_stocks.stock_**) descartando acumulaciones redundantes del estado local.
+- - **Solución:** La función `getMaxStock` en el cliente ha sido corregida para consultar de manera pura la respuesta de los almacenes (`stocks.stock`) descartando acumulaciones redundantes del estado local.
