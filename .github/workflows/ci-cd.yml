@@ -67,13 +67,14 @@ jobs:
           port: ${{ secrets.HOSTINGER_PORT }}
           passphrase: ${{ secrets.HOSTINGER_PASSPHRASE }}
           script: |
+            source $HOME/.bashrc
+
             cd domains/skyurban.space/public_html
 
             git pull origin master
 
             composer install --no-dev --optimize-autoloader --no-interaction
 
-            export PATH=$PATH:/usr/local/bin
             npm install
             npm run build
 
