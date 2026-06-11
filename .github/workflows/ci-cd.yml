@@ -73,6 +73,7 @@ jobs:
 
             composer install --no-dev --optimize-autoloader --no-interaction
 
+            export PATH=$PATH:/usr/local/bin
             npm install
             npm run build
 
