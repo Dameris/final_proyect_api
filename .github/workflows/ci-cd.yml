@@ -2,7 +2,7 @@ name: SkyUrban CI/CD Pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
 
 jobs:
   laravel-vue-tests:
@@ -68,7 +68,7 @@ jobs:
           script: |
             cd public_html
 
-            git pull origin main
+            git pull origin master
 
             composer install --no-dev --optimize-autoloader --no-interaction
 
