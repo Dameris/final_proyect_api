@@ -276,7 +276,10 @@ const logout = async () => {
                                         :href="result.type === 'tshirt' ? route('tshirts.show', { tshirt: result.id }) : route('joggers.show', { jogger: result.id })"
                                         class="header__link"
                                     >
-                                        <img :src="result.type === 'tshirt' ? '/storage/img/tshirts/' + result.image : '/storage/img/joggers/' + result.image" alt="Product Image" />
+                                        <img 
+                                            :src="result.type === 'tshirt' ? `/img/tshirts/${result.image || result.img1}` : `/img/joggers/${result.image || result.img1}`"
+                                            alt="Product Image" 
+                                        />
                                         <br />
                                         {{ result.name }} - {{ result.price }}€
                                         <br />

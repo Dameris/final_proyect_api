@@ -46,16 +46,17 @@ class TshirtController extends Controller
             $img = null;
             $img2 = null;
 
+            // Guardar directamente en public/img/tshirts
             if ($request->hasFile("tshirt_img1")) {
                 $f = $request->file("tshirt_img1");
                 $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
-                $f->storeAs("img/tshirts", $img, "public");
+                $f->move(public_path("img/tshirts"), $img);
             }
 
             if ($request->hasFile("tshirt_img2")) {
                 $f2 = $request->file("tshirt_img2");
                 $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
-                $f2->storeAs("img/tshirts", $img2, "public");
+                $f2->move(public_path("img/tshirts"), $img2);
             }
 
             $product = Product::create([
@@ -134,14 +135,14 @@ class TshirtController extends Controller
         if ($request->hasFile("tshirt_img1")) {
             $f = $request->file("tshirt_img1");
             $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
-            $f->storeAs("img/tshirts", $img, "public");
+            $f->move(public_path("img/tshirts"), $img);
             $data["img1"] = $img;
         }
 
         if ($request->hasFile("tshirt_img2")) {
             $f2 = $request->file("tshirt_img2");
             $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
-            $f2->storeAs("img/tshirts", $img2, "public");
+            $f2->move(public_path("img/tshirts"), $img2);
             $data["img2"] = $img2;
         }
 

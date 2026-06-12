@@ -49,13 +49,13 @@ class JoggerController extends Controller
             if ($request->hasFile("jogger_img1")) {
                 $f = $request->file("jogger_img1");
                 $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
-                $f->storeAs("img/joggers", $img, "public");
+                $f->move(public_path("img/joggers"), $img);
             }
 
             if ($request->hasFile("jogger_img2")) {
                 $f2 = $request->file("jogger_img2");
                 $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
-                $f2->storeAs("img/joggers", $img2, "public");
+                $f2->move(public_path("img/joggers"), $img2);
             }
 
             $product = Product::create([
@@ -134,14 +134,14 @@ class JoggerController extends Controller
         if ($request->hasFile("jogger_img1")) {
             $f = $request->file("jogger_img1");
             $img = uniqid("img_") . "." . $f->getClientOriginalExtension();
-            $f->storeAs("img/joggers", $img, "public");
+            $f->move(public_path("img/joggers"), $img);
             $data["img1"] = $img;
         }
 
         if ($request->hasFile("jogger_img2")) {
             $f2 = $request->file("jogger_img2");
             $img2 = uniqid("img_") . "." . $f2->getClientOriginalExtension();
-            $f2->storeAs("img/joggers", $img2, "public");
+            $f2->move(public_path("img/joggers"), $img2);
             $data["img2"] = $img2;
         }
 
@@ -169,7 +169,6 @@ class JoggerController extends Controller
     {
         $jogger = Product::where('type', 'jogger')->findOrFail($id);
 
-        // Se espera un request con estructura: 'size' => 'Oversize', 'stock' => 15
         $request->validate([
             'size' => 'required|string',
             'stock' => 'required|integer|min:0'

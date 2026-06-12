@@ -68,10 +68,10 @@ const hasStockForSize = (sizeName) => {
 			<!-- Imágenes a la izquierda -->
 			<div class="joggerShow__imagesBox">
     			<div v-if="jogger.jogger_img1" class="joggerShow__image-card">
-        			<img :src="'/storage/img/joggers/' + jogger.jogger_img1" alt="Front view" />
+        			<img :src="jogger.jogger_img1" alt="Front view" />
     			</div>
     			<div v-if="jogger.jogger_img2" class="joggerShow__image-card">
-        			<img :src="'/storage/img/joggers/' + jogger.jogger_img2" alt="Back view" />
+        			<img :src="jogger.jogger_img2" alt="Back view" />
     			</div>
 			</div>
 

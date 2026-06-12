@@ -26,49 +26,60 @@ class Product extends Model
     {
         return $this->name;
     }
+
     public function getJoggerNameAttribute()
     {
         return $this->name;
     }
+
     public function getTshirtCompositionAttribute()
     {
         return $this->composition;
     }
+
     public function getJoggerCompositionAttribute()
     {
         return $this->composition;
     }
+
     public function getTshirtFitAttribute()
     {
         return $this->fit;
     }
+
     public function getJoggerFitAttribute()
     {
         return $this->fit;
     }
+
     public function getTshirtPriceAttribute()
     {
         return $this->price;
     }
+
     public function getJoggerPriceAttribute()
     {
         return $this->price;
     }
+
     public function getTshirtImg1Attribute()
     {
-        return $this->img1;
+        return $this->img1 ? asset('img/tshirts/' . $this->img1) : null;
     }
+
     public function getJoggerImg1Attribute()
     {
-        return $this->img1;
+        return $this->img1 ? asset('img/joggers/' . $this->img1) : null;
     }
+
     public function getTshirtImg2Attribute()
     {
-        return $this->img2;
+        return $this->img2 ? asset('img/tshirts/' . $this->img2) : null;
     }
+
     public function getJoggerImg2Attribute()
     {
-        return $this->img2;
+        return $this->img2 ? asset('img/joggers/' . $this->img2) : null;
     }
 
     /**

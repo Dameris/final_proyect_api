@@ -17,7 +17,7 @@ defineProps({
 	},
 });
 
-// Objeto reactivo para controlar la imagen mostrada en cada camiseta
+// Objeto reactivo para controlar la imagen mostrada en cada pantalón
 const hoveredImages = ref({});
 
 const setHoverImage = (id, img2) => {
@@ -29,9 +29,20 @@ const resetImage = (id, img1) => {
 };
 
 const deleteJogger = (id) => {
-	if (confirm("Are you sure?")) {
-		Inertia.delete(route("joggers.destroy", id));
-	}
+	window.emitter.emit('trigger-confirm', {
+        message: "Are you sure you want to delete this jogger?",
+        onConfirm: () => {
+            router.delete(route("joggers.destroy", id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    window.emitter.emit('trigger-alert', { 
+                        message: "The jogger has been successfully deleted.", 
+                        type: "success" 
+                    });
+                }
+            });
+        }
+    });
 };
 </script>
 
@@ -54,11 +65,11 @@ const deleteJogger = (id) => {
 						:href="route('joggers.show', jogger.id)"
 					>
 						<img
-							:src="'storage/img/joggers/' + (hoveredImages[jogger.id] || jogger.jogger_img1)"
-							alt="Jogger Image"
-							@mouseover="setHoverImage(jogger.id, jogger.jogger_img2)"
-							@mouseleave="resetImage(jogger.id, jogger.jogger_img1)"
-						/>
+                            :src="hoveredImages[jogger.id] || jogger.jogger_img1"
+                            alt="Jogger Image"
+                            @mouseover="setHoverImage(jogger.id, jogger.jogger_img2)"
+                            @mouseleave="resetImage(jogger.id, jogger.jogger_img1)"
+                        />
 						<p>
 							{{ jogger.jogger_name.toUpperCase() }} <br />
 							{{ jogger.jogger_price }}€
@@ -88,11 +99,11 @@ const deleteJogger = (id) => {
 						:href="route('joggers.show', jogger.id)"
 					>
 						<img
-							:src="'storage/img/joggers/' + (hoveredImages[jogger.id] || jogger.jogger_img1)"
-							alt="Jogger Image"
-							@mouseover="setHoverImage(jogger.id, jogger.jogger_img2)"
-							@mouseleave="resetImage(jogger.id, jogger.jogger_img1)"
-						/>
+                            :src="hoveredImages[jogger.id] || jogger.jogger_img1"
+                            alt="Jogger Image"
+                            @mouseover="setHoverImage(jogger.id, jogger.jogger_img2)"
+                            @mouseleave="resetImage(jogger.id, jogger.jogger_img1)"
+                        />
 						<p>
 							{{ jogger.jogger_name.toUpperCase() }} <br />
 							{{ jogger.jogger_price }}€
@@ -100,13 +111,13 @@ const deleteJogger = (id) => {
 
 						<p v-if="$page.props.user.permissions.includes('updatejoggers')">
 							<Link :href="route('joggers.edit', jogger.id)" class="joggers__edit"> Edit </Link>
-							<Link
+							<button
 								:href="route('joggers.index')"
-								@click="deleteJogger(jogger.id)"
+								@click.prevent.stop="deleteJogger(jogger.id)"
 								class="joggers__delete"
 							>
 								Delete
-							</Link>
+							</button>
 						</p>
 					</Link>
 				</li>

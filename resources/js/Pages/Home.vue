@@ -50,12 +50,12 @@ onMounted(() => {
         <Link :href="route('tshirts.show', tshirt.id)">
           <div class="home__featuredImages">
             <img
-              :src="'storage/img/tshirts/' + tshirt.tshirt_img1"
+              :src="tshirt.tshirt_img1"
               alt="Tshirt Image 1"
               class="home__featured--img"
             />
             <img
-              :src="'storage/img/tshirts/' + tshirt.tshirt_img2"
+              :src="tshirt.tshirt_img2"
               alt="Tshirt Image 2"
               class="home__featured--img"
             />
