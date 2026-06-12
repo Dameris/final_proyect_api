@@ -9,7 +9,7 @@ import { createPinia } from "pinia";
 
 const pinia = createPinia();
 
-const appName = import.meta.env.VITE_APP_NAME || "SkyUrban";
+const appName = "SkyUrban";
 
 console.log("Initial page data:", window.__inertia_page_data);
 
