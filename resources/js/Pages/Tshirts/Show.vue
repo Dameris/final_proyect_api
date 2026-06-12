@@ -68,13 +68,11 @@ const hasStockForSize = (sizeName) => {
 			<!-- Imágenes a la izquierda -->
 			<div class="tshirtShow__imagesBox">
 				<img
-					v-if="tshirt.tshirt_img1"
-					:src="tshirt.tshirt_img1"
+					:src="`/img/tshirts/${tshirt.tshirt_img1}`"
 					alt="Front view"
 				/>
 				<img
-					v-if="tshirt.tshirt_img2"
-					:src="tshirt.tshirt_img2"
+					:src="`/img/tshirts/${tshirt.tshirt_img2}`"
 					alt="Back view"
 				/>
 			</div>

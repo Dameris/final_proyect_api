@@ -65,10 +65,10 @@ const deleteTshirt = (id) => {
 						:href="route('tshirts.show', tshirt.id)"
 					>
 						<img
-                            :src="hoveredImages[tshirt.id] || tshirt.tshirt_img1"
+                            :src="hoveredImages[tshirt.id] || `/img/tshirts/${tshirt.tshirt_img1}`"
                             alt="Tshirt Image"
-                            @mouseover="setHoverImage(tshirt.id, tshirt.tshirt_img2)"
-                            @mouseleave="resetImage(tshirt.id, tshirt.tshirt_img1)"
+                            @mouseover="setHoverImage(tshirt.id, `/img/tshirts/${tshirt.tshirt_img2}`)"
+                            @mouseleave="resetImage(tshirt.id, `/img/tshirts/${tshirt.tshirt_img1}`)"
                         />
 						<p>
 							{{ tshirt.tshirt_name.toUpperCase() }} <br />
@@ -99,10 +99,10 @@ const deleteTshirt = (id) => {
 						:href="route('tshirts.show', tshirt.id)"
 					>
 						<img
-                            :src="hoveredImages[tshirt.id] || tshirt.tshirt_img1"
+                            :src="hoveredImages[tshirt.id] || `/img/tshirts/${tshirt.tshirt_img1}`"
                             alt="Tshirt Image"
-                            @mouseover="setHoverImage(tshirt.id, tshirt.tshirt_img2)"
-                            @mouseleave="resetImage(tshirt.id, tshirt.tshirt_img1)"
+                            @mouseover="setHoverImage(tshirt.id, `/img/tshirts/${tshirt.tshirt_img2}`)"
+                            @mouseleave="resetImage(tshirt.id, `/img/tshirts/${tshirt.tshirt_img1}`)"
                         />
 						<p>
 							{{ tshirt.tshirt_name.toUpperCase() }} <br />

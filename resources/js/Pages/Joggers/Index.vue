@@ -65,10 +65,10 @@ const deleteJogger = (id) => {
 						:href="route('joggers.show', jogger.id)"
 					>
 						<img
-                            :src="hoveredImages[jogger.id] || jogger.jogger_img1"
+                            :src="hoveredImages[jogger.id] || `/img/joggers/${jogger.jogger_img1}`"
                             alt="Jogger Image"
-                            @mouseover="setHoverImage(jogger.id, jogger.jogger_img2)"
-                            @mouseleave="resetImage(jogger.id, jogger.jogger_img1)"
+                            @mouseover="setHoverImage(jogger.id, `/img/joggers/${jogger.jogger_img2}`)"
+                            @mouseleave="resetImage(jogger.id, `/img/joggers/${jogger.jogger_img1}`)"
                         />
 						<p>
 							{{ jogger.jogger_name.toUpperCase() }} <br />
@@ -99,10 +99,10 @@ const deleteJogger = (id) => {
 						:href="route('joggers.show', jogger.id)"
 					>
 						<img
-                            :src="hoveredImages[jogger.id] || jogger.jogger_img1"
+                            :src="hoveredImages[jogger.id] || `/img/joggers/${jogger.jogger_img1}`"
                             alt="Jogger Image"
-                            @mouseover="setHoverImage(jogger.id, jogger.jogger_img2)"
-                            @mouseleave="resetImage(jogger.id, jogger.jogger_img1)"
+                            @mouseover="setHoverImage(jogger.id, `/img/joggers/${jogger.jogger_img2}`)"
+                            @mouseleave="resetImage(jogger.id, `/img/joggers/${jogger.jogger_img1}`)"
                         />
 						<p>
 							{{ jogger.jogger_name.toUpperCase() }} <br />
