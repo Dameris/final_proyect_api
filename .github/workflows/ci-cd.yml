@@ -67,7 +67,7 @@ jobs:
             git pull origin master
             composer install --no-dev --optimize-autoloader --no-interaction
 
-      - name: 2. Transferir diseño compilado de Vue (public/build) a Hostinger
+      - name: 2. Transferir diseño de Vue (build) e imágenes (img) a Hostinger
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -75,7 +75,9 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           port: ${{ secrets.HOSTINGER_PORT }}
           passphrase: ${{ secrets.HOSTINGER_PASSPHRASE }}
-          source: "public/build"
+          source: |
+            public/build
+            public/img
           target: "domains/skyurban.space/public_html"
 
       - name: 3. Ejecutar optimizaciones finales y enlaces de almacenamiento
