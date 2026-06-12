@@ -75,9 +75,7 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           port: ${{ secrets.HOSTINGER_PORT }}
           passphrase: ${{ secrets.HOSTINGER_PASSPHRASE }}
-          source: |
-            public/build
-            public/img
+          source: "public/build,public/img"
           target: "domains/skyurban.space/public_html"
 
       - name: 3. Ejecutar optimizaciones finales y enlaces de almacenamiento
