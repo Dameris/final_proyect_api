@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -21,6 +21,16 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+});
+
+const orderedStocks = computed(() => {
+    if (!props.tshirt.stocks) return [];
+    
+    const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    
+    return [...props.tshirt.stocks].sort((a, b) => {
+        return sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size);
+    });
 });
 
 // Función para agregar al carrito
@@ -97,8 +107,8 @@ const hasStockForSize = (sizeName) => {
     					<span class="stock__list">
         					<template v-if="jogger.stocks && jogger.stocks.length > 0">
             					<span 
-                					v-for="item in jogger.stocks" 
-                					:key="item.id" 
+                					v-for="item in orderedStocks"
+                					:key="item.id"
                 					class="stock__item"
                 					:class="{ 'outOfStock__text': item.stock === 0 }"
             					>
