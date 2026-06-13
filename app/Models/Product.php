@@ -13,7 +13,8 @@ class Product extends Model
 
     public function stocks()
     {
-        return $this->hasMany(ProductStock::class);
+        return $this->hasMany(ProductStock::class)
+                    ->orderByRaw("FIELD(size, 'XS', 'S', 'M', 'L', 'XL', 'XXL')");
     }
 
     // Busca el stock de una talla específica de manera directa
