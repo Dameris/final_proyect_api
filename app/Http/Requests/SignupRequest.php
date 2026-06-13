@@ -23,7 +23,7 @@ class SignupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => ["required", "email:rfc"],
+            "email" => ["required", "email:rfc", "unique:users,email"],
             "password" => ["required", "min:8", "regex:/[A-Z]/", "regex:/[*, +, -, ., @, #, %, &, _, ~, ^, \/ ,<, >]/"],
             "first_name" => ["required", "min:1", "regex:/^[A-Za-zÀ-ÿ\s'-]+$/"],
             "last_name" => ["required", "min:1", "regex:/^[A-Za-zÀ-ÿ\s'-]+$/"],
@@ -34,6 +34,7 @@ class SignupRequest extends FormRequest
     public function messages(): array
     {
         return [
+            "email.unique" => "This email address is already registered.",
             "email.regex" => "The email format is not valid.",
             "password.min" => "The password must have at least 8 characters.",
             "password.regex" => "The password must have at least 1 uppercase letter and 1 special character.",
