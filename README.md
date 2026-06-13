@@ -141,7 +141,25 @@ La plataforma interactúa mediante peticiones REST asíncronas para flujos opera
 | POST        | /checkout         | Procesa la orden de compra mandando los datos del carrito e inyectando los datos de envío.   | Sí            | 201 Created, 422 Unprocessable Entity      |
 | GET         | /api/tshirt/{id}  | Devuelve los metadatos y stocks en formato JSON de una camiseta en específico.               | No            | 200 OK, 404 Not Found                      |
 
-Ejemplo de Payload (Request) - `POST /checkout`
+### Verificación de Endpoints Públicos mediante `curl`
+
+- **Prueba de catálogo (Obtener metadatos de producto):**
+
+```bash
+curl -i -X GET https://skyurban.space/api/tshirt/1
+```
+
+Respuesta esperada: `HTTP/1.1 200 OK` junto con el JSON de características del producto.
+
+- **Prueba de protección de seguridad (Acceso denegado al carrito sin login):**
+
+```bash
+curl -i -X GET https://skyurban.space/api/cart
+```
+
+Respuesta esperada: `HTTP/1.1 401 Unauthorized` o redirección segura, demostrando que el middleware perimetral funciona fuera del entorno de cliente.
+
+### Ejemplo de Payload (Request) - `POST /checkout`
 
 ```json
 {
@@ -209,50 +227,30 @@ Una vez la Fase 1 concluye con éxito, se dispara de manera automatizada el job 
 
 Este sistema elimina los errores humanos del despliegue manual por FTP y garantiza que los cambios validados localmente se reflejen en tiempo real en la URL pública sin cortes de servicio.
 
-## 🌐 7. Proceso de Despliegue en Producción (Hostinger)
+## 🌐 7. Infraestructura y Servidores de Producción (Hostinger)
 
-El despliegue de la aplicación en el entorno de producción se realiza de forma manual siguiendo una estrategia de empaquetado estructurado para garantizar la integridad de los archivos en el servidor de **_Hostinger_**.
+El entorno de producción está alojado en la infraestructura de **_Hostinger_**, optimizado para trabajar en sincronía con el pipeline automatizado de GitHub Actions.
 
-### Pasos detallados del Despliegue:
+### Configuración del Servidor Web y Aplicaciones
 
-1. **Empaquetado del Proyecto:**
-
-Se genera un archivo comprimido `.zip` que contiene la estructura limpia del proyecto, excluyendo directorios locales pesados como `node_modules` (los assets de Vue ya van compilados para producción dentro de `public/build` gracias a `npm run build`).
-
-2. **Carga y Extracción en Servidor:**
-
-El archivo `.zip` se sube a través del Administrador de Archivos de Hostinger (o vía cliente SFTP) y se extrae directamente en la raíz del directorio `public_html`.
-
-3. **Configuración de Seguridad y Redirección (.htaccess):**
-
-Dado que Laravel utiliza la carpeta `/public` como el único punto de entrada seguro expuesto a Internet, se añade un archivo `.htaccess` en la raíz de `public_html` que actúa como configuración del servidor web Apache. Este archivo redirige el tráfico de forma limpia sin exponer el resto del código fuente del backend:
+- **Servidor Web:** Apache 2.4.x (Gestionado mediante el archivo de directivas de enrutamiento seguro `.htaccess` en la raíz del proyecto).
 
 ```apache
 <IfModule mod_rewrite.c>
+
     RewriteEngine On
+
     RewriteRule ^(.\*)$ public/$1 \[L\]
+
 </IfModule>
 ```
 
-4. **Persistencia y Base de Datos:**
+- **Servidor de Aplicaciones:** PHP-FPM 8.2 (Motor de ejecución en producción).
+- **Base de Datos:** MySQL 8.0 (Instancia relacional dedicada con persistencia indexada).
+- **Dominio y Acceso Público:** `https://skyurban.space` bajo protocolo seguro SSL/TLS (Puerto 443).
+- **Acceso Remoto de Despliegue:** Puerto personalizado SSH `65002` con autenticación por clave asimétrica RSA/ED25519.
 
-Se crea una base de datos MySQL relacional desde el panel de control de Hostinger. El esquema de tablas inicial se vuelca importando el archivo `.sql` generado localmente o ejecutando de forma remota los comandos de migración.
-
-5. **Configuración del Entorno de Producción (`.env`):**
-
-El archivo `.env` del servidor se edita minuciosamente para activar el modo seguro, asegurar el aislamiento de errores y enlazar los servicios web:
-
-```properties
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://skyurban.space
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_DATABASE=u265459828_skyurban_db
-DB_USERNAME=u265459828_db_skyurban
-DB_PASSWORD=********
-```
+> 📝 **Justificación sobre la omisión de Docker en Producción:** He optado por un despliegue nativo sobre servidor Apache/PHP-FPM en Hostinger debido a limitaciones de la infraestructura. Para garantizar la reproducibilidad completa, toda la automatización y control de dependencias he delegado en el pipeline de Integración Continua en runners aislados de GitHub.
 
 ## ❓ 8. FAQ de Errores Comunes y Soluciones
 
@@ -260,3 +258,67 @@ DB_PASSWORD=********
 - - **Solución:** Ocurre al no registrar el alias de Spatie. Se resuelve encadenando el método `$middleware->alias(\['role' => ...\])` en el archivo interno `bootstrap/app.php`.
 - **Error:** Los contadores del carrito aumentan el stock fantasma.
 - - **Solución:** La función `getMaxStock` en el cliente ha sido corregida para consultar de manera pura la respuesta de los almacenes (`stocks.stock`) descartando acumulaciones redundantes del estado local.
+
+## 📊 9. Modelo de Datos y Diagrama Entidad-Relación (ER)
+
+Para la persistencia del sistema e-commerce he diseñado una base de datos relacional con integridad referencial estricta.
+
+```mermaid
+erDiagram
+    USERS ||--o{ CARTS : "crea"
+    USERS {
+        int id PK
+        string email UK
+        string password
+        string first_name
+        string last_name
+        string gender
+    }
+
+    PRODUCTS ||--o{ PRODUCT_STOCKS : "posee"
+    PRODUCTS {
+        int id PK
+        string name
+        string type
+        string composition
+        string fit
+        decimal price
+        string img1
+        string img2
+    }
+
+    PRODUCT_STOCKS ||--o{ CARTS : "se_añade_a"
+    PRODUCT_STOCKS {
+        int id PK
+        int product_id FK
+        string size FK
+        int stock
+    }
+
+    CARTS ||--o{ ORDER_ITEMS : "se_convierte_en"
+    CARTS {
+        int id PK
+        int user_id FK
+        int product_id FK
+        string product_type FK
+        string size FK
+        int quantity
+    }
+
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int product_id
+        string product_type
+        string size
+        int quantity
+        decimal price
+    }
+```
+
+### Descripción de Componentes Clave:
+
+- **_users:_** Almacena las credenciales hash (`bcrypt`) y asignación relacional de roles.
+- **_products:_** Catálogo maestro indexado por categorías.
+- **_product_stocks:_** Tabla pivote relacional que controla de forma estricta las existencias cruzadas por **Tallas (XS, S, M, L, XL, XXL)**, evitando la sobreventa en pasarela de pago.
+- **_carts / order_items:_** Persistencia de sesiones de compra asociadas inequívocamente al `user_id` del cliente autenticado.
